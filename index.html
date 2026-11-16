@@ -10461,6 +10461,9 @@ const LEVELS=[
  {n:5,tag:'C1',name:'المستوى الخامس',sub:'الإتقان: الأسلوب، التعابير، الإعلام والكتابة الرسمية'}];
 const lvOf=u=>u.lv||1;
 const unitsOf=n=>UNITS.filter(u=>lvOf(u)===n);
+/* أرقام العرض: الوحدات والدروس مرقّمة بالترتيب الحقيقي بالمسار (مش حسب رقمها الداخلي) */
+let _DN=null;function _dn(){if(_DN)return _DN;const u={},c={};let ui=0,ci=0;LEVELS.forEach(L=>unitsOf(L.n).forEach(x=>{u[x.n]=++ui;x.chs.forEach(id=>{c[id]=++ci})}));UNITS.forEach(x=>{if(!u[x.n])u[x.n]=++ui});return _DN={u,c}}
+const UN=n=>_dn().u[n]||n,CN=id=>_dn().c[id]||id;
 const lvReady=n=>unitsOf(n).length>0;
 const canSkip=()=>IS_OWNER||!!ROLE.unlockAll;
 const lvFree=n=>(ROLE.openTo||0)>=n||(S.placeLv||1)>n;
@@ -10470,7 +10473,7 @@ const PREVIEW=3;
 function chOpen(id){if(id<=PREVIEW)return true;const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L))return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
 const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||lvFree(n)||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||lvFree(lvOf(u))||EXAMS[k].chs.every(chDone))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(L.n<(S.placeLv||1))continue;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
-const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+k;
+const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+UN(k);
 const STEPS=[['lesson','الدرس'],['words','الكلمات'],['sents','الجمل'],['drills','القواعد'],['game','لعبة'],['quiz','الاختبار']];
 const stepsOf=id=>{const c=CH[id-1];return c&&c.DL?[STEPS[0],['dialog','الحوار'],...STEPS.slice(1)]:STEPS};
 const stepDone=(id,k)=>{const s=S.ch[id]||{};return k==='quiz'?s.quiz>=70:!!s[k]};
@@ -10688,10 +10691,10 @@ function vHome(){
   const nd=CH.filter(c=>chDone(c.id)).length,ne=UNITS.filter(u=>exDone(u.n)).length,nx=nextItem();
   let cont;
   if(!nx){const last=LEVELS.filter(L=>lvReady(L.n)).pop();cont=`<div class="continue"><span class="eyebrow">خلّصت كل المستويات الجاهزة</span><span class="big pt" lang="pt-BR" dir="ltr">Parabéns!</span><span>${esc(last.name)} مكتمل.</span></div>`}
-  else if(nx.t==='ch'){const c=CH[nx.id-1],u=unitOf(c.id),n=stepsOf(c.id).filter(([k])=>stepDone(c.id,k)).length,N=stepsOf(c.id).length;cont=`<a class="continue" href="#ch-${c.id}"><span class="eyebrow">كمّل من هون · ${esc(LEVELS[lvOf(u)-1].name)} · الدرس ${c.id}</span><span class="big pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</span><span>${esc(c.ar)} · ${n} من ${N} خطوات</span><span class="bar"><i style="width:${n/N*100}%"></i></span><span class="cta">${n?'كمّل':'ابدأ'} الدرس ←</span></a>`}
+  else if(nx.t==='ch'){const c=CH[nx.id-1],u=unitOf(c.id),n=stepsOf(c.id).filter(([k])=>stepDone(c.id,k)).length,N=stepsOf(c.id).length;cont=`<a class="continue" href="#ch-${c.id}"><span class="eyebrow">كمّل من هون · ${esc(LEVELS[lvOf(u)-1].name)} · الدرس ${CN(c.id)}</span><span class="big pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</span><span>${esc(c.ar)} · ${n} من ${N} خطوات</span><span class="bar"><i style="width:${n/N*100}%"></i></span><span class="cta">${n?'كمّل':'ابدأ'} الدرس ←</span></a>`}
   else cont=`<a class="continue" href="#exam-${nx.id}"><span class="eyebrow">${esc(examName(nx.id))}</span><span class="big">قراءة · استماع · قواعد · مفردات · كتابة</span><span class="cta">ابدأ الاختبار ←</span></a>`;
   const node=id=>{const c=CH[id-1],d=chDone(id),op=chOpen(id),n=stepsOf(id).filter(([k])=>stepDone(id,k)).length;const cls=d?'done':op?'open':'locked';const st=d?`${S.ch[id].quiz}%`:op?(n?`${n}/${stepsOf(id).length}`:'متاح'):'مقفل';
-    const inner=`<span class="num">${d?'✓':id}</span><span class="t">${P(c.pt)}<small>${esc(c.ar)}</small></span><span class="st">${st}</span>`;
+    const inner=`<span class="num">${d?'✓':CN(id)}</span><span class="t">${P(c.pt)}<small>${esc(c.ar)}</small></span><span class="st">${st}</span>`;
     return op?`<a class="node ${cls}" href="#ch-${id}">${inner}</a>`:`<div class="node ${cls}" aria-disabled="true">${inner}</div>`};
   const enode=(k,label)=>{const d=exDone(k),op=exOpen(k);const cls='exam '+(d?'done':op?'open':'locked');const st=d?`${S.ex[exKey(k)].total}%`:op?'متاح':'بعد الدروس';
     const inner=`<span class="num">★</span><span class="t"><b>${label}</b><small>قراءة · استماع · قواعد · مفردات · كتابة</small></span><span class="st">${st}</span>`;
@@ -10702,7 +10705,7 @@ function vHome(){
     const head=`<div class="level-h"><div><h2>${L.name}</h2><span class="muted">${esc(L.sub)} · ${chs.length} درس · ${nw} كلمة · ${ns} جملة</span></div><span class="tag">${L.tag}</span></div><div class="lv-prog"><i style="width:${done/chs.length*100}%"></i></div>`;
     if(!open)return `<section class="level-card dim">${head}<p class="muted" style="margin:0">بينفتح لما تنجح بالامتحان النهائي لـ${LEVELS[L.n-2].name}.</p></section>`;
     const isNext=nx&&((nx.t==='ch'&&chs.includes(nx.id))||(nx.t==='ex'&&(us.some(u=>u.n===nx.id)||nx.id==='f'+L.n)));
-    return `<details class="level-card" ${isNext||L.n===1&&!nx?'open':''}><summary>${head}</summary>${us.map(u=>`<section class="unit"><div class="unit-h"><span class="u-n">الوحدة ${u.n}</span><span class="pt" lang="pt-BR" dir="ltr">${esc(u.pt)}</span><span class="muted">${esc(u.ar)}</span></div><div class="nodes">${u.chs.map(node).join('')}${enode(u.n,'اختبار الوحدة '+u.n)}</div></section>`).join('')}<div class="nodes" style="margin-top:12px">${enode('f'+L.n,examName('f'+L.n))}</div></details>`};
+    return `<details class="level-card" ${isNext||L.n===1&&!nx?'open':''}><summary>${head}</summary>${us.map(u=>`<section class="unit"><div class="unit-h"><span class="u-n">الوحدة ${UN(u.n)}</span><span class="pt" lang="pt-BR" dir="ltr">${esc(u.pt)}</span><span class="muted">${esc(u.ar)}</span></div><div class="nodes">${u.chs.map(node).join('')}${enode(u.n,'اختبار الوحدة '+u.n)}</div></section>`).join('')}<div class="nodes" style="margin-top:12px">${enode('f'+L.n,examName('f'+L.n))}</div></details>`};
   app.innerHTML=`<div class="stack">
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
    ${loginNote()}
@@ -10751,7 +10754,7 @@ function vChapter(id){
   if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">بينفتح لما تخلّص اللي قبله بالترتيب: كل درس لازم تنجح باختباره بـ 70% أو أكثر، وأول درس بكل وحدة بينفتح بعد ما تنجح باختبار الوحدة اللي قبلها.</p></div>`;return}
   if(chState.id!==id){chState={id,step:(stepsOf(id).find(([k])=>!stepDone(id,k))||STEPS[0])[0]}}
   const st=chState.step;
-  app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${c.u} · الدرس ${id}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
+  app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${UN(c.u)} · الدرس ${CN(id)}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
    <div class="steps" role="tablist">${stepsOf(id).map(([k,l],n)=>`<button class="step${k===st?' on':''}${stepDone(id,k)?' ok':''}" data-st="${k}" role="tab" aria-selected="${k===st}"><i>${stepDone(id,k)?'✓':n+1}</i>${l}</button>`).join('')}</div>
    <div id="body"></div></div>`;
   $$('.step').forEach(b=>b.onclick=()=>{clearTimers();stopAudio();chState.step=b.dataset.st;vChapter(id)});
@@ -10773,10 +10776,10 @@ function vChapter(id){
   if(st==='game'){body.innerHTML=`<p class="muted" style="margin:0 0 10px">العب أي لعبة بكلمات هالدرس. بعد أول لعبة انتقل إلى الاختبار.</p><div id="g"></div><div class="row" style="margin-top:14px"><button class="btn" id="toq">التالي: اختبار الدرس ←</button></div>`;$('#toq',body).onclick=()=>go('quiz');
     gameMenu($('#g',body),c.W,c.S,()=>{if(!stepDone(id,'game')){mark(id,'game',true);const s=$$('.step')[stepsOf(id).findIndex(([k])=>k==='game')];if(s){s.classList.add('ok');s.querySelector('i').textContent='✓'}}})}
   if(st==='quiz'){
-    const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${id}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}%</p>`:''}<div class="row"><button class="btn primary" id="startq">ابدأ الاختبار</button></div></div>`;$('#startq',body).onclick=quiz};
+    const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${CN(id)}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}%</p>`:''}<div class="row"><button class="btn primary" id="startq">ابدأ الاختبار</button></div></div>`;$('#startq',body).onclick=quiz};
     const u=unitOf(id),last=u.chs[u.chs.length-1]===id;
-    const nxt=last?{label:`التالي: اختبار الوحدة ${u.n} ←`,href:'#exam-'+u.n}:{label:`التالي: الدرس ${id+1} ←`,href:'#ch-'+(id+1)};
-    const quiz=()=>runQuiz(body,quizChapter(c),{title:'اختبار الدرس '+id,retry:quiz,onDone:p=>{const prev=(S.ch[id]&&S.ch[id].quiz)||0;if(p>prev)mark(id,'quiz',p)},next:nxt});
+    const nxt=last?{label:`التالي: اختبار الوحدة ${UN(u.n)} ←`,href:'#exam-'+u.n}:(()=>{const nid=u.chs[u.chs.indexOf(id)+1]||id+1;return {label:`التالي: الدرس ${CN(nid)} ←`,href:'#ch-'+nid}})();
+    const quiz=()=>runQuiz(body,quizChapter(c),{title:'اختبار الدرس '+CN(id),retry:quiz,onDone:p=>{const prev=(S.ch[id]&&S.ch[id].quiz)||0;if(p>prev)mark(id,'quiz',p)},next:nxt});
     intro();}
 }
 const uIcon=id=>UNIT_ICON[(unitOf(id)||{}).n]||'';
@@ -10790,8 +10793,8 @@ function vExam(k){
   const prev=S.ex[exKey(k)];const n=quizExam(k);const cnt=s=>n.filter(q=>q.sec===s).length;
   const u=isFinal(k)?null:UNITS.find(x=>x.n===k);
   let next={label:'الرجوع إلى المسار',href:'#path'};
-  if(u){const sib=unitsOf(lvOf(u));const i=sib.indexOf(u);next=i<sib.length-1?{label:`التالي: الوحدة ${sib[i+1].n} ←`,href:'#ch-'+sib[i+1].chs[0]}:{label:'التالي: الامتحان النهائي ←',href:'#exam-f'+lvOf(u)}}
-  const intro=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${u?'الوحدة '+k+': '+esc(u.ar):'كل وحدات '+esc(LEVELS[+String(k).slice(1)-1].name)}</span><h1>${name}</h1></div>
+  if(u){const sib=unitsOf(lvOf(u));const i=sib.indexOf(u);next=i<sib.length-1?{label:`التالي: الوحدة ${UN(sib[i+1].n)} ←`,href:'#ch-'+sib[i+1].chs[0]}:{label:'التالي: الامتحان النهائي ←',href:'#exam-f'+lvOf(u)}}
+  const intro=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${u?'الوحدة '+UN(k)+': '+esc(u.ar):'كل وحدات '+esc(LEVELS[+String(k).slice(1)-1].name)}</span><h1>${name}</h1></div>
     <div class="card stack"><div class="nodes">${['r','l','g','v','w'].map((s,i)=>`<div class="node"><span class="num">${i+1}</span><span class="t"><b>${SEC[s]}</b><small>${cnt(s)} سؤال</small></span><span></span></div>`).join('')}</div>
     <p style="margin:0">المجموع ${n.length} سؤال. النجاح بـ <b>70%</b>. استعمل سماعة لقسم الاستماع.${audioOK()?'':' <b>الصوت مش متاح هون،</b> فالاستماع رح يصير قراءة.'}</p>
     ${isFinal(k)?'<p class="muted" style="margin:0">النجاح بهالامتحان بيفتح المستوى اللي بعده.</p>':''}
@@ -10900,7 +10903,7 @@ function statsDoc(){
   const lv={};LEVELS.forEach(L=>{const chs=unitsOf(L.n).flatMap(u=>u.chs);if(chs.length)lv[L.n]=[chs.filter(chDone).length,chs.length]});
   const qs=Object.values(S.ch||{}).map(x=>x.quiz).filter(x=>typeof x==='number');
   const nx=nextItem();let at='خلّص كل شي',atId=0;
-  if(nx&&nx.t==='ch'){const u=unitOf(nx.id);at=LEVELS[lvOf(u)-1].tag+' · الدرس '+nx.id;atId=nx.id}else if(nx)at=examName(nx.id);
+  if(nx&&nx.t==='ch'){const u=unitOf(nx.id);at=LEVELS[lvOf(u)-1].tag+' · الدرس '+CN(nx.id);atId=nx.id}else if(nx)at=examName(nx.id);
   const mob=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent),ios=/iPhone|iPad/i.test(navigator.userAgent),and=/Android/i.test(navigator.userAgent);
   const pwa=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
   return {v:2,seen:S.seen||Date.now(),first:S.first||0,time:S.time||0,days,sessions:S.sessions||0,xp:S.xp||0,streak:streakNow(),
@@ -11013,7 +11016,7 @@ async function vAdminUser(id){
   const lvBars=LEVELS.map(L=>{const v=(d.lv||{})[L.n];if(!v)return '';return `<div class="secbar"><span>${L.tag}</span><span class="tr"><i style="width:${pct(v[0],v[1])}%;background:var(--ok)"></i></span><span>${v[0]}/${v[1]}</span></div>`}).join('');
   const chRows=Object.entries(d.ch||{}).sort((a,b)=>a[0]-b[0]).map(([cid,v])=>{const c=CH[cid-1];return `<tr><td>${cid}</td><td>${c?esc(c.ar):''}</td><td>${v.n}/${v.N||6}</td><td>${v.q==null?'—':`<b class="${v.q>=70?'ok':'bad'}">${v.q}%</b>`}</td></tr>`}).join('');
   const exRows=Object.entries(d.ex||{}).map(([k,v])=>`<tr><td>${esc(examName(isNaN(+k)?k:+k))}</td><td><b class="${v>=70?'ok':'bad'}">${v}%</b></td></tr>`).join('');
-  const last=d.last&&CH[d.last.id-1]?`${fmtAgo(d.last.ts)}: الدرس ${d.last.id} (${esc(CH[d.last.id-1].ar)})`:'—';
+  const last=d.last&&CH[d.last.id-1]?`${fmtAgo(d.last.ts)}: الدرس ${CN(d.last.id)} (${esc(CH[d.last.id-1].ar)})`:'—';
   app.innerHTML=`<div class="stack"><div><a class="back" href="#admin">→ لوحة التحكم</a><h1 style="font-size:24px;margin-top:6px">${esc(r.name)}</h1><p class="muted" style="margin:4px 0 0" dir="ltr">${esc(r.email||'')}</p><p class="muted" style="margin:2px 0 0">${esc(d.at||'')} · آخر ظهور ${fmtAgo(d.seen)} · ${esc(d.dev||'')}</p></div>
   <div class="stats"><div class="stat"><b>${d.done||0}<small>/${d.total||92}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${d.avg==null?'—':d.avg+'%'}</b><span>متوسط الاختبارات</span></div><div class="stat"><b>${fmtDur(d.time)}</b><span>مجموع الدراسة</span></div><div class="stat"><b>${fmtDur((d.days||{})[today()])}</b><span>اليوم</span></div><div class="stat"><b>${fmtDur(sumDays(d.days,7))}</b><span>آخر 7 أيام</span></div><div class="stat"><b>${d.streak||0}</b><span>أيام ورا بعض</span></div></div>
   ${permPanel(r)}
@@ -11305,11 +11308,11 @@ async function playStory(st){
 }
 function vStories(){
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">قصص وحوارات مسموعة</h1><p class="muted" style="margin:4px 0 0">حوار لكل وحدة بصوتين. اسمعه كامل أول، بعدين اقرأ، وجاوب على الأسئلة.</p></div>
-  ${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<section class="level-card"><div class="unit-h"><span class="u-n">${L.tag}</span><span>${esc(L.name)}</span></div><div class="nodes">${STORIES.filter(s=>lvOf(UNITS.find(u=>u.n===s.u))===L.n).map(s=>{const b=(S.st||{})[s.id];return `<a class="node ${b>=70?'done':'open'}" href="#story-${s.id}"><span class="num">${b>=70?'✓':'▶'}</span><span class="t">${P(s.pt)}<small>${esc(s.ar)} · الوحدة ${s.u}</small></span><span class="st">${b!=null?b+'%':'اسمع'}</span></a>`}).join('')}</div></section>`).join('')}</div>`;
+  ${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<section class="level-card"><div class="unit-h"><span class="u-n">${L.tag}</span><span>${esc(L.name)}</span></div><div class="nodes">${STORIES.filter(s=>lvOf(UNITS.find(u=>u.n===s.u))===L.n).map(s=>{const b=(S.st||{})[s.id];return `<a class="node ${b>=70?'done':'open'}" href="#story-${s.id}"><span class="num">${b>=70?'✓':'▶'}</span><span class="t">${P(s.pt)}<small>${esc(s.ar)} · الوحدة ${UN(s.u)}</small></span><span class="st">${b!=null?b+'%':'اسمع'}</span></a>`}).join('')}</div></section>`).join('')}</div>`;
 }
 function vStory(id){
   const st=STORIES.find(s=>s.id===id);if(!st)return vStories();VOSP['st'+st.id]=st.sp;st.key='st'+st.id;
-  const show=()=>{app.innerHTML=`<div class="stack"><a class="back" href="#stories">→ القصص</a><div class="ch-head"><span class="eyebrow">الوحدة ${st.u}</span><h1 class="pt" lang="pt-BR" dir="ltr" style="font-size:26px">${esc(st.pt)}</h1><span class="muted">${esc(st.ar)}</span></div>
+  const show=()=>{app.innerHTML=`<div class="stack"><a class="back" href="#stories">→ القصص</a><div class="ch-head"><span class="eyebrow">الوحدة ${UN(st.u)}</span><h1 class="pt" lang="pt-BR" dir="ltr" style="font-size:26px">${esc(st.pt)}</h1><span class="muted">${esc(st.ar)}</span></div>
    <div class="row"><button class="btn primary" id="playall">▶ اسمع الحوار كامل</button><button class="btn" id="stopall">⏹ وقّف</button><label class="toggle" style="gap:6px"><input type="checkbox" class="switch" id="tr"><span>اعرض الترجمة</span></label></div>
    <div class="dlg" id="dlg">${st.L.map(x=>`<div class="dl ${x.who==='A'?'a':'b'}"><span class="who">${esc(st.sp[x.who==='A'?0:1])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(x.pt)}</span>${dlgBtns(x.pt,'st'+st.id,x.who==='A'?0:1)}</div>${SYL(x.pt)}<div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
    <div class="card stack"><h2 style="font-size:18px">أسئلة الفهم</h2><div class="row"><button class="btn primary" id="sq">ابدأ</button></div></div></div>`;
