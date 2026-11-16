@@ -497,6 +497,11 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 
 .kcat{position:relative}.kc-ord{position:absolute;top:8px;inset-inline-start:10px;background:var(--kf);color:#fff;border-radius:999px;min-width:26px;height:26px;display:grid;place-items:center;font:800 14px/1 var(--f-pt)}
 .mic-big.on{background:var(--bad);color:#fff;border-color:var(--bad)}.pl-lv{border-top:1px dashed var(--line);padding-top:8px;width:100%}.pl-lv h3{margin:0 0 6px;font-size:17px}
+
+.qfoot{position:sticky;bottom:calc(var(--tabh,64px) + 6px);z-index:20;display:grid;gap:8px}
+.qfoot:has(.fb.show){background:var(--paper);padding:8px 0 4px;box-shadow:0 -10px 14px -10px rgba(0,0,0,.18);border-radius:16px 16px 0 0}
+.qfoot .fb{margin:0}.qfoot .row{margin:0}.qfoot #nx{width:100%;font-size:18px;padding:14px}
+.quiz{min-height:calc(100vh - 150px)}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -10509,8 +10514,9 @@ function runQuiz(el,qs,o){
     if(q.t==='tf')h+=`<div class="tf-st">${bidi(q.stmt)}</div><div class="tf-btns"><button class="opt yes" data-v="1">صح ✓</button><button class="opt no" data-v="0">خطأ ✗</button></div>`;
     if(q.t==='type')h+=`<input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" lang="pt-BR" dir="ltr" placeholder="اكتب هون…" aria-label="جوابك">${q.noTiles?'<p class="tin-hint">اكتب الجواب بنفسك من لوحة المفاتيح.</p>':`<p class="tin-hint">${tileWords(q.ans)?'اضغط على الكلمات بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.':'اضغط على الحروف بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.'}</p><div class="tiles" id="tiles">${makeTiles(q.ans).map((t,i)=>`<button type="button" class="ltile${t===' '?' sp':''}" data-ti="${i}" data-tv="${esc(t)}">${t===' '?'␣':esc(t)}</button>`).join('')}</div><div class="row tile-ctl"><button type="button" class="btn ghost" id="tundo">⌫ تراجع</button><button type="button" class="btn ghost" id="tclr">مسح الكل</button></div>`}<button class="btn primary" id="chk">تحقّق</button>`;
     if(q.t==='scr')h+=`<div class="ansline" id="al"></div><div class="tiles" id="tl"></div><div class="row"><button class="btn primary" id="chk">تحقّق</button><button class="btn ghost" id="clr">امسح</button></div>`;
-    h+=`<div class="fb" id="fb" aria-live="polite"></div><div class="row"><button class="btn primary" id="nx" hidden>${i<qs.length-1||o.raw?'التالي ←':'شوف النتيجة'}</button></div></div>`;
+    h+=`<div class="qfoot"><div class="fb" id="fb" aria-live="polite"></div><div class="row"><button class="btn primary" id="nx" hidden>${i<qs.length-1||o.raw?'التالي ←':'شوف النتيجة'}</button></div></div></div>`;
     el.innerHTML=h;
+    try{const qz=el.querySelector('.quiz');if(qz){const hb=document.querySelector('header.top'),bb=document.querySelector('.backbar:not([hidden])');const off=(hb?hb.offsetHeight:0)+(bb&&bb.offsetParent?bb.offsetHeight:0)+8;const y=qz.getBoundingClientRect().top+scrollY-off;if(Math.abs(scrollY-y)>4)scrollTo({top:Math.max(0,y),behavior:i?'auto':'smooth'})}}catch(e){}
     const fb=$('#fb',el),nx=$('#nx',el);
     const A=(t,ar)=>`<span class="ans" ${ar?'dir="rtl"':'lang="pt-BR" dir="ltr"'}>${ar?bidi(t):esc(t)}</span>`;
     const finishQ=(credit,your,right)=>{score+=credit;log.push({q,credit,your,right});srsRecord(q,credit);fb.className='fb show '+(credit===1?'ok':credit>0?'mid':'bad');
@@ -10826,6 +10832,9 @@ function vDialog(c,body,done){
     return runQuiz(body,qs,{title:'فهم الحوار',retry:quiz,onDone:(p,pass)=>{if(pass)done(false)},next:{label:'التالي: الكلمات ←',href:'#ch-'+c.id,click:()=>done(true)}})};
   show();
 }
+
+/* ارتفاع شريط التبويب عشان زر التالي يضل ظاهر */
+(function(){const f=()=>{const n=document.querySelector('nav.tabs');const fixed=n&&getComputedStyle(n).position==='fixed';document.documentElement.style.setProperty('--tabh',(fixed?n.offsetHeight:0)+'px')};addEventListener('resize',f);addEventListener('load',f);setTimeout(f,300);setTimeout(f,1500)})();
 
 /* ===== activity tracking, stats for the owner dashboard, backup ===== */
 let lastAct=Date.now(),tickN=0,lastStats='';
