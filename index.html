@@ -633,8 +633,9 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
       const base=json?{responseMimeType:'application/json',temperature:0.8,maxOutputTokens:700}:{temperature:0.3,maxOutputTokens:400};
       for(const useThink of [true,false]){const tc=useThink?thinkCfg(m):null;if(useThink&&!tc)continue;
         try{const model=aiM.getGenerativeModel(ai,{model:m,generationConfig:tc?{...base,thinkingConfig:tc}:base});
-          const r=await model.generateContent(req);try{localStorage.setItem('aimodel2',m)}catch(e){}return r.response.text()}
-        catch(e){last=e;const t=String(e&&e.message||e);
+          const t0=Date.now();const r=await Promise.race([model.generateContent(req),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout 429 slow')),18000))]);
+          window.__aiLast={model:m,ms:Date.now()-t0,ok:true,think:!!tc};try{localStorage.setItem('aimodel2',m)}catch(e){}return r.response.text()}
+        catch(e){last=e;const t=String(e&&e.message||e);window.__aiLast={model:m,ok:false,err:t.slice(0,160)};(window.__aiLog=window.__aiLog||[]).push(m+': '+t.slice(0,120));
           if(useThink&&/think/i.test(t))continue;           // النموذج ما بيدعم إعداد التفكير: جرّب بدونه
           if(/not.?found|404|not supported|unsupported|is not available|invalid model|no longer available|deprecat/i.test(t)){BAD[m]=Date.now()+864e5;break}
           if(/429|quota|exhausted|rate/i.test(t)){BAD[m]=Date.now();break} // وصل الحد: جرّب النموذج اللي بعده
@@ -11293,6 +11294,7 @@ If the learner's last message has Portuguese mistakes (grammar, vocabulary, spel
 Respond with ONLY a JSON object, no other text:
 {"reply":"...","reply_ar":"simple Arabic translation of reply","correction":null or {"you_said":"...","better":"...","why_ar":"one short explanation in simple Arabic"},"suggestions":["two short things the learner could say next, in Portuguese"]}`}
 async function askClaude(msgs){
+  if(msgs.length>9)msgs=[msgs[0],...msgs.slice(-8)];
   if(!(await waitClaude()))throw{code:'unavailable'};
   const sample=await claude.use('sample');if(!sample)throw{code:'unavailable'};
   let v=null;
@@ -11326,9 +11328,9 @@ function chatRoom(sc,lv){
   const turn=async()=>{chatSt.view.push({wait:true});draw();$('#send').disabled=true;
     try{const v=await askClaude(chatSt.msgs);chatSt.view.pop();
       const last=chatSt.view[chatSt.view.length-1];if(last&&last.me&&v.correction&&v.correction.better)last.cor=v.correction;
-      chatSt.view.push({text:v.reply||'',ar:v.reply_ar||''});chatSt.msgs.push({role:'assistant',content:JSON.stringify(v)});sugg(v.suggestions);draw();
+      chatSt.view.push({text:v.reply||'',ar:v.reply_ar||''});if(IS_OWNER&&window.__aiLast&&window.__aiLast.ok)toast('🤖 '+window.__aiLast.model+' · '+(window.__aiLast.ms/1000).toFixed(1)+' ثانية');chatSt.msgs.push({role:'assistant',content:JSON.stringify(v)});sugg(v.suggestions);draw();
       if(S.chatAuto!==false&&v.reply)say(v.reply,false,{g:chatSt.g,pitch:1,cv:chatSt.g==='m'?'rounded':'airy',sev:0});addXP(2)}
-    catch(e){chatSt.view.pop();chatSt.view.push({err:e&&e.code==='rate_limited'?'كثير رسائل بوقت قصير. استنى دقيقة وجرّب.':e&&e.code==='not_granted'?'ما في إذن للذكاء الاصطناعي بهالصفحة.':e&&e.code==='setup'?(IS_OWNER?'الذكاء الاصطناعي لسا مش مفعّل بـ Firebase (AI Logic + App Check). ':'المحادثة مش متاحة هلأ، جرّب بعدين.'):e&&e.code==='unavailable'?'المحادثة مش متاحة بهالنسخة.':'صار خطأ بالاتصال. جرّب كمان مرة.'});draw()}
+    catch(e){if(IS_OWNER&&window.__aiLog)setTimeout(()=>toast('🔧 '+window.__aiLog.slice(-3).join(' | ')),1500);chatSt.view.pop();chatSt.view.push({err:e&&e.code==='rate_limited'?'كثير رسائل بوقت قصير. استنى دقيقة وجرّب.':e&&e.code==='not_granted'?'ما في إذن للذكاء الاصطناعي بهالصفحة.':e&&e.code==='setup'?(IS_OWNER?'الذكاء الاصطناعي لسا مش مفعّل بـ Firebase (AI Logic + App Check). ':'المحادثة مش متاحة هلأ، جرّب بعدين.'):e&&e.code==='unavailable'?'المحادثة مش متاحة بهالنسخة.':'صار خطأ بالاتصال. جرّب كمان مرة.'});draw()}
     $('#send').disabled=false};
   const send=()=>{const t=$('#cin').value.trim();if(!t)return;$('#cin').value='';chatSt.view.push({me:true,text:t});chatSt.msgs.push({role:'user',content:t});sugg([]);turn()};
   $('#send').onclick=send;$('#cin').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
