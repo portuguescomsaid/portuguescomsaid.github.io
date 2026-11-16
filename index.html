@@ -549,6 +549,16 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .ring.sm b{width:44px;height:44px;font-size:16px}
 
 .stars{color:#f5b301;letter-spacing:1px;margin-inline-end:4px;font-size:12px}.stars i{font-style:normal;color:var(--line,#ccc)}
+
+.conv{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.bub{display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:14px;max-width:88%;font-size:15px;line-height:1.5}
+.bub b{font-size:12px;opacity:.75}.bub small{font-size:11px}
+.b-usr{align-self:flex-start;background:var(--card2,#f1f1ee);border:1px solid var(--line,#ddd)}
+.b-adm{align-self:flex-end;background:#dcefe4;color:#14402a}
+[data-theme=dark] .b-adm{background:#1f4a35;color:#e6f5ec}
+.mrep-box summary{cursor:pointer;font-weight:600;color:var(--brand,#1f5c3f);padding:6px 0}
+.mrep-box .row{margin-top:6px}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .b-adm{background:#1f4a35;color:#e6f5ec}}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -11160,6 +11170,11 @@ const fmtT=ts=>{try{const d=new Date(ts);return d.getDate()+'/'+(d.getMonth()+1)
 async function inboxGet(uid){try{const v=await readDoc('inbox/'+uid);return v&&Array.isArray(v.items)?v:{items:[]}}catch(e){return {items:[]}}}
 async function inboxSet(uid,v){await DB.doc('inbox/'+uid).set(v)}
 const MSG={mine:null};
+/* المحادثة: أول رسالة + سلسلة ردود (من المستخدم u أو الإدارة a) */
+const mThread=m=>{if(!m.thread)m.thread=m.reply?[{f:'a',x:m.reply,t:m.rt||m.t,by:m.by||''}]:[];return m.thread};
+const mConv=m=>[{f:'u',x:m.text,t:m.t}].concat(m.thread||(m.reply?[{f:'a',x:m.reply,t:m.rt||m.t}]:[]));
+const mLast=m=>{const c=mConv(m);return c[c.length-1].t||m.t};
+const convHTML=(m,me)=>mConv(m).map(x=>`<div class="bub ${x.f==='a'?'b-adm':'b-usr'}"><b>${x.f==='a'?(me==='a'?'ردك':'الإدارة'):(me==='u'?'إنت':'المستخدم')}</b><span>${esc(x.x)}</span><small class="muted">${fmtT(x.t)}</small></div>`).join('');
 function msgBadge(n){const b=$('#msgbadge');if(b){b.textContent=n||'';b.hidden=!n}}
 async function msgCheck(){
   if(!DB||!MY_ID)return;
@@ -11183,14 +11198,18 @@ function msgSettingsHTML(){
    <div class="row"><button class="btn primary" id="msend">أرسل الرسالة</button></div>
    <div id="mlist"><p class="muted" style="margin:0">جاري التحميل…</p></div></section>`;
 }
-function msgItemUser(m){const st=MSTAT[m.status]||MSTAT.new;
-  return `<div class="msg-it${m.status!=='new'&&!m.seenU?' fresh':''}"><div class="msg-top"><span>${MTYPES[m.type]||''}</span><span class="m-st ${st[1]}">${st[0]}</span></div>
-   <p class="msg-tx">${esc(m.text)}</p><small class="muted">${fmtT(m.t)}</small>
-   ${m.reply?`<div class="msg-rep"><b>رد الإدارة:</b> ${esc(m.reply)}<br><small class="muted">${fmtT(m.rt)}</small></div>`:''}</div>`}
+function msgItemUser(m){const st=m.status==='new'?['أُرسلت ✓','m-new']:(MSTAT[m.status]||MSTAT.new);
+  return `<div class="msg-it${m.status!=='new'&&!m.seenU?' fresh':''}" data-m="${esc(m.id)}"><div class="msg-top"><span>${MTYPES[m.type]||''}</span><span class="m-st ${st[1]}">${st[0]}</span></div>
+   <div class="conv">${convHTML(m,'u')}</div>
+   <details class="mrep-box"${m.status==='replied'?' open':''}><summary>↩️ ردّ / كمّل المراسلة</summary>
+   <textarea class="sel urep" rows="2" style="width:100%" placeholder="اكتب ردك…"></textarea><div class="row"><button class="btn primary ursend">أرسل</button></div></details></div>`}
 async function bindMsgSettings(){
   const sec=$('#msgsec');if(!sec)return;let type='note';
   $$('#mtype .pill').forEach(b=>b.onclick=()=>{type=b.dataset.mt;$$('#mtype .pill').forEach(x=>x.classList.toggle('on',x===b))});
-  const draw=v=>{const it=(v.items||[]).slice().reverse();$('#mlist').innerHTML=it.length?`<h3 style="margin:8px 0 6px;font-size:16px">رسائلك (${it.length})</h3>`+it.map(msgItemUser).join(''):'<p class="muted" style="margin:0">لسا ما بعتت رسائل.</p>'};
+  const draw=v=>{const it=(v.items||[]).slice().sort((a,b)=>mLast(b)-mLast(a));$('#mlist').innerHTML=it.length?`<h3 style="margin:8px 0 6px;font-size:16px">رسائلك (${it.length})</h3>`+it.map(msgItemUser).join(''):'<p class="muted" style="margin:0">لسا ما بعتت رسائل.</p>';bindRep()};
+  const bindRep=()=>$$('#mlist .msg-it').forEach(card=>{const b=$('.ursend',card);if(!b)return;b.onclick=async()=>{const t=$('.urep',card).value.trim();if(t.length<2){toast('اكتب ردك أول');return}
+    b.disabled=true;try{v=await inboxGet(MY_ID);const m=v.items.find(x=>x.id===card.dataset.m);if(!m)throw 0;mThread(m).push({f:'u',x:t.slice(0,2000),t:Date.now()});m.status='new';m.seenU=1;v.t=Date.now();
+      await inboxSet(MY_ID,v);draw(v);toast('انبعت ردك ✓')}catch(e){toast('ما قدرت أبعت. تأكد من النت وجرّب كمان مرة.');b.disabled=false}}});
   if(!DB||!MY_ID){$('#mlist').innerHTML='<p class="muted" style="margin:0">الرسائل بتشتغل لما تكون مسجّل دخول.</p>';$('#msend').disabled=true;return}
   let v=await inboxGet(MY_ID);draw(v);
   if(v.items.some(m=>m.status!=='new'&&!m.seenU)){v.items.forEach(m=>{if(m.status!=='new')m.seenU=1});try{await inboxSet(MY_ID,v)}catch(e){}msgBadge(0)}
@@ -11210,18 +11229,17 @@ async function vInbox(){
    <div id="inb"><p class="muted">جاري التحميل…</p></div></div>`;
   let all;try{all=await inboxAll()}catch(e){$('#inb').innerHTML='<p class="tip">ما قدرت أجيب الرسائل. إذا هاي أول مرة، تأكد إنك ضفت قاعدة <b>inbox</b> بقواعد Firestore.</p>';return}
   let f='open';
-  const flat=()=>all.flatMap(r=>r.items.map(m=>({r,m}))).filter(({m})=>f==='all'?true:f==='new'?m.status==='new':m.status!=='done').sort((a,b)=>b.m.t-a.m.t);
+  const flat=()=>all.flatMap(r=>r.items.map(m=>({r,m}))).filter(({m})=>f==='all'?true:f==='new'?m.status==='new':m.status!=='done').sort((a,b)=>mLast(b.m)-mLast(a.m));
   const draw=()=>{const L=flat();$('#inb').innerHTML=L.length?L.map(({r,m})=>{const st=MSTAT[m.status]||MSTAT.new;return `<div class="card msg-adm" data-u="${esc(r.id)}" data-m="${esc(m.id)}">
      <div class="msg-top"><b>${esc(r.name||'مستخدم')}</b><span class="m-st ${st[1]}">${st[0]}</span></div>
-     <div class="muted" style="font-size:13px">${MTYPES[m.type]||''} · ${fmtT(m.t)} · <a href="#admin-${esc(r.id)}">ملفه</a></div>
-     <p class="msg-tx">${esc(m.text)}</p>
-     ${m.reply?`<div class="msg-rep"><b>ردك:</b> ${esc(m.reply)}</div>`:''}
+     <div class="muted" style="font-size:13px">${MTYPES[m.type]||''} · ${fmtT(mLast(m))} · <a href="#admin-${esc(r.id)}">ملفه</a></div>
+     <div class="conv">${convHTML(m,'a')}</div>
      <div class="row" style="flex-wrap:wrap;gap:6px"><button class="btn" data-a="received">✓ تم الاستلام</button><button class="btn" data-a="done">✓✓ تم التعديل</button></div>
      <textarea class="sel mrep" rows="2" style="width:100%" placeholder="اكتب رد…"></textarea><div class="row"><button class="btn primary" data-a="reply">أرسل الرد</button></div></div>`}).join(''):'<p class="muted">ما في رسائل هون.</p>';
     $$('.msg-adm').forEach(card=>$$('[data-a]',card).forEach(b=>b.onclick=async()=>{const uid=card.dataset.u,mid=card.dataset.m,a=b.dataset.a;
       const txt=$('.mrep',card).value.trim();if(a==='reply'&&!txt){toast('اكتب الرد أول');return}
       b.disabled=true;try{const v=await inboxGet(uid);const m=v.items.find(x=>x.id===mid);if(!m)throw 0;
-        if(a==='reply'){m.reply=txt;m.rt=Date.now();if(m.status==='new'||m.status==='received')m.status='replied'}else m.status=a;
+        if(a==='reply'){mThread(m).push({f:'a',x:txt.slice(0,2000),t:Date.now(),by:MY_NAME||''});m.reply=txt;m.rt=Date.now();m.status='replied'}else m.status=a;
         m.seenU=0;m.by=MY_NAME||'';await inboxSet(uid,v);const r=all.find(x=>x.id===uid);if(r)r.items=v.items;toast('تم ✓ وبيظهر عند المستخدم');draw();msgCheck()}
       catch(e){toast('ما قدرت أحفظ. جرّب كمان مرة.');b.disabled=false}}))};
   $$('#mf .pill').forEach(b=>b.onclick=()=>{f=b.dataset.f;$$('#mf .pill').forEach(x=>x.classList.toggle('on',x===b));draw()});
