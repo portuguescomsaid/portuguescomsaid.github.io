@@ -436,6 +436,13 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 .bb-home{flex:1;background:var(--green);color:var(--on-green);border:2px solid var(--green)}
 @media (min-width:820px){.backbar{top:106px}.bb{flex:0 0 auto;min-width:170px}}
 .backbar{margin:-20px 0 16px}
+.tin-hint{margin:6px 0 2px;font-size:14px;color:var(--muted)}
+.ltiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;direction:ltr;margin:8px 0}
+.ltile{min-width:44px;height:48px;padding:0 12px;border-radius:12px;border:2px solid var(--green);background:var(--card);color:var(--ink);font:inherit;font-family:var(--f-pt);font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 2px 0 var(--green)}
+.ltile:active{transform:translateY(2px);box-shadow:none}
+.ltile:disabled{opacity:.25;box-shadow:none;cursor:default}
+.ltile.sp{min-width:64px;color:var(--muted)}
+.ltile-ctl{justify-content:center;gap:8px}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -7772,6 +7779,14 @@ function quizExam(k){
   return R.concat(L,G,V,Wr);
 }
 
+/* ===== letter / word tiles for typing questions ===== */
+const tileWords=ans=>String(ans).trim().split(/\s+/).length>=3;
+function makeTiles(ans){
+  ans=String(ans).trim();
+  if(tileWords(ans)){const ws=ans.split(/\s+/);const pool=shuffle(allWords().map(w=>w.pt).filter(p=>!p.includes(' ')&&!ws.includes(p))).slice(0,2);return shuffle(ws.concat(pool))}
+  const ch=ans.split('');const L='aeiosrnmtlcdpuvbg';const extra=[];while(extra.length<3){const c=L[Math.floor(Math.random()*L.length)];extra.push(c)}
+  return shuffle(ch.concat(extra));
+}
 /* ===== answer checking ===== */
 const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
@@ -7799,7 +7814,7 @@ function runQuiz(el,qs,o){
     if(q.t==='fill')h+=`<div class="fill-s" lang="pt-BR" dir="ltr">${esc(q.sent).replace('___','<span class="blank">______</span>')}</div>${q.hint?`<p class="qhint">${bidi(q.hint)}</p>`:''}<div class="opts">${q.o.map(optHtml).join('')}</div>`;
     if(q.t==='mcq')h+=`<div class="opts">${q.o.map(optHtml).join('')}</div>`;
     if(q.t==='tf')h+=`<div class="tf-st">${bidi(q.stmt)}</div><div class="tf-btns"><button class="opt yes" data-v="1">صح ✓</button><button class="opt no" data-v="0">خطأ ✗</button></div>`;
-    if(q.t==='type')h+=`<input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" lang="pt-BR" dir="ltr" placeholder="اكتب هون…" aria-label="جوابك"><div class="accents">${'áàâãéêíóôõúç'.split('').map(c=>`<button type="button" data-ac="${c}">${c}</button>`).join('')}</div><button class="btn primary" id="chk">تحقّق</button>`;
+    if(q.t==='type')h+=`<input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" lang="pt-BR" dir="ltr" placeholder="اكتب هون…" aria-label="جوابك"><p class="tin-hint">${tileWords(q.ans)?'اضغط على الكلمات بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.':'اضغط على الحروف بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.'}</p><div class="tiles" id="tiles">${makeTiles(q.ans).map((t,i)=>`<button type="button" class="ltile${t===' '?' sp':''}" data-ti="${i}" data-tv="${esc(t)}">${t===' '?'␣':esc(t)}</button>`).join('')}</div><div class="row tile-ctl"><button type="button" class="btn ghost" id="tundo">⌫ تراجع</button><button type="button" class="btn ghost" id="tclr">مسح الكل</button></div><button class="btn primary" id="chk">تحقّق</button>`;
     if(q.t==='scr')h+=`<div class="ansline" id="al"></div><div class="tiles" id="tl"></div><div class="row"><button class="btn primary" id="chk">تحقّق</button><button class="btn ghost" id="clr">امسح</button></div>`;
     h+=`<div class="fb" id="fb" aria-live="polite"></div><div class="row"><button class="btn primary" id="nx" hidden>${i<qs.length-1||o.raw?'التالي ←':'شوف النتيجة'}</button></div></div>`;
     el.innerHTML=h;
@@ -7817,8 +7832,13 @@ function runQuiz(el,qs,o){
     };
     if(q.t==='mcq'||q.t==='fill')$$('.opt',el).forEach(b=>b.onclick=()=>{const k=+b.dataset.k;$$('.opt',el).forEach(x=>x.disabled=true);$$('.opt',el)[q.a].classList.add('right');if(k!==q.a)b.classList.add('wrong');finishQ(k===q.a?1:0,q.o[k],q.o[q.a])});
     if(q.t==='tf')$$('.opt',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v==='1';$$('.opt',el).forEach(x=>x.disabled=true);const ok=v===q.truth;b.classList.add(ok?'right':'wrong');if(!ok)$$('.opt',el).find(x=>(x.dataset.v==='1')===q.truth).classList.add('right');finishQ(ok?1:0,v?'صح':'خطأ',q.truth?'صح':'خطأ')});
-    if(q.t==='type'){const tin=$('#tin',el);$$('[data-ac]',el).forEach(b=>b.onclick=()=>{const s=tin.selectionStart??tin.value.length,e2=tin.selectionEnd??s;tin.value=tin.value.slice(0,s)+b.dataset.ac+tin.value.slice(e2);tin.focus();try{tin.setSelectionRange(s+1,s+1)}catch(e){}});
-      const chk=()=>{if(!tin.value.trim()){toast('اكتب جوابك أول');return}tin.disabled=true;$('#chk',el).disabled=true;$$('[data-ac]',el).forEach(b=>b.disabled=true);finishQ(grade(tin.value,q.ans),tin.value,q.ans)};
+    if(q.t==='type'){const tin=$('#tin',el);const used=[];const wm=tileWords(q.ans);
+      $$('.ltile',el).forEach(b=>b.onclick=()=>{if(b.disabled)return;const v=b.dataset.tv;tin.value=wm?(tin.value.trim()?tin.value.trim()+' ':'')+v:tin.value+v;b.disabled=true;used.push(b)});
+      const und=$('#tundo',el),clr=$('#tclr',el);
+      if(und)und.onclick=()=>{const b=used.pop();if(!b){tin.value=wm?tin.value.trim().split(/\s+/).slice(0,-1).join(' '):tin.value.slice(0,-1);return}b.disabled=false;tin.value=wm?tin.value.trim().split(/\s+/).slice(0,-1).join(' '):tin.value.slice(0,-b.dataset.tv.length)};
+      if(clr)clr.onclick=()=>{tin.value='';used.splice(0).forEach(b=>b.disabled=false)};
+$$('[data-ac]',el).forEach(b=>b.onclick=()=>{const s=tin.selectionStart??tin.value.length,e2=tin.selectionEnd??s;tin.value=tin.value.slice(0,s)+b.dataset.ac+tin.value.slice(e2);tin.focus();try{tin.setSelectionRange(s+1,s+1)}catch(e){}});
+      const chk=()=>{if(!tin.value.trim()){toast('اكتب جوابك أول');return}tin.disabled=true;$('#chk',el).disabled=true;$$('[data-ac],.ltile,#tundo,#tclr',el).forEach(b=>b.disabled=true);finishQ(grade(tin.value,q.ans),tin.value,q.ans)};
       $('#chk',el).onclick=chk;tin.onkeydown=e=>{if(e.key==='Enter'&&!tin.disabled)chk()}}
     if(q.t==='scr'){const toks=q.ans.split(' ');let order=shuffle(toks.map((t,k)=>k));if(toks.length>1&&order.every((v,k)=>v===k))order=order.slice(1).concat(order[0]);const chosen=[];
       const draw=()=>{$('#al',el).innerHTML=chosen.map((k,p)=>`<button class="tile" data-p="${p}" lang="pt-BR">${esc(toks[k])}</button>`).join('');$('#tl',el).innerHTML=order.map(k=>`<button class="tile${chosen.includes(k)?' used':''}" data-k="${k}" lang="pt-BR">${esc(toks[k])}</button>`).join('');
