@@ -620,8 +620,8 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
   function aiInit(){if(aiP)return aiP;aiP=(async()=>{const B='https://www.gstatic.com/firebasejs/13.3.0/';
     const [appM,aiM,acM]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-ai.js'),import(B+'firebase-app-check.js')]);
     const app=appM.initializeApp(FB_CONFIG,'ai');
-    if(AI_SITEKEY.length>20&&!AI_SITEKEY.startsWith('/*'))acM.initializeAppCheck(app,{provider:new acM.ReCaptchaEnterpriseProvider(AI_SITEKEY),isTokenAutoRefreshEnabled:true});
-    return {aiM,ai:aiM.getAI(app,{backend:new aiM.GoogleAIBackend()})}})();aiP.catch(()=>{aiP=null});return aiP}
+    if(AI_SITEKEY.length>20&&!AI_SITEKEY.startsWith('/*'))window.__ac=acM.initializeAppCheck(app,{provider:new acM.ReCaptchaEnterpriseProvider(AI_SITEKEY),isTokenAutoRefreshEnabled:true});
+    return {aiM,acM,ac:window.__ac,ai:aiM.getAI(app,{backend:new aiM.GoogleAIBackend()})}})();aiP.catch(()=>{aiP=null});return aiP}
   /* نماذج سريعة أولًا (lite)، وبعدين الأقوى. الحد المجاني للـ lite أعلى والرد أسرع */
   const MODELS=['gemini-3.1-flash-lite','gemini-flash-lite-latest','gemini-2.5-flash-lite','gemini-3.5-flash','gemini-flash-latest','gemini-3-flash','gemini-2.5-flash'];
   const mapErr=e=>{const m=String((e&&(e.message||e.code))||e);if(/429|quota|exhausted|rate/i.test(m))return {code:'rate_limited',message:m};if(/app.?check|403|permission|PERMISSION_DENIED|API has not been used|disabled|api-not-enabled|unauthenticated|401/i.test(m))return {code:'setup',message:m};return {code:'error',message:m}};
@@ -646,7 +646,20 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
   sample.json=async(msgs)=>{const t=await gen({contents:toContents(msgs)},true);const a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(t.slice(a,b+1))};
   sample.transcribe=async(blob)=>{const data=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(blob)});
     const t=await gen([{inlineData:{mimeType:(blob.type||'audio/mp4').split(';')[0],data}},{text:'Transcribe this short audio exactly as spoken. The speaker is an Arabic-speaking learner speaking Brazilian Portuguese (sometimes mixed with Arabic). Write Portuguese words in Portuguese spelling and Arabic words in Arabic script. Return ONLY the transcription, nothing else. If nothing is audible, return an empty string.'}],false);return t.trim().replace(/^["“]|["”]$/g,'')};
-  sample.ready=()=>aiInit().then(()=>true,()=>false);
+  sample.ready=()=>aiInit().then(async x=>{try{if(x.ac&&x.acM)await x.acM.getToken(x.ac,false)}catch(e){}return true},()=>false);
+  sample.stream=async(msgs,onText)=>{const {aiM,ai}=await aiInit();const req={contents:toContents(msgs)};let list=MODELS.filter(m=>!(BAD[m]&&Date.now()-BAD[m]<60000));try{const sv=localStorage.getItem('aimodel2');if(sv&&list.includes(sv))list=[sv,...list.filter(x=>x!==sv)]}catch(e){}
+    let last;for(const m of list){for(const useThink of [true,false]){const tc=useThink?thinkCfg(m):null;if(useThink&&!tc)continue;
+      try{const model=aiM.getGenerativeModel(ai,{model:m,generationConfig:Object.assign({temperature:0.5,maxOutputTokens:300},tc?{thinkingConfig:tc}:{})});
+        const t0=Date.now();let first=0,full='';
+        const res=await Promise.race([model.generateContentStream(req),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout 429 slow')),12000))]);
+        for await(const ch of res.stream){const t=ch.text?ch.text():'';if(t){if(!first)first=Date.now()-t0;full+=t;try{onText&&onText(full)}catch(e){}}}
+        window.__aiLast={model:m,ms:Date.now()-t0,first,ok:true};try{localStorage.setItem('aimodel2',m)}catch(e){}return full}
+      catch(e){last=e;const t=String(e&&e.message||e);(window.__aiLog=window.__aiLog||[]).push(m+': '+t.slice(0,120));
+        if(useThink&&/think/i.test(t))continue;
+        if(/not.?found|404|not supported|unsupported|is not available|invalid model|no longer available|deprecat/i.test(t)){BAD[m]=Date.now()+864e5;break}
+        if(/429|quota|exhausted|rate|timeout/i.test(t)){BAD[m]=Date.now();break}
+        throw mapErr(e)}}}
+    throw mapErr(last)};
   let ready=false;
   async function afterLogin(u){
     if(ready)return;ready=true;
@@ -11274,36 +11287,70 @@ let spU=0;
 
 /* ===== محادثة مع Claude ===== */
 const SCEN=[
- {k:'mercado',ar:'بالسوبرماركت',ic:'🛒',role:'You are a cashier at a supermarket in Brazil. The learner is a customer.'},
- {k:'padaria',ar:'بالمخبز',ic:'🥖',role:'You work at a bakery (padaria) in Brazil. The learner wants to buy bread and coffee.'},
- {k:'ubs',ar:'بالمركز الصحي',ic:'🩺',role:'You are a receptionist and then a doctor at a public health clinic (UBS) in Brazil. The learner has a sick child.'},
- {k:'aluguel',ar:'استئجار شقة',ic:'🔑',role:'You are a landlord showing an apartment in Brazil. The learner wants to rent it and asks about price, condomínio and guarantees.'},
- {k:'entrevista',ar:'مقابلة عمل',ic:'💼',role:'You are a recruiter at a marketing agency interviewing the learner for a photographer/designer job.'},
- {k:'escola',ar:'بمدرسة الأولاد',ic:'🏫',role:'You are a teacher at a public school. The learner is a parent asking about their child.'},
- {k:'uber',ar:'بالأوبر',ic:'🚕',role:'You are a friendly Uber driver in Brazil making small talk with the learner (the passenger).'},
- {k:'vizinho',ar:'مع الجار',ic:'🏘️',role:'You are a friendly neighbor meeting the learner in the building hallway.'},
- {k:'cliente',ar:'مع عميل تصوير',ic:'📸',role:'You are a potential client who wants to hire the learner for event photography and you negotiate price and deadline.'},
- {k:'livre',ar:'حكي حر',ic:'💬',role:'You are a friendly Brazilian friend from São Paulo chatting about everyday life.'}
+ {k:'padaria',ar:'بالمخبز',ic:'🥖',role:'You are a friendly attendant at a bakery (padaria) in Brazil. The learner is a customer.',
+  steps:['greet and ask how the learner is','ask what they would like today','ask how many pães franceses or which pastry','offer something to drink (café, suco, pingado)','ask if they want it to eat here or take away (para levar)','say the total price in reais','ask how they will pay (Pix, cartão de débito/crédito, dinheiro)','ask if they want a bag (sacolinha)','thank them and say goodbye (tenha um bom dia)'],
+  open:{pt:'Bom dia! Tudo bem com você?',ar:'صباح الخير! كيفك؟',sug:['Bom dia! Tudo bem, e você?','Oi! Tudo ótimo, obrigado.']}},
+ {k:'mercado',ar:'بالسوبرماركت',ic:'🛒',role:'You are a cashier at a supermarket in Brazil. The learner is a customer at your checkout.',
+  steps:['greet and ask how the learner is','ask if they found everything they needed','ask if they want CPF na nota','ask if they have the store loyalty card or app (cadastro) for discounts','ask if they want bags (sacolas) and say each costs a few cents','say the total','ask how they will pay (Pix, débito, crédito, dinheiro); if crédito ask à vista ou parcelado','ask if they want the receipt (nota/comprovante)','thank them and say goodbye'],
+  open:{pt:'Oi, boa tarde! Tudo bem?',ar:'أهلًا، مساء الخير! كيفك؟',sug:['Boa tarde! Tudo bem, e você?','Oi! Tudo bem, obrigado.']}},
+ {k:'restaurante',ar:'بالمطعم',ic:'🍽️',role:'You are a waiter (garçom) at a restaurant in Brazil. The learner is a customer.',
+  steps:['greet and ask how many people (mesa para quantos?)','offer the menu (cardápio) and ask what they want to drink','ask what they want to eat; explain the prato do dia briefly if asked','ask how they want the meat cooked or about side dishes (acompanhamento)','check if everything is good during the meal','offer dessert or coffee','bring the bill (a conta) and mention the 10% service','ask how they will pay','thank them and say goodbye'],
+  open:{pt:'Boa noite! Mesa para quantas pessoas?',ar:'مساء الخير! طاولة لكم شخص؟',sug:['Boa noite! Para duas pessoas, por favor.','Para uma pessoa só.']}},
+ {k:'farmacia',ar:'بالصيدلية',ic:'💊',role:'You are a pharmacist (farmacêutico) at a pharmacy (drogaria) in Brazil.',
+  steps:['greet and ask how you can help (posso ajudar?)','ask what symptoms the learner has','ask since when and if they have fever','ask if they have a prescription (receita) or allergies','recommend a simple over-the-counter option and explain how to take it (vezes por dia)','ask if they want anything else','ask for CPF for the discount','say the price and ask how they will pay','wish them melhoras and say goodbye'],
+  open:{pt:'Olá, boa tarde! Posso ajudar?',ar:'أهلًا، مساء الخير! بقدر أساعدك؟',sug:['Boa tarde! Estou com dor de cabeça.','Sim, preciso de um remédio para gripe.']}},
+ {k:'ubs',ar:'بالمركز الصحي',ic:'🩺',role:'You are a receptionist and then a doctor at a public health clinic (UBS) in Brazil. The learner brings a sick child.',
+  steps:['greet and ask how you can help','ask for the cartão do SUS and documents','ask the child name and age','ask what the child is feeling','ask since when and about fever and medicine already given','explain the doctor will call them and to wait','as the doctor, ask a couple of short questions about symptoms','give simple advice and a prescription (receita)','say when to come back and goodbye'],
+  open:{pt:'Bom dia! Em que posso ajudar?',ar:'صباح الخير! كيف بقدر أساعدك؟',sug:['Bom dia! Meu filho está doente.','Preciso de uma consulta, por favor.']}},
+ {k:'aluguel',ar:'استئجار شقة',ic:'🔑',role:'You are a landlord or real estate agent showing an apartment in Brazil.',
+  steps:['greet and ask the learner name','ask what kind of apartment they are looking for (quartos, bairro)','describe the apartment briefly','say the rent (aluguel) and the condomínio and IPTU','ask how many people will live there and if they have pets','ask about the guarantee (fiador, caução or seguro fiança)','ask about documents (RG/RNE, CPF, comprovante de renda)','offer a visit (visita) and ask the best day and time','confirm and say goodbye'],
+  open:{pt:'Oi, tudo bem? Você ligou sobre o apartamento, né? Qual é o seu nome?',ar:'أهلًا، كيفك؟ إنت اتصلت بخصوص الشقة، صح؟ شو اسمك؟',sug:['Oi! Sim. Meu nome é Ahmed.','Tudo bem! Sim, sou eu.']}},
+ {k:'entrevista',ar:'مقابلة عمل',ic:'💼',role:'You are a friendly recruiter interviewing the learner for a job at a company in Brazil.',
+  steps:['greet and ask the learner to introduce themselves','ask about their professional experience','ask about their strengths','ask why they want to work at this company','ask about their availability and schedule','ask about salary expectations','ask if they have any questions','explain the next steps (próximas etapas)','thank them and say goodbye'],
+  open:{pt:'Bom dia! Seja bem-vindo. Pode se apresentar, por favor?',ar:'صباح الخير! أهلًا وسهلًا. ممكن تعرّفنا عن حالك؟',sug:['Bom dia! Meu nome é Karim e sou engenheiro.','Claro! Eu sou de Síria e moro no Brasil há dois anos.']}},
+ {k:'escola',ar:'بمدرسة الأولاد',ic:'🏫',role:'You are a teacher at a public school in Brazil. The learner is a parent.',
+  steps:['greet and ask which student they are the parent of','say how the child is doing in class','mention one thing to improve (homework or Portuguese)','ask how the child feels at home about school','explain the class schedule and a coming event (reunião, passeio)','ask about documents or the school uniform (uniforme) if needed','give the parent a simple tip to help at home','ask if they have questions','thank them and say goodbye'],
+  open:{pt:'Olá! Boa tarde. Você é responsável de qual aluno?',ar:'أهلًا! مساء الخير. إنت ولي أمر أي طالب؟',sug:['Boa tarde! Sou a mãe da Lina.','Olá! Sou o pai do Omar, do terceiro ano.']}},
+ {k:'uber',ar:'بالأوبر',ic:'🚕',role:'You are a friendly Uber driver in Brazil. The learner is the passenger.',
+  steps:['greet and confirm the passenger name','confirm the destination','ask if the air conditioning or music is ok','make small talk: ask where they are from','ask how long they have lived in Brazil and if they like it','comment about traffic or the weather','recommend a place or food in the city','tell them you are arriving','say goodbye and ask for a good rating (5 estrelas)'],
+  open:{pt:'Boa tarde! É o Karim?',ar:'مساء الخير! إنت كريم؟',sug:['Sou eu! Boa tarde.','Não, meu nome é Omar.']}},
+ {k:'vizinho',ar:'مع الجار',ic:'🏘️',role:'You are a friendly neighbor meeting the learner in the building hallway.',
+  steps:['greet and introduce yourself','ask if they are new in the building','ask where they are from','ask about their family','tell them about the building rules (lixo, barulho, portaria)','recommend a good bakery or market nearby','offer help if they need anything','invite them for a coffee one day','say goodbye'],
+  open:{pt:'Oi! Tudo bem? Eu sou a Ana, do apartamento 302.',ar:'أهلًا! كيفك؟ أنا آنا، من شقة 302.',sug:['Oi, Ana! Prazer. Eu sou o Yusuf.','Tudo bem! Eu moro no 305.']}},
+ {k:'banco',ar:'بالبنك',ic:'🏦',role:'You are a bank employee in Brazil helping the learner open an account.',
+  steps:['greet and ask how you can help','ask which type of account (conta corrente or poupança)','ask for documents (RG/RNE, CPF, comprovante de residência)','ask about their job and income','explain the card (cartão de débito) and the app','explain how to register a Pix key','ask for their phone and email','say when the card will arrive','thank them and say goodbye'],
+  open:{pt:'Bom dia! Seja bem-vindo. Como posso ajudar?',ar:'صباح الخير! أهلًا وسهلًا. كيف بقدر أساعدك؟',sug:['Bom dia! Quero abrir uma conta.','Preciso de informação sobre o Pix.']}},
+ {k:'livre',ar:'حكي حر',ic:'💬',role:'You are a friendly Brazilian friend from São Paulo chatting about everyday life.',
+  steps:['greet and ask how they are','ask how their week is going','ask about work or studies','ask about their family','ask what they like to do on weekends','share a short opinion and ask theirs','suggest doing something together','set a day and time','say goodbye'],
+  open:{pt:'E aí, tudo bem? Quanto tempo!',ar:'شو الأخبار، كيفك؟ من زمان!',sug:['Tudo bem! E você?','Oi! Tudo ótimo. Saudade!']}},
 ];
 let chatSt=null;
-function chatSystem(sc,lv){return `You are a Brazilian Portuguese conversation partner for an Arabic-speaking learner who lives in Brazil, Brazil.
+function chatSystem(sc,lv){return `You are a Brazilian Portuguese conversation partner for an Arabic-speaking learner who lives in Brazil.
 Role-play: ${sc.role}
-Learner level: ${lv} (CEFR). Adapt your Portuguese: A1 = very short simple present-tense sentences (max 10 words); A2 = short everyday sentences; B1 = natural conversation; B2/C1 = rich natural Brazilian Portuguese with idioms.
-Rules: write "reply" ONLY in natural Brazilian Portuguese (never European Portuguese), 1 to 3 short sentences, and end by inviting the learner to answer. Stay in the role.
-If the learner's last message has Portuguese mistakes (grammar, vocabulary, spelling, accent marks, or unnatural phrasing), pick the ONE most important and correct it. If the learner wrote in Arabic or English, show how to say it in Portuguese as the correction. If there is no mistake, correction is null.
-Respond with ONLY a JSON object, no other text:
-{"reply":"...","reply_ar":"simple Arabic translation of reply","correction":null or {"you_said":"...","better":"...","why_ar":"one short explanation in simple Arabic"},"suggestions":["two short things the learner could say next, in Portuguese"]}`}
+Learner level: ${lv} (CEFR). A1 = very short simple sentences (max 10 words); A2 = short everyday sentences; B1 = natural conversation; B2/C1 = rich natural Brazilian Portuguese.
+The conversation follows this plan, ONE step per reply, in order (you will be told which step is next):
+${sc.steps.map((s,k)=>(k+1)+'. '+s).join('\n')}
+Rules: speak ONLY natural Brazilian Portuguese in PT, 1-2 short sentences, react naturally to what the learner said, then do the next step and end with a question. Never skip ahead or repeat a step.
+If the learner made a Portuguese mistake (grammar, vocabulary, spelling or accents), correct only the most important one. If they wrote in Arabic or English, show how to say it in Portuguese.
+Answer in EXACTLY this format, 4 lines, nothing else:
+PT: <your reply in Portuguese>
+AR: <simple Arabic translation of your reply>
+FIX: <what the learner wrote> || <correct Portuguese> || <one short reason in simple Arabic>   (or FIX: -)
+SUG: <a short possible answer in Portuguese> || <another short answer>`}
+function parseLines(t){const g=k=>{const m=t.match(new RegExp('^\\s*'+k+'\\s*:\\s*(.*)$','mi'));return m?m[1].trim():''};
+  const fix=g('FIX'),sug=g('SUG');const f=fix&&fix!=='-'?fix.split('||').map(x=>x.trim()):null;
+  return {reply:g('PT'),reply_ar:g('AR'),correction:f&&f[1]?{you_said:f[0],better:f[1],why_ar:f[2]||''}:null,suggestions:sug?sug.split('||').map(x=>x.trim()).filter(Boolean):[]}}
+async function waitClaude(){for(let k=0;k<50;k++){if(window.claude&&claude.use)return true;await new Promise(r=>setTimeout(r,100))}return false}
 async function askClaude(msgs){
-  if(msgs.length>9)msgs=[msgs[0],...msgs.slice(-8)];
   if(!(await waitClaude()))throw{code:'unavailable'};
   const sample=await claude.use('sample');if(!sample)throw{code:'unavailable'};
-  let v=null;
-  try{if(typeof sample.json==='function')v=await sample.json(msgs,{cache:false,modelTier:'default'})}catch(e){if(e&&(e.code==='not_granted'||e.code==='rate_limited'))throw e}
-  if(!v||typeof v!=='object'){const r=await sample(msgs,{cache:false,modelTier:'default'});const t=r.text||'';const a=t.indexOf('{'),b=t.lastIndexOf('}');v=JSON.parse(t.slice(a,b+1))}
-  return v;
+  if(msgs.length>11)msgs=[msgs[0],...msgs.slice(-10)];
+  const r=await sample(msgs);const t=(r&&r.text)||(typeof r==='string'?r:'');
+  const v=parseLines(t);if(!v.reply)v.reply=t.trim();return v;
 }
 const canRec=()=>IS_PWA&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder);
 function vChat(){
+  try{window.claude&&claude.use('sample').then(s=>s&&s.ready&&s.ready()).catch(()=>{})}catch(e){}
   const lv=(S.chatLv)||LEVELS[Math.max(0,(nextItem()&&nextItem().t==='ch'?lvOf(unitOf(nextItem().id)):1)-1)].tag;
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">تكلّم مع الذكاء الاصطناعي 🤖</h1><p class="muted" style="margin:4px 0 0">اختار موقف واحكي بصوتك 🎤 أو اكتب. الذكاء الاصطناعي بيلعب دور البرازيلي، وبيصحّحلك أهم غلطة بعد كل رد. إذا علقت احكي بالعربي، وبيعلمك كيف تقولها.</p></div>
    <div class="pager" id="lvp">${LEVELS.map(L=>`<button class="pill${lv===L.tag?' on':''}" data-l="${L.tag}">${L.tag}</button>`).join('')}</div>
@@ -11312,8 +11359,9 @@ function vChat(){
   $$('.gcard').forEach(b=>b.onclick=()=>chatRoom(SCEN.find(x=>x.k===b.dataset.s),lv));
 }
 function chatRoom(sc,lv){
-  chatSt={sc,lv,g:Math.random()<.5?'m':'f',msgs:[{role:'user',content:chatSystem(sc,lv)+'\n\nStart the conversation now with your first line, in character.'}],view:[]};
-  app.innerHTML=`<div class="stack chat"><div class="row" style="justify-content:space-between"><button class="back linkbtn" id="cb">→ المواقف</button><span class="chip">${sc.ic} ${esc(sc.ar)} · ${lv}</span></div>
+  chatSt={sc,lv,step:1,g:Math.random()<.5?'m':'f',msgs:[{role:'user',content:chatSystem(sc,lv)+'\n\nStart the conversation (step 1).'},{role:'assistant',content:'PT: '+sc.open.pt+'\nAR: '+sc.open.ar+'\nFIX: -\nSUG: '+sc.open.sug.join(' || ')}],view:[{text:sc.open.pt,ar:sc.open.ar}]};
+  claude.use('sample').then(s=>s&&s.ready&&s.ready()).catch(()=>{});
+  app.innerHTML=`<div class="stack chat"><div class="row" style="justify-content:space-between"><button class="back linkbtn" id="cb">→ المواقف</button><span class="chip">${sc.ic} ${esc(sc.ar)} · ${lv}</span><span class="chip" id="stp">١/${sc.steps.length}</span></div>
    <div id="log" class="log" aria-live="polite"></div>
    <div class="sugg" id="sugg"></div>
    <div class="chat-in"><textarea id="cin" rows="2" lang="pt-BR" dir="auto" placeholder="اكتب ردّك بالبرتغالي… (أو بالعربي إذا علقت)"></textarea>
@@ -11323,16 +11371,22 @@ function chatRoom(sc,lv){
   const draw=()=>{log.innerHTML=chatSt.view.map(m=>m.me?`<div class="bub me" dir="auto">${esc(m.text)}</div>${m.cor?`<div class="cor"><b>تصحيح:</b> <span class="pt" dir="ltr">${esc(m.cor.you_said||'')}</span> ← <span class="pt good" dir="ltr" data-say="${esc(m.cor.better||'')}">${esc(m.cor.better||'')}</span><br><span class="muted">${esc(m.cor.why_ar||'')}</span></div>`:''}`
     :m.wait?`<div class="bub ai wait">…</div>`:m.err?`<div class="tip">${esc(m.err)}</div>`
     :`<div class="bub ai"><div class="row" style="gap:8px;align-items:flex-start"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(m.text)}</span>${sayBtn(m.text)}</div><details><summary>الترجمة</summary>${esc(m.ar||'')}</details></div>`).join('');
-    log.scrollTop=log.scrollHeight;window.scrollTo({top:document.body.scrollHeight})};
+    log.scrollTop=log.scrollHeight;window.scrollTo({top:document.body.scrollHeight});const sp=$('#stp');if(sp)sp.textContent='الخطوة '+chatSt.step+'/'+chatSt.sc.steps.length};
   const sugg=list=>{$('#sugg').innerHTML=(list||[]).slice(0,2).map(t=>`<button class="pill" data-t="${esc(t)}">${esc(t)}</button>`).join('');$$('#sugg .pill').forEach(b=>b.onclick=()=>{$('#cin').value=b.dataset.t;$('#cin').focus()})};
   const turn=async()=>{chatSt.view.push({wait:true});draw();$('#send').disabled=true;
-    try{const v=await askClaude(chatSt.msgs);chatSt.view.pop();
+    try{let v;const s=await claude.use('sample');
+      if(s&&s.stream){const live={text:'',ar:'',live:true};let shown=false;
+        const msgs=chatSt.msgs.length>11?[chatSt.msgs[0],...chatSt.msgs.slice(-10)]:chatSt.msgs;
+        const full=await s.stream(msgs,t=>{const m=t.match(/^\s*PT\s*:\s*(.*)$/mi);if(m&&m[1]){live.text=m[1];if(!shown){chatSt.view.pop();chatSt.view.push(live);shown=true}draw()}});
+        v=parseLines(full);if(!v.reply)v.reply=full.replace(/^\s*(PT|AR|FIX|SUG)\s*:.*$/gmi,'').trim()||full.trim();chatSt.view.pop();chatSt.msgs.push({role:'assistant',content:full})}
+      else{v=await askClaude(chatSt.msgs);chatSt.view.pop();chatSt.msgs.push({role:'assistant',content:'PT: '+v.reply+'\nAR: '+(v.reply_ar||'')+'\nFIX: -\nSUG: '+(v.suggestions||[]).join(' || ')})}
       const last=chatSt.view[chatSt.view.length-1];if(last&&last.me&&v.correction&&v.correction.better)last.cor=v.correction;
-      chatSt.view.push({text:v.reply||'',ar:v.reply_ar||''});if(IS_OWNER&&window.__aiLast&&window.__aiLast.ok)toast('🤖 '+window.__aiLast.model+' · '+(window.__aiLast.ms/1000).toFixed(1)+' ثانية');chatSt.msgs.push({role:'assistant',content:JSON.stringify(v)});sugg(v.suggestions);draw();
+      chatSt.view.push({text:v.reply||'',ar:v.reply_ar||''});if(IS_OWNER&&window.__aiLast&&window.__aiLast.ok)toast('🤖 '+window.__aiLast.model+' · أول كلمة '+((window.__aiLast.first||window.__aiLast.ms)/1000).toFixed(1)+' ث');sugg(v.suggestions);draw();
       if(S.chatAuto!==false&&v.reply)say(v.reply,false,{g:chatSt.g,pitch:1,cv:chatSt.g==='m'?'rounded':'airy',sev:0});addXP(2)}
     catch(e){if(IS_OWNER&&window.__aiLog)setTimeout(()=>toast('🔧 '+window.__aiLog.slice(-3).join(' | ')),1500);chatSt.view.pop();chatSt.view.push({err:e&&e.code==='rate_limited'?'كثير رسائل بوقت قصير. استنى دقيقة وجرّب.':e&&e.code==='not_granted'?'ما في إذن للذكاء الاصطناعي بهالصفحة.':e&&e.code==='setup'?(IS_OWNER?'الذكاء الاصطناعي لسا مش مفعّل بـ Firebase (AI Logic + App Check). ':'المحادثة مش متاحة هلأ، جرّب بعدين.'):e&&e.code==='unavailable'?'المحادثة مش متاحة بهالنسخة.':'صار خطأ بالاتصال. جرّب كمان مرة.'});draw()}
     $('#send').disabled=false};
-  const send=()=>{const t=$('#cin').value.trim();if(!t)return;$('#cin').value='';chatSt.view.push({me:true,text:t});chatSt.msgs.push({role:'user',content:t});sugg([]);turn()};
+  const send=()=>{const t=$('#cin').value.trim();if(!t)return;$('#cin').value='';chatSt.view.push({me:true,text:t});chatSt.step=Math.min(chatSt.sc.steps.length,chatSt.step+1);const st=chatSt.sc.steps[chatSt.step-1];chatSt.msgs.push({role:'user',content:t+'\n\n[Next: step '+chatSt.step+' of '+chatSt.sc.steps.length+' — '+st+(chatSt.step===chatSt.sc.steps.length?'. This is the last step: finish the conversation.':'')+']'});sugg([]);turn()};
+  sugg(sc.open.sug);setTimeout(()=>{if(S.chatAuto!==false)say(sc.open.pt,false,{g:chatSt.g,pitch:1,cv:chatSt.g==='m'?'rounded':'airy',sev:0})},300);
   $('#send').onclick=send;$('#cin').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
   if(DICT){let base='';dictHandler=(type,e)=>{if(type==='partial')$('#cin').value=(base+' '+(e.text||'')).trim();if(type==='final'){base=(base+' '+(e.text||'')).trim();$('#cin').value=base}if(type==='state'){$('#cmic').classList.toggle('on',e.state==='listening');$('#cmic').textContent=e.state==='listening'?'⏹ خلّصت':'🎤 احكي'}};
     $('#cmic').onclick=()=>{if($('#cmic').classList.contains('on')){DICT.stop().catch(()=>{});return}base=$('#cin').value;stopAudio();DICT.start().catch(()=>toast('ما قدرت أشغّل المايك.'))}}
@@ -11346,7 +11400,7 @@ function chatRoom(sc,lv){
             if(t){$('#cin').value=t;send()}else toast('ما سمعت إشي، احكي أعلى شوي.')}catch(e){toast(e&&e.code==='rate_limited'?'كثير طلبات، استنى دقيقة.':'ما قدرت أفهم التسجيل، جرّب كمان مرة أو اكتب.')}
           mic.disabled=false;mic.textContent='🎤 احكي'};
         rec.start();mic.classList.add('on');mic.textContent='⏹ خلّصت، أرسل'}catch(e){toast('ما قدرت أشغّل المايك. اسمح للتطبيق يستخدم المايكروفون.')}}}
-  turn();
+  draw();
 }
 
 /* ===== القصص ===== */
