@@ -9204,6 +9204,627 @@ q:[['شو كان بيعرف عمر بأول يوم؟','obrigado و tudo bem','و
 
 Object.entries(DIALOGS).forEach(([id,d])=>{const c=CH[id-1];if(!c)return;c.SP=d.sp;c.DL=lines(d.l).map(([s,pt,pron,ar])=>({s:s==='A'?0:1,pt,pron,ar,key:'s|'+pt}));c.DQ=d.q});
 
+/* ===== توسعة الأساسيات والقواعد: أمثلة وجمل إضافية + أبواب جديدة ===== */
+const BMORE={
+sobrevivencia:`Não sei.|ناو سيي.|ما بعرف.
+Pode escrever, por favor?|بودجي إيسكريڤير، بور فاڤور؟|ممكن تكتبها لو سمحت؟
+Como se escreve?|كومو سي إيسكريڤي؟|كيف بتنكتب؟
+Pode me ajudar?|بودجي مي أجودار؟|ممكن تساعدني؟
+Eu não falo bem português.|إيو ناو فالو بين بورتوغيس.|ما بحكي برتغالي منيح.
+Um momento, por favor.|أون مومينتو، بور فاڤور.|لحظة لو سمحت.
+Quanto custa?|كوانتو كوستا؟|قديش حقها؟
+Estou perdido.|إيستو بيردجيدو.|أنا ضايع.
+Pode me mostrar no mapa?|بودجي مي موسترار نو مابا؟|ممكن توريني عالخريطة؟
+É urgente.|إي أورجينتشي.|ضروري / مستعجل.
+Chame uma ambulância!|شامي أوما أنبولانسيا!|اطلب إسعاف!
+Socorro!|سوكوهو!|النجدة!
+Obrigado pela paciência.|أوبريغادو بيلا باسيينسيا.|شكرًا على صبرك.`,
+pronuncia:`pai · pão|باي · باو|أبو · خبز (ão من الأنف)
+caro · carro|كارو · كاهو|غالي · سيارة (r و rr)
+dia · tia|دجيا · تشيا|يوم · خالة/عمة
+avó · avô|أڤو (مفتوحة) · أڤو (مسكّرة)|ستّي · سيدي
+quero · quilo|كيرو · كيلو|qu قبل e/i = ك
+guerra · água|غيها · آغوا|gu قبل e = غ، وقبل a = غو
+exame · táxi · peixe|إيزامي · تاكسي · بيشي|x = ز أو كس أو ش
+ônibus · café|أونيبوس · كافي|^ صوت مسكّر، ´ صوت مفتوح وعليه الضغط`,
+alfabeto:`Como se escreve seu nome?|كومو سي إيسكريڤي سيو نومي؟|كيف بينكتب اسمك؟
+arroba (@)|أهوبا|@ بالإيميل
+ponto com|بونتو كون|دوت كوم
+letra maiúscula · minúscula|ليترا مايوسكولا · مينوسكولا|حرف كبير · حرف صغير
+hífen · traço|إيفين · تراسو|شَرطة -
+com acento|كون أسينتو|مع علامة (´ ^ ~)`,
+cumprimentos:`Bom dia, tudo bem?|بون دجيا، تودو بين؟|صباح الخير، كيفك؟
+Tudo ótimo, e você?|تودو أوتشيمو، إي ڤوسي؟|كل اشي ممتاز، وإنت؟
+Mais ou menos.|مايس أو مينوس.|نص نص.
+Prazer em conhecer.|برازير إين كونييسير.|تشرفنا.
+O prazer é meu.|أو برازير إي ميو.|الشرف إلي.
+Quanto tempo!|كوانتو تيمبو!|من زمان!
+Seja bem-vindo!|سيجا بين ڤيندو!|أهلًا وسهلًا!
+Até amanhã!|أتي أمانيا!|لبكرة!
+Até logo!|أتي لوغو!|بشوفك بعدين!
+Bom fim de semana!|بون فين دجي سيمانا!|ويكند سعيد!
+Fica com Deus.|فيكا كون ديوس.|الله معك.
+Manda um abraço para a sua família.|ماندا أون أبراسو بارا آ سوا فاميليا.|سلّملي على عيلتك.`,
+numeros:`Custa vinte e cinco reais.|كوستا ڤينتشي إي سينكو هيايس.|حقها 25 ريال.
+Tenho trinta e dois anos.|تينيو ترينتا إي دويس آنوس.|عمري 32 سنة.
+Moro no apartamento cento e dois.|مورو نو أبارتامينتو سينتو إي دويس.|ساكن بشقة 102.
+Duas pessoas, por favor.|دواس بيسواس، بور فاڤور.|شخصين لو سمحت.
+primeiro · segundo · terceiro|بريميرو · سيغوندو · تيرسيرو|الأول · التاني · التالت
+Moro no quinto andar.|مورو نو كينتو أندار.|ساكن بالطابق الخامس.
+mil e quinhentos reais|ميو إي كينيينتوس هيايس|ألف وخمسمية ريال
+meia (no telefone)|ميا|ستة (لما يقولوا أرقام التلفون)
+Me dá meia dúzia de ovos.|مي دا ميا دوزيا دجي أوڤوس.|عطيني نص دزينة بيض.`,
+tempo:`Que dia é hoje?|كي دجيا إي أوجي؟|شو اليوم؟
+Hoje é sexta-feira.|أوجي إي سيستا فيرا.|اليوم الجمعة.
+Amanhã é sábado.|أمانيا إي سابادو.|بكرة السبت.
+Hoje é dia dez de maio.|أوجي إي دجيا دجيس دجي مايو.|اليوم 10 أيار.
+Meu aniversário é em março.|ميو أنيڤيرساريو إي إين مارسو.|عيد ميلادي بآذار.
+ontem · hoje · amanhã|أونتين · أوجي · أمانيا|مبارح · اليوم · بكرة
+na semana que vem|نا سيمانا كي ڤين|الأسبوع الجاي
+no mês passado|نو ميس باسادو|الشهر الماضي
+de segunda a sexta|دجي سيغوندا آ سيستا|من الإتنين للجمعة
+fim de semana|فين دجي سيمانا|الويكند`,
+horas:`É uma hora.|إي أوما أورا.|الساعة وحدة.
+São duas e meia.|ساو دواس إي ميا.|الساعة اتنين ونص.
+São três e quinze.|ساو تريس إي كينزي.|تلاتة وربع.
+São quinze para as quatro.|ساو كينزي بارا آس كواترو.|أربعة إلا ربع.
+É meio-dia.|إي ميو دجيا.|الساعة 12 الظهر.
+É meia-noite.|إي ميا نويتشي.|نص الليل.
+A que horas abre?|آ كي أوراس أبري؟|إيمتى بيفتح؟
+Abre às oito e fecha às dezoito.|أبري آس أويتو إي فيشا آس دجيزويتو.|بيفتح الساعة 8 وبيسكّر الساعة 6 المسا.
+Estou atrasado.|إيستو أترازادو.|أنا متأخر.
+Chego em dez minutos.|شيغو إين دجيس مينوتوس.|بوصل بعد 10 دقايق.
+de manhã · à tarde · à noite|دجي مانيا · آ تاردجي · آ نويتشي|الصبح · بعد الظهر · بالليل`,
+pronomes:`Eu sou estudante.|إيو سو إيستودانتشي.|أنا طالب.
+Você mora aqui?|ڤوسي مورا أكي؟|إنت ساكن هون؟
+Ela é minha irmã.|إيلا إي مينيا إيرما.|هي أختي.
+Nós somos do Egito.|نوس سوموس دو إيجيتو.|إحنا من مصر.
+Eles estão em casa.|إيليس إيستاو إين كازا.|هم بالبيت.
+Este é o meu carro.|إيستشي إي أو ميو كاهو.|هاي سيارتي.
+Essa é a sua bolsa?|إيسا إي آ سوا بولسا؟|هاي شنطتك؟
+O livro é dele.|أو ليڤرو إي ديلي.|الكتاب إله.
+A casa é dela.|آ كازا إي ديلا.|البيت إلها.
+A gente vai ao mercado.|آ جينتشي ڤاي آو ميركادو.|إحنا رايحين عالسوق.`,
+perguntas:`Qual é o seu nome?|كوال إي أو سيو نومي؟|شو اسمك؟
+De onde você é?|دجي أوندجي ڤوسي إي؟|من وين إنت؟
+Onde você mora?|أوندجي ڤوسي مورا؟|وين ساكن؟
+Quantos anos você tem?|كوانتوس آنوس ڤوسي تين؟|قديش عمرك؟
+O que você faz?|أو كي ڤوسي فاز؟|شو بتشتغل؟
+Por que você está triste?|بور كي ڤوسي إيستا تريستشي؟|ليش زعلان؟
+Porque estou cansado.|بوركي إيستو كانسادو.|لأني تعبان.
+Quando você chegou?|كواندو ڤوسي شيغو؟|إيمتى وصلت؟
+Quem é ele?|كين إي إيلي؟|مين هو؟
+Qual você prefere?|كوال ڤوسي بريفيري؟|أيهم بتفضّل؟
+Tem alguma pergunta?|تين آوغوما بيرغونتا؟|في عندك سؤال؟`,
+verbos:`Eu sou professor.|إيو سو بروفيسور.|أنا أستاذ.
+Estou com fome.|إيستو كون فومي.|أنا جوعان.
+Tenho dois filhos.|تينيو دويس فيليوس.|عندي ولدين.
+Vou ao trabalho de ônibus.|ڤو آو تراباليو دجي أونيبوس.|بروح عالشغل بالباص.
+Quero um café.|كيرو أون كافي.|بدي قهوة.
+Posso entrar?|بوسو إينترار؟|بقدر أفوت؟
+Preciso de um médico.|بريسيزو دجي أون ميدجيكو.|بحتاج دكتور.
+Faço o almoço todo dia.|فاسو أو آوموسو تودو دجيا.|بعمل الغدا كل يوم.
+Falo um pouco de português.|فالو أون بوكو دجي بورتوغيس.|بحكي شوية برتغالي.
+Você sabe onde fica?|ڤوسي سابي أوندجي فيكا؟|بتعرف وين؟
+Vejo você amanhã.|ڤيجو ڤوسي أمانيا.|بشوفك بكرة.`,
+serestar:`Eu sou alto.|إيو سو آوتو.|أنا طويل (صفة دايمة = ser)
+Eu estou cansado.|إيو إيستو كانسادو.|أنا تعبان (حالة مؤقتة = estar)
+Ela é médica.|إيلا إي ميدجيكا.|هي دكتورة (مهنة = ser)
+Ela está no hospital.|إيلا إيستا نو أوسبيتاو.|هي بالمستشفى (مكان شخص = estar)
+O café está quente.|أو كافي إيستا كينتشي.|القهوة سخنة (حالة = estar)
+Hoje é segunda-feira.|أوجي إي سيغوندا فيرا.|اليوم الإتنين (الأيام = ser)
+Está chovendo.|إيستا شوڤيندو.|عم تشتي (الطقس = estar)
+A festa é na casa da Ana.|آ فيستا إي نا كازا دا آنا.|الحفلة ببيت آنا (مكان حدث = ser)
+Onde está a chave?|أوندجي إيستا آ شاڤي؟|وين المفتاح؟
+Somos amigos.|سوموس أميغوس.|إحنا أصحاب.
+Estamos atrasados.|إيستاموس أترازادوس.|إحنا متأخرين.`,
+artigos:`no mercado (em + o)|نو ميركادو|بالسوق
+na escola (em + a)|نا إيسكولا|بالمدرسة
+do Brasil (de + o)|دو برازيو|من البرازيل
+da Síria (de + a)|دا سيريا|من سوريا
+ao médico (a + o)|آو ميدجيكو|عند الدكتور
+à praia (a + a)|آ برايا|عالبحر
+pelo parque (por + o)|بيلو باركي|من خلال الحديقة
+num restaurante (em + um)|نون هيستاورانتشي|بمطعم
+Vou à farmácia.|ڤو آ فارماسيا.|رايح عالصيدلية.`,
+lugares:`Vire à direita.|ڤيري آ دجيريتا.|لف يمين.
+Vire à esquerda.|ڤيري آ إيسكيردا.|لف شمال.
+Siga em frente.|سيغا إين فرينتشي.|كمّل دغري.
+É perto daqui?|إي بيرتو داكي؟|قريب من هون؟
+É longe.|إي لونجي.|بعيد.
+Fica ao lado do banco.|فيكا آو لادو دو بانكو.|جنب البنك.
+Fica em frente à padaria.|فيكا إين فرينتشي آ باداريا.|قبال المخبز.
+Fica atrás da igreja.|فيكا أتراس دا إيغريجا.|ورا الكنيسة.
+na esquina|نا إيسكينا|عالزاوية
+Onde fica o ponto de ônibus?|أوندجي فيكا أو بونتو دجي أونيبوس؟|وين موقف الباص؟
+Desça na próxima parada.|ديسا نا بروسيما بارادا.|انزل بالموقف الجاي.
+Pode me levar até este endereço?|بودجي مي ليڤار أتي إيستشي إيندريسو؟|ممكن توصلني لهالعنوان؟`,
+adjetivos:`O apartamento é pequeno e barato.|أو أبارتامينتو إي بيكينو إي باراتو.|الشقة صغيرة ورخيصة.
+A comida está gostosa.|آ كوميدا إيستا غوستوزا.|الأكل طيب.
+Ele é muito simpático.|إيلي إي موينتو سينباتشيكو.|هو كتير لطيف.
+Ela está feliz hoje.|إيلا إيستا فيليز أوجي.|هي مبسوطة اليوم.
+A rua é perigosa à noite.|آ هوا إي بيريغوزا آ نويتشي.|الشارع خطير بالليل.
+O ônibus está cheio.|أو أونيبوس إيستا شيو.|الباص مليان.
+O mercado está vazio.|أو ميركادو إيستا ڤازيو.|السوق فاضي.
+O exercício é fácil.|أو إيزيرسيسيو إي فاسيو.|التمرين سهل.
+A prova foi difícil.|آ بروڤا فوي دجيفيسيو.|الامتحان كان صعب.
+Os meninos estão cansados.|أوس مينينوس إيستاو كانسادوس.|الولاد تعبانين.`,
+cores:`O carro é branco.|أو كاهو إي برانكو.|السيارة بيضا.
+A camisa é azul.|آ كاميزا إي أزوو.|القميص أزرق.
+A bandeira do Brasil é verde e amarela.|آ بانديرا دو برازيو إي ڤيردجي إي أماريلا.|علم البرازيل أخضر وأصفر.
+Qual é a sua cor favorita?|كوال إي آ سوا كور فاڤوريتا؟|شو لونك المفضل؟
+claro · escuro|كلارو · إيسكورو|فاتح · غامق
+Tem esta camiseta em preto?|تين إيستا كاميزيتا إين بريتو؟|في هالبلوزة بالأسود؟
+As flores são vermelhas.|آس فلوريس ساو ڤيرميلياس.|الورود حمرا.
+Os sapatos são marrons.|أوس ساباتوس ساو ماهونس.|الكندرة بنية.`,
+conectores:`Quero ir, mas estou cansado.|كيرو إير، ماس إيستو كانسادو.|بدي أروح بس تعبان.
+Vou ficar em casa porque está chovendo.|ڤو فيكار إين كازا بوركي إيستا شوڤيندو.|رح أضل بالبيت لأنها عم تشتي.
+Primeiro tomo café, depois vou trabalhar.|بريميرو تومو كافي، دجيبويس ڤو تراباليار.|أول اشي بشرب قهوة، بعدين بروح عالشغل.
+Você quer chá ou café?|ڤوسي كير شا أو كافي؟|بدك شاي ولا قهوة؟
+Estudo muito, então falo melhor.|إيستودو موينتو، إينتاو فالو ميليور.|بدرس كتير، عشان هيك بحكي أحسن.
+Quando chego em casa, janto.|كواندو شيغو إين كازا، جانتو.|لما بوصل البيت بتعشى.
+Se chover, não vou.|سي شوڤير، ناو ڤو.|إذا شتت ما رح أروح.
+Eu não gosto e ele também não.|إيو ناو غوستو إي إيلي تانبين ناو.|أنا ما بحب وهو كمان لا.
+Apesar da chuva, saí.|أبيزار دا شوڤا، ساي.|رغم المطر طلعت.`,
+registro:`O senhor pode me ajudar?|أو سينيور بودجي مي أجودار؟|حضرتك بتقدر تساعدني؟ (رسمي)
+A senhora quer sentar?|آ سينيورا كير سينتار؟|حضرتك بدك تقعدي؟ (رسمي)
+Prezado senhor,|بريزادو سينيور،|حضرة السيد المحترم، (أول إيميل رسمي)
+Atenciosamente,|أتينسيوزامينتشي،|مع التحية، (آخر إيميل رسمي)
+E aí?|إي آي؟|شو الأخبار؟ (عامي)
+Tô cansado.|تو كانسادو.|تعبان (عامي من estou)
+Cadê o celular?|كادي أو سيلولار؟|وين الموبايل؟ (عامي)
+Que legal!|كي ليغاو!|حلو كتير!
+Nossa!|نوسا!|يا الله! (تعجّب)
+Falou!|فالو!|سلام! (وداع عامي)`,
+};
+/* أبواب جديدة: [بعد أي باب، الباب] */
+const BNEW=[
+['cumprimentos',{id:'apresentacao',ic:'🙋',t:'التعريف بالنفس',s:'عرّف عن حالك بجمل بسيطة',intro:'أهم جمل بتحتاجها لما تتعرّف على حدا جديد: بالشغل، بالمدرسة، أو مع الجيران. بدّل الاسم والبلد والعمر بمعلوماتك.',r:`Meu nome é Ahmed.|ميو نومي إي أحمد.|اسمي أحمد.
+Eu me chamo Lina.|إيو مي شامو لينا.|اسمي لينا.
+Sou do Líbano.|سو دو ليبانو.|أنا من لبنان.
+Sou sírio. · Sou síria.|سو سيريو · سو سيريا|أنا سوري · أنا سورية
+Moro no Brasil há dois anos.|مورو نو برازيو آ دويس آنوس.|ساكن بالبرازيل من سنتين.
+Tenho trinta anos.|تينيو ترينتا آنوس.|عمري 30 سنة.
+Sou casado. · Sou solteiro.|سو كازادو · سو سولتيرو|متجوز · عزابي
+Tenho dois filhos.|تينيو دويس فيليوس.|عندي ولدين.
+Trabalho como cozinheiro.|تراباليو كومو كوزينييرو.|بشتغل طبّاخ.
+Sou engenheira.|سو إينجينييرا.|أنا مهندسة.
+Estou procurando emprego.|إيستو بروكوراندو إينبريغو.|عم دوّر على شغل.
+Falo árabe e um pouco de português.|فالو آرابي إي أون بوكو دجي بورتوغيس.|بحكي عربي وشوية برتغالي.
+Gosto de cozinhar e de ler.|غوستو دجي كوزينيار إي دجي لير.|بحب الطبخ والقراية.
+Muito prazer!|موينتو برازير!|تشرّفنا!
+E você, de onde é?|إي ڤوسي، دجي أوندجي إي؟|وإنت من وين؟
+Este é meu marido. · Esta é minha esposa.|إيستشي إي ميو ماريدو · إيستا إي مينيا إيسبوزا|هاد جوزي · هاي مرتي`,tip:'العمر بالبرتغالي بفعل <em>ter</em> (يملك) مش <em>ser</em>: <em>Tenho 30 anos</em> = «عندي 30 سنة».'}],
+['pronomes',{id:'familia',ic:'👨‍👩‍👧',t:'العيلة',s:'أفراد العيلة وجمل عنهم',intro:'أسماء أفراد العيلة بالمذكر والمؤنث، وجمل بتحتاجها لما تحكي عن عيلتك.',r:`o pai · a mãe|أو باي · آ ماين|الأب · الأم
+os pais|أوس بايس|الأهل (الأب والأم)
+o filho · a filha|أو فيليو · آ فيليا|الإبن · البنت
+os filhos|أوس فيليوس|الولاد
+o irmão · a irmã|أو إيرماو · آ إيرما|الأخ · الأخت
+o avô · a avó|أو أڤو · آ أڤو|الجد · الجدة
+o neto · a neta|أو نيتو · آ نيتا|الحفيد · الحفيدة
+o tio · a tia|أو تشيو · آ تشيا|العم/الخال · العمة/الخالة
+o primo · a prima|أو بريمو · آ بريما|ابن العم · بنت العم
+o marido · a esposa|أو ماريدو · آ إيسبوزا|الجوز · المرة
+o sogro · a sogra|أو سوغرو · آ سوغرا|الحمو · الحماية
+o bebê|أو بيبي|البيبي
+Tenho uma irmã mais velha.|تينيو أوما إيرما مايس ڤيليا.|عندي أخت أكبر مني.
+Meu irmão mais novo mora comigo.|ميو إيرماو مايس نوڤو مورا كوميغو.|أخوي الأصغر ساكن معي.
+Quantos irmãos você tem?|كوانتوس إيرماوس ڤوسي تين؟|كم أخ وأخت عندك؟
+Minha família é grande.|مينيا فاميليا إي غراندجي.|عيلتي كبيرة.`,tip:'<em>os pais</em> = الأب والأم مع بعض. و<em>parentes</em> = القرايب، مش الأهل.'}],
+['verbos',{id:'rotina',ic:'⏰',t:'الروتين اليومي',s:'من الصبح لليل',intro:'أفعال اليوم العادي بالترتيب، وجمل جاهزة تحكي فيها عن يومك.',r:`acordar|أكوردار|يصحى
+levantar|ليڤانتار|يقوم من التخت
+tomar banho|تومار بانيو|يتحمم
+escovar os dentes|إيسكوڤار أوس دينتشيس|يفرشي سنانه
+tomar café da manhã|تومار كافي دا مانيا|يفطر
+ir trabalhar|إير تراباليار|يروح عالشغل
+almoçar|آوموسار|يتغدى
+voltar para casa|ڤوتار بارا كازا|يرجع عالبيت
+jantar|جانتار|يتعشى
+dormir|دورمير|ينام
+Acordo às seis horas.|أكوردو آس سييس أوراس.|بصحى الساعة 6.
+Tomo banho e me visto.|تومو بانيو إي مي ڤيستو.|بتحمم وبلبس.
+Saio de casa às sete e meia.|سايو دجي كازا آس سيتشي إي ميا.|بطلع من البيت 7 ونص.
+Almoço no trabalho.|آوموسو نو تراباليو.|بتغدى بالشغل.
+À noite vejo um pouco de televisão.|آ نويتشي ڤيجو أون بوكو دجي تيليڤيزاو.|بالليل بشوف شوية تلفزيون.
+Durmo às onze.|دورمو آس أونزي.|بنام الساعة 11.`,tip:'بالبرازيل «الفطور» اسمه <em>café da manhã</em>، حتى لو ما شربت قهوة.'}],
+['lugares',{id:'comida',ic:'🍽️',t:'الأكل والشرب',s:'كلمات وجمل للأكل والطلب',intro:'أهم أسماء الأكل والشرب، وجمل بتحتاجها بالمطعم أو المخبز أو عند حدا بالبيت.',r:`água · café · chá|آغوا · كافي · شا|مي · قهوة · شاي
+suco · leite|سوكو · ليتشي|عصير · حليب
+pão · arroz · feijão|باو · أهوز · فيجاو|خبز · رز · فاصوليا
+frango · carne · peixe|فرانغو · كارني · بيشي|جاج · لحمة · سمك
+ovo · queijo|أوڤو · كيجو|بيضة · جبنة
+salada · fruta|سالادا · فروتا|سلطة · فواكه
+café da manhã · almoço · jantar|كافي دا مانيا · آوموسو · جانتار|فطور · غدا · عشا
+Estou com fome.|إيستو كون فومي.|أنا جوعان.
+Estou com sede.|إيستو كون سيدجي.|أنا عطشان.
+Eu queria um suco de laranja.|إيو كيريا أون سوكو دجي لارانجا.|بدي عصير برتقان لو سمحت.
+Sem açúcar, por favor.|سين أسوكار، بور فاڤور.|بلا سكر لو سمحت.
+Tem opção sem carne de porco?|تين أوبساو سين كارني دجي بوركو؟|في خيار بدون لحم خنزير؟
+Está uma delícia!|إيستا أوما دجيليسيا!|كتير طيب!
+A conta, por favor.|آ كونتا، بور فاڤور.|الحساب لو سمحت.
+Para viagem, por favor.|بارا ڤياجين، بور فاڤور.|سفري لو سمحت.`,tip:'«لحم خنزير» = <em>carne de porco</em>. السجق (<em>linguiça</em>) والـ<em>bacon</em> غالبًا خنزير، فاسأل: <em>Tem porco?</em>'}],
+['comida',{id:'compras',ic:'🛍️',t:'الشرا والفلوس',s:'الأسعار والدفع والتبديل',intro:'جمل المحلات والسوبرماركت: تسأل عن السعر، تدفع، تقسّط، أو تبدّل.',r:`Quanto custa isso?|كوانتو كوستا إيسو؟|قديش حق هاد؟
+Quanto é tudo?|كوانتو إي تودو؟|قديش الكل؟
+Está caro.|إيستا كارو.|غالي.
+Tem mais barato?|تين مايس باراتو؟|في أرخص؟
+Tem desconto?|تين دجيسكونتو؟|في خصم؟
+Posso pagar com cartão?|بوسو باغار كون كارتاو؟|بقدر أدفع بالبطاقة؟
+no débito · no crédito|نو ديبيتو · نو كريدجيتو|بطاقة سحب · بطاقة ائتمان
+Aceita Pix?|أسيتا بيكس؟|بتقبل بيكس؟
+em dinheiro|إين دجينييرو|كاش
+à vista · parcelado|آ ڤيستا · بارسيلادو|دفعة وحدة · بالتقسيط
+Pode parcelar em três vezes?|بودجي بارسيلار إين تريس ڤيزيس؟|بتقسّطها على 3 دفعات؟
+Vou levar este.|ڤو ليڤار إيستشي.|رح آخد هاد.
+Só estou olhando, obrigado.|سو إيستو أولياندو، أوبريغادو.|بس عم اتفرّج، شكرًا.
+Tem esse em outro tamanho?|تين إيسي إين أوترو تامانيو؟|في منه قياس تاني؟
+Posso trocar?|بوسو تروكار؟|بقدر أبدّل؟
+Quero a nota fiscal.|كيرو آ نوتا فيسكاو.|بدي الفاتورة.`,tip:'بالكاشير بيسألوك <em>CPF na nota?</em> يعني بدك رقم الـCPF تبعك عالفاتورة؟ جاوب <em>Sim</em> أو <em>Não, obrigado</em>.'}],
+['tempo',{id:'clima',ic:'☀️',t:'الطقس والفصول',s:'كيف تحكي عن الجو',intro:'الطقس بالبرتغالي بيتحكى غالبًا بفعل <em>estar</em> أو <em>fazer</em>: <em>Está frio</em>، <em>Faz calor</em>.',r:`Como está o tempo?|كومو إيستا أو تيمبو؟|كيف الطقس؟
+Está calor.|إيستا كالور.|حر.
+Está frio.|إيستا فريو.|برد.
+Está chovendo.|إيستا شوڤيندو.|عم تشتي.
+Está ventando.|إيستا ڤينتاندو.|في هوا قوي.
+Está nublado.|إيستا نوبلادو.|مغيّمة.
+Está fazendo sol.|إيستا فازيندو سول.|في شمس.
+Faz trinta graus.|فاز ترينتا غراوس.|الحرارة 30 درجة.
+Vai chover amanhã.|ڤاي شوڤير أمانيا.|رح تشتي بكرة.
+Leve um guarda-chuva.|ليڤي أون غواردا شوڤا.|خود شمسية.
+o verão · o inverno|أو ڤيراو · أو إينڤيرنو|الصيف · الشتا
+a primavera · o outono|آ بريماڤيرا · أو أوتونو|الربيع · الخريف
+Que calor!|كي كالور!|شو هالحر!`,tip:'بالبرازيل الفصول معكوسة عن بلادنا: الصيف تقريبًا من كانون الأول لآذار، والشتا من حزيران لأيلول.'}],
+['adjetivos',{id:'corpo',ic:'🩺',t:'الجسم والصحة',s:'لما تحكي عن وجع أو مرض',intro:'أعضاء الجسم الأساسية، وجمل بتحتاجها عند الدكتور أو بالصيدلية. «بيوجعني ...» = <em>Estou com dor de</em> + المكان.',r:`a cabeça|آ كابيسا|الراس
+os olhos|أوس أوليوس|العيون
+a boca · os dentes|آ بوكا · أوس دينتشيس|التم · السنان
+a garganta|آ غارغانتا|الزور
+o braço · a mão|أو براسو · آ ماو|الدراع · الإيد
+a perna · o pé|آ بيرنا · أو بي|الإجر · القدم
+as costas|آس كوستاس|الضهر
+a barriga|آ باهيغا|البطن
+Estou com dor de cabeça.|إيستو كون دور دجي كابيسا.|راسي بيوجعني.
+Estou com dor de garganta.|إيستو كون دور دجي غارغانتا.|زوري بيوجعني.
+Estou com febre.|إيستو كون فيبري.|معي حرارة.
+Estou gripado.|إيستو غريبادو.|معي رشح.
+Meu filho está tossindo.|ميو فيليو إيستا توسيندو.|ابني عم يسعل.
+Dói aqui.|دوي أكي.|هون بيوجعني.
+Tenho alergia a penicilina.|تينيو أليرجيا آ بينيسيلينا.|عندي حساسية من البنسلين.`,tip:'كمان بتقدر تقول <em>Dói</em> + المكان: <em>Dói a barriga</em> = بطني بيوجعني.'}],
+['conectores',{id:'expressoes',ic:'💬',t:'ردود سريعة',s:'كلمات بتسمعها كل يوم',intro:'ردود قصيرة بتنقال بكل مكان. احفظها وبتحس حالك بتحكي زي البرازيليين.',r:`Claro!|كلارو!|أكيد!
+Pode ser.|بودجي سير.|ممكن.
+Tanto faz.|تانتو فاز.|مش فارقة.
+Sem problema.|سين بروبليما.|ولا يهمك.
+De nada.|دجي نادا.|عفوًا.
+Imagina!|إيماجينا!|ولو! (رد على شكرًا)
+Que pena!|كي بينا!|يا خسارة!
+Que bom!|كي بون!|منيح!
+Boa sorte!|بوا سورتشي!|بالتوفيق!
+Parabéns!|باراباينس!|مبروك!
+Melhoras!|ميليوراس!|سلامتك!
+Saúde!|ساوودجي!|صحة! (بعد العطسة)
+Bom apetite!|بون أبيتشيتشي!|صحتين!
+Está bem.|إيستا بين.|ماشي.
+Concordo.|كونكوردو.|موافق.
+Acho que sim. · Acho que não.|آشو كي سين · آشو كي ناو|بظن آه · بظن لا
+Depende.|دجيبيندجي.|حسب.`}],
+];
+
+/* توسعة القواعد: أمثلة (r) وتمارين (d) إضافية */
+const GMORE={
+'g-genero':{r:`o café|أو كافي|القهوة
+a água|آ آغوا|المي
+o mapa|أو مابا|الخريطة (مذكر رغم -a)
+a foto|آ فوتو|الصورة (مؤنث رغم -o)
+a viagem|آ ڤياجين|السفرة (-gem مؤنث)
+o professor · a professora|أو بروفيسور · آ بروفيسورا|الأستاذ · الأستاذة
+o estudante · a estudante|أو إيستودانتشي · آ إيستودانتشي|الطالب · الطالبة (نفس الكلمة)`,d:`___ água está gelada.|المي|A|O|Os
+___ mapa está na mesa.|الخريطة (شاذة)|O|A|As
+___ foto ficou linda.|الصورة (شاذة)|A|O|Um
+___ viagem foi longa.|السفرة|A|O|Os
+Ela é ___ professora.|أستاذة|uma|um|o
+___ informação está errada.|المعلومة|A|O|Os
+___ café está quente.|القهوة|O|A|As`},
+'g-plural':{r:`o pão · os pães|أو باو · أوس باينس|الخبزة · الخبزات
+a mão · as mãos|آ ماو · آس ماوس|الإيد · الإيدين
+o hotel · os hotéis|أو أوتيو · أوس أوتييس|الفندق · الفنادق
+o homem · os homens|أو أومين · أوس أومينس|الرجل · الرجال (-m ← -ns)
+o lápis · os lápis|أو لابيس · أوس لابيس|القلم · الأقلام (ما بتتغير)
+umas maçãs|أوماس ماساينس|شوية تفاحات`,d:`Quero dois ___.|خبزتين|pães|pãos|pãoes
+Lave as ___.|الإيدين|mãos|mões|mãoes
+Os ___ são caros.|الفنادق|hotéis|hotels|hoteles
+Os ___ chegaram.|الرجال|homens|homems|homes
+Tenho três ___.|أقلام|lápis|lápises|lápiss
+Comprei ___ maçãs.|شوية تفاحات|umas|uns|uma`},
+'g-ar':{r:`Eu trabalho de segunda a sexta.|إيو تراباليو دجي سيغوندا آ سيستا.|بشتغل من الإتنين للجمعة.
+Você estuda português?|ڤوسي إيستودا بورتوغيس؟|بتدرس برتغالي؟
+Ela mora com a família.|إيلا مورا كون آ فاميليا.|هي ساكنة مع عيلتها.
+Nós compramos pão todo dia.|نوس كونبراموس باو تودو دجيا.|إحنا بنشتري خبز كل يوم.
+Eles chegam às sete.|إيليس شيغاو آس سيتشي.|بيوصلوا الساعة 7.
+A gente gosta de música.|آ جينتشي غوستا دجي موزيكا.|إحنا بنحب الموسيقى.`,d:`Eu ___ em São Paulo.|ساكن (morar)|moro|mora|moramos
+Nós ___ muito.|بنشتغل (trabalhar)|trabalhamos|trabalham|trabalho
+Eles ___ português.|بيحكوا (falar)|falam|falamos|fala
+Você ___ café?|بتشرب (tomar)|toma|tomo|tomam
+A gente ___ às oito.|منوصل (chegar)|chega|chegamos|chego
+Ela ___ inglês na escola.|بتدرس (estudar)|estuda|estudo|estudam`},
+'g-er-ir':{r:`Eu como arroz todo dia.|إيو كومو أهوز تودو دجيا.|بوكل رز كل يوم.
+Você bebe café?|ڤوسي بيبي كافي؟|بتشرب قهوة؟
+Ela escreve uma mensagem.|إيلا إيسكريڤي أوما مينساجين.|هي بتكتب رسالة.
+Nós abrimos a loja às nove.|نوس أبريموس آ لوجا آس نوڤي.|منفتح المحل الساعة 9.
+Eles dividem o apartamento.|إيليس دجيڤيدين أو أبارتامينتو.|بيتقاسموا الشقة.
+Eu entendo um pouco.|إيو إينتيندو أون بوكو.|بفهم شوية.`,d:`Eu ___ pão de manhã.|بوكل (comer)|como|come|comem
+Nós ___ a porta.|منفتح (abrir)|abrimos|abremos|abrem
+Eles ___ no Rio.|بيعيشوا (viver)|vivem|vivemos|vive
+Você ___ português?|بتفهم (entender)|entende|entendo|entendem
+Ela ___ muitas cartas.|بتكتب (escrever)|escreve|escrevo|escrevem
+Nós ___ água.|منشرب (beber)|bebemos|bebimos|bebem`},
+'g-irreg':{r:`Eu faço o jantar.|إيو فاسو أو جانتار.|أنا بعمل العشا.
+Eu digo a verdade.|إيو دجيغو آ ڤيردادجي.|بحكي الحقيقة.
+Eu vejo televisão.|إيو ڤيجو تيليڤيزاو.|بشوف تلفزيون.
+Eu venho amanhã.|إيو ڤينيو أمانيا.|بجي بكرة.
+Eu ponho na mesa.|إيو بونيو نا ميزا.|بحطه عالطاولة.
+Eu sei nadar.|إيو سيي نادار.|بعرف أسبح.
+Eu dou um presente.|إيو دو أون بريزينتشي.|بعطي هدية.`,d:`Eu ___ o almoço.|بعمل (fazer)|faço|fazo|faz
+Eu não ___.|ما بعرف (saber)|sei|sabo|sabe
+Eu ___ o filme.|بشوف (ver)|vejo|veio|vê
+Eles ___ amanhã.|بيجوا (vir)|vêm|vimos|venho
+Eu ___ a verdade.|بقول (dizer)|digo|dizo|diz
+Nós ___ ao cinema.|رايحين (ir)|vamos|imos|vão`},
+'g-neg':{r:`Não, obrigado.|ناو، أوبريغادو.|لا شكرًا.
+Você não vem?|ڤوسي ناو ڤين؟|ما رح تيجي؟
+Nunca bebo café à noite.|نونكا بيبو كافي آ نويتشي.|أبدًا ما بشرب قهوة بالليل.
+Não tem nada aqui.|ناو تين نادا أكي.|ما في اشي هون.
+Ninguém sabe.|نينغين سابي.|ما حدا بيعرف.
+Ainda não.|أيندا ناو.|لسا لا.
+Não sei não.|ناو سيي ناو.|ما بعرف والله (عامي)`,d:`Eu ___ falo alemão.|ما|não|nem|sem
+___ bebo café à noite.|أبدًا|Nunca|Nada|Ninguém
+Não tem ___ na geladeira.|ولا اشي|nada|nunca|ninguém
+___ ligou para você.|ولا حدا|Ninguém|Nada|Nunca
+Você já almoçou? ___ não.|لسا|Ainda|Já|Nunca`},
+'g-prep':{r:`Estou em casa.|إيستو إين كازا.|أنا بالبيت.
+Ele é do Líbano.|إيلي إي دو ليبانو.|هو من لبنان.
+Vou para o trabalho.|ڤو بارا أو تراباليو.|رايح عالشغل.
+O presente é para você.|أو بريزينتشي إي بارا ڤوسي.|الهدية إلك.
+O livro está em cima da mesa.|أو ليڤرو إيستا إين سيما دا ميزا.|الكتاب فوق الطاولة.
+O gato está debaixo da cama.|أو غاتو إيستا دجيبايشو دا كاما.|البسة تحت التخت.
+Vou de carro.|ڤو دجي كاهو.|بروح بالسيارة.`,d:`Eu moro ___ Brasil.|بـ (em + o)|no|na|em o
+Ela é ___ Síria.|من (de + a)|da|do|de a
+Vou ___ ônibus.|بالباص|de|em|com
+O café é ___ você.|إلك|para|de|em
+O livro está ___ mesa.|عالطاولة|na|no|em a
+Gosto ___ sorvete.|(gostar ___)|de|em|para`},
+'g-posse':{r:`Esta é a minha mãe.|إيستا إي آ مينيا ماين.|هاي أمي.
+Meus filhos estudam aqui.|ميوس فيليوس إيستودان أكي.|ولادي بيدرسوا هون.
+Qual é o seu telefone?|كوال إي أو سيو تيليفوني؟|شو رقم تلفونك؟
+O carro dele é novo.|أو كاهو ديلي إي نوڤو.|سيارته جديدة.
+A casa dela é grande.|آ كازا ديلا إي غراندجي.|بيتها كبير.
+O nosso bairro é tranquilo.|أو نوسو بايهو إي ترانكويلو.|حارتنا هادية.
+As minhas chaves sumiram.|آس مينياس شاڤيس سوميراو.|مفاتيحي ضاعوا.`,d:`Esta é ___ irmã.|أختي|minha|meu|meus
+___ filhos são pequenos.|ولادي|Meus|Minhas|Meu
+O carro ___ é azul.|سيارته (هو)|dele|dela|deles
+A bolsa ___ é cara.|شنطتها (هي)|dela|dele|delas
+___ casa é perto daqui.|بيتنا|Nossa|Nosso|Nossas
+Qual é ___ nome?|اسمك|o seu|a sua|os seus`},
+'g-adj':{r:`um homem alto|أون أومين آوتو|رجل طويل
+uma mulher alta|أوما موليير آوتا|مرة طويلة
+dois carros novos|دويس كاهوس نوڤوس|سيارتين جداد
+casas bonitas|كازاس بونيتاس|بيوت حلوة
+um bom dia|أون بون دجيا|يوم منيح (bom قبل الاسم)
+uma boa ideia|أوما بوا إيديا|فكرة منيحة
+um grande amigo · um amigo grande|أون غراندجي أميغو · أون أميغو غراندجي|صاحب عزيز · صاحب ضخم (المعنى بيتغير!)`,d:`A casa é ___.|حلوة|bonita|bonito|bonitas
+Os meninos são ___.|طوال|altos|alto|altas
+Ela é uma ___ professora.|منيحة|boa|bom|bem
+Tenho dois carros ___.|جداد|novos|novo|novas
+As ruas estão ___.|نضيفة|limpas|limpos|limpa
+É uma ___ ideia!|فكرة منيحة|boa|bom|bem`},
+'g-futuro':{r:`Vou viajar amanhã.|ڤو ڤياجار أمانيا.|رح أسافر بكرة.
+Você vai trabalhar hoje?|ڤوسي ڤاي تراباليار أوجي؟|رح تشتغل اليوم؟
+Nós vamos mudar de casa.|نوس ڤاموس مودار دجي كازا.|رح ننقل بيت.
+Eles vão chegar tarde.|إيليس ڤاو شيغار تاردجي.|رح يوصلوا متأخر.
+Vai chover hoje.|ڤاي شوڤير أوجي.|رح تشتي اليوم.
+Não vou sair.|ناو ڤو سايير.|ما رح أطلع.`,d:`Eu ___ comprar pão.|رح (أنا)|vou|vai|vamos
+Nós ___ visitar a família.|رح (إحنا)|vamos|vão|vou
+Eles ___ chegar amanhã.|رح (هم)|vão|vai|vamos
+Ela ___ trabalhar hoje?|رح (هي)|vai|vou|vão
+Amanhã vai ___.|تشتي|chover|chove|choveu
+Eu não vou ___ hoje.|أطلع|sair|saio|saí`},
+'g-passado':{r:`Ontem eu trabalhei muito.|أونتين إيو تراباليي موينتو.|مبارح اشتغلت كتير.
+Você comeu?|ڤوسي كوميو؟|أكلت؟
+Ela saiu cedo.|إيلا ساييو سيدو.|هي طلعت بكير.
+Nós chegamos ontem.|نوس شيغاموس أونتين.|وصلنا مبارح.
+Eu fui ao médico.|إيو فوي آو ميدجيكو.|رحت عند الدكتور.
+Eu fiz o trabalho.|إيو فيز أو تراباليو.|عملت الشغل.
+Eu tive um problema.|إيو تشيڤي أون بروبليما.|صارت معي مشكلة.`,d:`Ontem eu ___ muito.|اشتغلت|trabalhei|trabalhou|trabalho
+Você ___ o almoço?|أكلت (comer)|comeu|comi|come
+Eu ___ ao mercado.|رحت (ir)|fui|foi|vou
+Eu ___ a lição.|عملت (fazer)|fiz|fez|fazi
+Ela ___ cedo.|طلعت (sair)|saiu|sai|saí`},
+'g-gerundio':{r:`Estou trabalhando agora.|إيستو تراباليندو أغورا.|عم بشتغل هلأ.
+Ela está dormindo.|إيلا إيستا دورميندو.|هي نايمة.
+O que você está fazendo?|أو كي ڤوسي إيستا فازيندو؟|شو عم تعمل؟
+Estamos esperando o ônibus.|إيستاموس إيسبيراندو أو أونيبوس.|عم نستنى الباص.
+As crianças estão brincando.|آس كريانساس إيستاو برينكاندو.|الولاد عم يلعبوا.`,d:`Eu estou ___ agora.|عم بوكل|comendo|comindo|como
+Ela está ___.|عم تنام|dormindo|dormendo|dorme
+O que você está ___?|عم تعمل|fazendo|fazindo|faz
+Nós ___ esperando.|عم (إحنا)|estamos|estão|estou
+As crianças ___ brincando.|عم (هم)|estão|está|estamos`},
+'g-gostar':{r:`Eu gosto de café.|إيو غوستو دجي كافي.|بحب القهوة.
+Você gosta de futebol?|ڤوسي غوستا دجي فوتشيبوو؟|بتحب الفوتبول؟
+Preciso de um táxi.|بريسيزو دجي أون تاكسي.|بحتاج تكسي.
+Preciso trabalhar amanhã.|بريسيزو تراباليار أمانيا.|لازم أشتغل بكرة (قبل فعل بلا de)
+Quero um copo de água.|كيرو أون كوبو دجي آغوا.|بدي كاسة مي.
+Queria um café, por favor.|كيريا أون كافي، بور فاڤور.|بدي قهوة لو سمحت (أأدب)`,d:`Eu gosto ___ chocolate.|(gostar ___)|de|do|para
+Você gosta ___ praia?|(de + a)|da|de|do
+Preciso ___ ajuda.|(precisar ___ + اسم)|de|da|para
+Preciso ___ agora.|أطلع (قبل فعل)|sair|de sair|saio
+Eu ___ um suco.|بدي|quero|gosto|preciso
+Ela ___ de dançar.|بتحب|gosta|quer|precisa`},
+'g-compar':{r:`Ele é mais alto que eu.|إيلي إي مايس آوتو كي إيو.|هو أطول مني.
+Este é melhor.|إيستشي إي ميليور.|هاد أحسن.
+Hoje está pior que ontem.|أوجي إيستا بيور كي أونتين.|اليوم أسوأ من مبارح.
+Meu irmão é mais velho.|ميو إيرماو إي مايس ڤيليو.|أخوي أكبر مني (بالعمر)
+Ela é tão alta quanto ele.|إيلا إي تاو آوتا كوانتو إيلي.|هي طويلة متله.`,d:`Meu irmão é ___ que eu.|أكبر بالعمر|mais velho|maior velho|velho mais
+Este café é ___ que o outro.|أحسن|melhor|mais bom|bom
+Ele é ___ alto que eu.|أكتر|mais|tão|menos`},
+};
+const GNEW=[
+{id:'g-ha',ic:'📍',t:'«في»: tem و há',s:'لما بدك تقول «في / يوجد»',intro:'لـ«في» (يوجد) البرازيليين بيقولوا <em>tem</em> بالحكي، و<em>há</em> بالكتابة الرسمية.<br>• الفعل ما بيتغير مع الجمع: <em>Tem dois bancos aqui</em>.<br>• الماضي: <em>tinha</em> (كان في)، والمستقبل: <em>vai ter</em> (رح يكون في).',r:`Tem um mercado aqui perto?|تين أون ميركادو أكي بيرتو؟|في سوق قريب من هون؟
+Tem pão?|تين باو؟|في خبز؟
+Não tem lugar.|ناو تين لوغار.|ما في مكان.
+Tem muita gente aqui.|تين موينتا جينتشي أكي.|في ناس كتير هون.
+Há vagas para motorista.|آ ڤاغاس بارا موتوريستا.|في شواغر لسواق (رسمي)
+Tinha uma festa ontem.|تشينيا أوما فيستا أونتين.|كان في حفلة مبارح.
+Vai ter reunião amanhã.|ڤاي تير هيونياو أمانيا.|رح يكون في اجتماع بكرة.
+Tem alguém aí?|تين آوغين آي؟|في حدا هناك؟
+Moro aqui há dois anos.|مورو أكي آ دويس آنوس.|ساكن هون من سنتين.`,tip:'<em>há</em> كمان بمعنى «من / قبل» للوقت: <em>há uma semana</em> = من أسبوع.',d:`___ um banco aqui perto?|في|Tem|Está|É
+Não ___ nada na geladeira.|في|tem|é|está
+___ muitas pessoas na fila.|في (بالحكي)|Tem|Estão|São
+Moro aqui ___ três anos.|من (مدة)|há|em|de
+Ontem ___ um show na praça.|كان في|tinha|tem|vai ter
+Amanhã vai ___ chuva.|يكون في|ter|tem|tinha`},
+{id:'g-ter-que',ic:'❗',t:'لازم: ter que، precisar، dever',s:'الواجب والضرورة',intro:'• <em>ter que</em> + فعل = لازم (الأكتر استعمال): <em>Tenho que trabalhar</em>.<br>• <em>precisar</em> + فعل = محتاج / لازم: <em>Preciso sair</em>.<br>• <em>dever</em> + فعل = المفروض (نصيحة): <em>Você deve descansar</em>.<br>• «مش لازم»: <em>não precisa</em>.',r:`Tenho que trabalhar amanhã.|تينيو كي تراباليار أمانيا.|لازم أشتغل بكرة.
+Você tem que assinar aqui.|ڤوسي تين كي أسينار أكي.|لازم توقّع هون.
+Temos que sair agora.|تيموس كي سايير أغورا.|لازم نطلع هلأ.
+Preciso ir ao banco.|بريسيزو إير آو بانكو.|لازم أروح عالبنك.
+Você deve descansar.|ڤوسي ديڤي دجيسكانسار.|المفروض ترتاح.
+Não precisa pagar.|ناو بريسيزا باغار.|مش لازم تدفع.
+Não precisa se preocupar.|ناو بريسيزا سي بريوكوبار.|ما في داعي تقلق.
+Tive que esperar duas horas.|تشيڤي كي إيسبيرار دواس أوراس.|اضطريت أستنى ساعتين.
+É preciso marcar uma consulta.|إي بريسيزو ماركار أوما كونسولتا.|لازم تحجز موعد.`,d:`Eu ___ que trabalhar.|لازم (أنا)|tenho|tem|temos
+Nós ___ que sair cedo.|لازم (إحنا)|temos|têm|tenho
+Você tem ___ assinar.|(ter ___)|que|de que|para
+Não ___ pagar agora.|مش لازم|precisa|deve|tem
+Você ___ descansar mais.|المفروض|deve|tem|precisa de
+Ontem eu ___ que esperar.|اضطريت|tive|tenho|terei`},
+{id:'g-poder',ic:'💪',t:'poder، saber، conseguir',s:'يقدر، بيعرف، قادر',intro:'التلاتة بالعربي «بقدر»، بس كل واحد إله معنى:<br>• <em>poder</em> = مسموح أو ممكن: <em>Posso entrar?</em><br>• <em>saber</em> + فعل = بيعرف (مهارة متعلّمة): <em>Sei nadar</em>.<br>• <em>conseguir</em> = قادر / نجح يعمل (بعد جهد): <em>Não consigo dormir</em>.',r:`Posso sentar aqui?|بوسو سينتار أكي؟|بقدر أقعد هون؟
+Você pode me ajudar?|ڤوسي بودجي مي أجودار؟|بتقدر تساعدني؟
+Aqui não pode fumar.|أكي ناو بودجي فومار.|ممنوع التدخين هون.
+Eu sei dirigir.|إيو سيي دجيريجير.|بعرف أسوق.
+Ela sabe falar inglês.|إيلا سابي فالار إينغليس.|بتعرف تحكي إنجليزي.
+Não consigo dormir.|ناو كونسيغو دورمير.|مش قادر أنام.
+Consegui o emprego!|كونسيغي أو إينبريغو!|أخدت الشغلة!
+Você consegue ouvir?|ڤوسي كونسيغي أوڤير؟|قادر تسمع؟
+Pode ser.|بودجي سير.|ممكن / ماشي.`,d:`___ entrar?|بقدر (إذن)|Posso|Sei|Consigo
+Eu ___ nadar.|بعرف (مهارة)|sei|posso|conheço
+Não ___ abrir a porta, está emperrada.|مش قادر (جهد)|consigo|sei|devo
+Aqui não ___ estacionar.|ممنوع|pode|sabe|consegue
+Você ___ falar mais alto?|بتقدر (طلب)|pode|sabe|conhece
+Finalmente eu ___ passar na prova!|قدرت / نجحت|consegui|sabia|podia`},
+{id:'g-frequencia',ic:'🔁',t:'قديش بتعمله؟ sempre، às vezes…',s:'ظروف التكرار',intro:'كلمات بتقول قديش بتعمل الاشي، وغالبًا بتيجي قبل الفعل:<br><em>sempre</em> (دايمًا) · <em>geralmente</em> (عادةً) · <em>às vezes</em> (أحيانًا) · <em>raramente</em> (نادرًا) · <em>nunca</em> (أبدًا).<br>«كل يوم» = <em>todo dia</em>، «مرتين بالأسبوع» = <em>duas vezes por semana</em>.',r:`Eu sempre tomo café de manhã.|إيو سيمبري تومو كافي دجي مانيا.|دايمًا بشرب قهوة الصبح.
+Geralmente almoço ao meio-dia.|جيراومينتشي آوموسو آو ميو دجيا.|عادةً بتغدى الساعة 12.
+Às vezes vou à praia.|آس ڤيزيس ڤو آ برايا.|أحيانًا بروح عالبحر.
+Raramente como carne.|هارامينتشي كومو كارني.|نادرًا بوكل لحمة.
+Nunca chego atrasado.|نونكا شيغو أترازادو.|أبدًا ما بتأخر.
+Vou à academia duas vezes por semana.|ڤو آ أكاديميا دواس ڤيزيس بور سيمانا.|بروح عالجيم مرتين بالأسبوع.
+Estudo todo dia.|إيستودو تودو دجيا.|بدرس كل يوم.
+De vez em quando a gente sai.|دجي ڤيز إين كواندو آ جينتشي ساي.|من فترة لفترة منطلع.
+Com que frequência você viaja?|كون كي فريكوينسيا ڤوسي ڤياجا؟|كل قديش بتسافر؟
+Uma vez por mês.|أوما ڤيز بور ميس.|مرة بالشهر.`,d:`Eu ___ tomo café de manhã.|دايمًا|sempre|nunca|às vezes
+___ vou ao cinema, não muito.|أحيانًا|Às vezes|Sempre|Nunca
+Ele ___ chega atrasado. É muito pontual.|أبدًا|nunca|sempre|geralmente
+Estudo ___ dia.|كل يوم|todo|todos|cada um
+Vou à academia duas ___ por semana.|مرات|vezes|vez|horas
+Uma vez ___ mês.|بالـ (لكل)|por|em|de`},
+{id:'g-imperativo',ic:'👉',t:'الأمر: Fale! Espere!',s:'كيف تطلب أو تعطي تعليمات',intro:'الأمر للـ<em>você</em>: بناخد فعل «أنا» بالحاضر، بنشيل <em>-o</em>، وبنعكس الحرف:<br>• أفعال <em>-ar</em> بتصير <em>-e</em>: <em>falar → fale</em>.<br>• أفعال <em>-er/-ir</em> بتصير <em>-a</em>: <em>comer → coma</em>، <em>abrir → abra</em>.<br>• بالحكي اليومي كتير بيستعملوا شكل الحاضر: <em>Fala!</em> <em>Olha!</em><br>• النفي: <em>Não</em> + الأمر: <em>Não fume</em>.',r:`Fale mais devagar, por favor.|فالي مايس دجيڤاغار، بور فاڤور.|احكي أبطأ لو سمحت.
+Espere um momento.|إيسبيري أون مومينتو.|استنى لحظة.
+Entre, por favor.|إينتري، بور فاڤور.|تفضّل فوت.
+Sente-se.|سينتشي سي.|تفضّل اقعد.
+Abra a janela.|أبرا آ جانيلا.|افتح الشباك.
+Coma mais!|كوما مايس!|كُل كمان!
+Não esqueça a chave.|ناو إيسكيسا آ شاڤي.|لا تنسى المفتاح.
+Venha aqui.|ڤينيا أكي.|تعال لهون.
+Faça o exercício.|فاسا أو إيزيرسيسيو.|اعمل التمرين.
+Olha isso!|أوليا إيسو!|شوف هاد! (عامي)`,tip:'شواذ مهمة: <em>fazer → faça</em>، <em>vir → venha</em>، <em>ir → vá</em>، <em>ser → seja</em>، <em>dar → dê</em>.',d:`___ mais devagar, por favor.|احكي (falar)|Fale|Falo|Falei
+___ a porta.|افتح (abrir)|Abra|Abro|Abriu
+Não ___ a chave!|لا تنسى (esquecer)|esqueça|esqueço|esqueceu
+___ aqui, por favor.|تعال (vir)|Venha|Venho|Vinha
+___ um momento.|استنى (esperar)|Espere|Espero|Esperou
+___ o exercício.|اعمل (fazer)|Faça|Faço|Fez`},
+{id:'g-objeto',ic:'🎯',t:'ـني، ـك، ـه: ضمائر المفعول',s:'me، te، ele، lhe',intro:'• <em>me</em> = ـني / إلي، <em>te</em> = ـك / إلك.<br>• «ـه / ـها» بالحكي البرازيلي: <em>ele / ela</em> بعد الفعل: <em>Eu vi ele</em>. وبالرسمي: <em>o / a</em> قبل الفعل: <em>Eu o vi</em>.<br>• «إله / إلها»: بالحكي <em>para ele / para ela</em>، وبالرسمي <em>lhe</em>.<br>• بالحكي الضمير غالبًا بيجي قبل الفعل: <em>Me ajuda?</em>',r:`Você me ajuda?|ڤوسي مي أجودا؟|بتساعدني؟
+Eu te amo.|إيو تشي آمو.|بحبك.
+Me liga amanhã.|مي ليغا أمانيا.|اتصل فيّ بكرة.
+Eu vi ele ontem.|إيو ڤي إيلي أونتين.|شفته مبارح (حكي)
+Eu o vi ontem.|إيو أو ڤي أونتين.|شفته مبارح (رسمي)
+Conheço ela.|كونيسو إيلا.|بعرفها.
+Vou te mandar uma mensagem.|ڤو تشي ماندار أوما مينساجين.|رح أبعتلك رسالة.
+Pode me dar a conta?|بودجي مي دار آ كونتا؟|ممكن تعطيني الحساب؟
+Dei o livro para ela.|دجيي أو ليڤرو بارا إيلا.|عطيتها الكتاب.`,d:`Você ___ ajuda?|ـني|me|te|lhe
+Eu ___ amo.|ـك|te|me|se
+Vi ___ ontem no mercado.|ـه (حكي)|ele|lhe|dele
+Ela ___ ligou ontem.|اتصلت فيّ|me|eu|mim
+Dei o presente para ___.|إلها|ela|dela|a
+Pode ___ dar o recibo?|ـني|me|mim|eu`},
+{id:'g-reflexivos',ic:'🪞',t:'أفعال مع se: chamar-se، levantar-se',s:'الفعل بيرجع على صاحبه',intro:'أفعال بتيجي مع ضمير بيرجع على الفاعل: <em>me</em> (أنا)، <em>se</em> (هو/هي/إنت/هم)، <em>nos</em> (إحنا).<br>• بالحكي البرازيلي الضمير قبل الفعل: <em>Eu me levanto</em>.<br>• أهمها: <em>chamar-se</em> (اسمه)، <em>levantar-se</em> (يقوم)، <em>sentar-se</em> (يقعد)، <em>vestir-se</em> (يلبس)، <em>lembrar-se</em> (يتذكر)، <em>preocupar-se</em> (يقلق)، <em>acostumar-se</em> (يتعوّد).',r:`Eu me chamo Lucas.|إيو مي شامو لوكاس.|اسمي لوكاس.
+Como você se chama?|كومو ڤوسي سي شاما؟|شو اسمك؟
+Eu me levanto às seis.|إيو مي ليڤانتو آس سييس.|بقوم الساعة 6.
+Ela se veste rápido.|إيلا سي ڤيستشي هابيدو.|هي بتلبس بسرعة.
+Nós nos sentamos aqui.|نوس نوس سينتاموس أكي.|قعدنا هون.
+Você se lembra de mim?|ڤوسي سي ليمبرا دجي مين؟|بتتذكرني؟
+Não se preocupe.|ناو سي بريوكوبي.|لا تقلق.
+Já me acostumei com o frio.|جا مي أكوستومي كون أو فريو.|تعوّدت عالبرد.
+Eles se casaram em maio.|إيليس سي كازاراو إين مايو.|تجوزوا بأيار.
+Me sinto bem hoje.|مي سينتو بين أوجي.|حاسس حالي منيح اليوم.`,d:`Eu ___ chamo Ana.|(أنا)|me|se|te
+Como você ___ chama?|(إنت)|se|me|nos
+Nós ___ levantamos cedo.|(إحنا)|nos|se|me
+Não ___ preocupe.|لا تقلق|se|me|nos
+Eu já ___ acostumei.|تعوّدت|me|se|nos
+Eles ___ casaram ontem.|تجوزوا|se|nos|me`},
+{id:'g-por-para',ic:'↔️',t:'por ولا para؟',s:'عشان، لـ، من خلال',intro:'• <em>para</em> (بالحكي <em>pra</em>): الهدف أو الاتجاه أو الشخص اللي إله الاشي: <em>Vou para casa</em>، <em>É para você</em>، <em>Estudo para trabalhar</em>.<br>• <em>por</em>: السبب، المرور من مكان، «بالـ» (لكل)، والتبديل: <em>Obrigado por tudo</em>، <em>Passei pelo centro</em>، <em>por mês</em>.<br>• <em>por + o = pelo</em>، <em>por + a = pela</em>.',r:`Vou para o trabalho.|ڤو بارا أو تراباليو.|رايح عالشغل.
+Este presente é para você.|إيستشي بريزينتشي إي بارا ڤوسي.|هالهدية إلك.
+Estudo para conseguir um emprego.|إيستودو بارا كونسيغير أون إينبريغو.|بدرس عشان ألاقي شغل.
+Obrigado por tudo.|أوبريغادو بور تودو.|شكرًا على كل اشي.
+Obrigado pela ajuda.|أوبريغادو بيلا أجودا.|شكرًا على المساعدة.
+Passei pelo centro.|باسيي بيلو سينترو.|مرّيت من المركز.
+Pago mil reais por mês.|باغو ميو هيايس بور ميس.|بدفع ألف ريال بالشهر.
+Troquei o celular por um novo.|تروكيي أو سيلولار بور أون نوڤو.|بدّلت الموبايل بواحد جديد.
+Preciso disso para amanhã.|بريسيزو دجيسو بارا أمانيا.|بحتاجه لبكرة.`,d:`Obrigado ___ ajuda.|على (por + a)|pela|para a|pelo
+Este café é ___ você.|إلك|para|por|pelo
+Pago 800 reais ___ mês.|بالشهر|por|para|pelo
+Estudo ___ aprender.|عشان|para|por|pelo
+Passei ___ parque.|من خلال (por + o)|pelo|para o|pela
+Vou ___ casa.|عالبيت (اتجاه)|para|por|pela`},
+{id:'g-acabar',ic:'⏯️',t:'للتو، بلّش، بطّل: acabar de…',s:'أفعال قبل أفعال',intro:'أفعال بتنحط قبل فعل تاني وبتغيّر المعنى:<br>• <em>acabar de</em> + فعل = للتو / هلأ: <em>Acabei de chegar</em>.<br>• <em>começar a</em> = بلّش: <em>Comecei a estudar</em>.<br>• <em>parar de</em> = بطّل: <em>Parei de fumar</em>.<br>• <em>voltar a</em> = رجع عمل الاشي: <em>Voltei a trabalhar</em>.<br>• <em>continuar</em> + -ndo = لسا / ضل: <em>Continua chovendo</em>.',r:`Acabei de chegar.|أكابيي دجي شيغار.|هلأ وصلت.
+Ele acabou de sair.|إيلي أكابو دجي سايير.|هو هلأ طلع.
+Comecei a estudar português.|كوميسيي آ إيستودار بورتوغيس.|بلّشت أدرس برتغالي.
+Começou a chover.|كوميسو آ شوڤير.|بلّشت تشتي.
+Parei de fumar.|باريي دجي فومار.|بطّلت دخان.
+Pare de falar!|باري دجي فالار!|بطّل حكي!
+Voltei a trabalhar.|ڤوتيي آ تراباليار.|رجعت اشتغلت.
+Continua chovendo.|كونتشينوا شوڤيندو.|لسا عم تشتي.
+Deixei de comer açúcar.|دجيشيي دجي كومير أسوكار.|بطّلت آكل سكر.`,d:`Acabei ___ chegar.|(acabar ___)|de|a|em
+Comecei ___ estudar.|(começar ___)|a|de|em
+Ele parou ___ fumar.|(parar ___)|de|a|para
+Voltei ___ trabalhar.|(voltar ___)|a|de|em
+Continua ___.|عم تشتي|chovendo|chover|chove
+Ela acabou de ___.|طلعت للتو|sair|saiu|saindo`},
+{id:'g-imperfeito',ic:'🕰️',t:'الماضي المستمر: eu morava، eu comia',s:'«كنت أعمل» والعادات القديمة',intro:'الماضي المستمر (<em>imperfeito</em>) للعادات بالماضي، وللوصف، وللاشي اللي كان عم يصير:<br>• <em>-ar</em> ← <em>-ava</em>: <em>eu falava</em> (كنت أحكي).<br>• <em>-er/-ir</em> ← <em>-ia</em>: <em>eu comia، eu dormia</em>.<br>• شواذ: <em>ser → era</em>، <em>ter → tinha</em>، <em>ir → ia</em>، <em>vir → vinha</em>.<br>• الفرق: <em>Eu trabalhava</em> (كنت أشتغل، عادة) و<em>Eu trabalhei</em> (اشتغلت، مرة وخلصت).',r:`Quando eu era criança, morava no interior.|كواندو إيو إيرا كريانسا، موراڤا نو إينتيريور.|لما كنت صغير كنت ساكن بالريف.
+Eu trabalhava em uma loja.|إيو تراباليا ڤا إين أوما لوجا.|كنت أشتغل بمحل.
+Ele sempre chegava tarde.|إيلي سيمبري شيغاڤا تاردجي.|كان دايمًا يوصل متأخر.
+Nós comíamos juntos.|نوس كومياموس جونتوس.|كنا ناكل مع بعض.
+Estava chovendo quando saí.|إيستاڤا شوڤيندو كواندو ساي.|كانت عم تشتي لما طلعت.
+Era uma casa pequena.|إيرا أوما كازا بيكينا.|كان بيت صغير.
+Eu tinha um cachorro.|إيو تشينيا أون كاشوهو.|كان عندي كلب.
+Eu ia à escola a pé.|إيو إيا آ إيسكولا آ بي.|كنت أروح عالمدرسة مشي.
+Fazia muito calor.|فازيا موينتو كالور.|كان الجو كتير حر.
+Eu dormia quando você ligou.|إيو دورميا كواندو ڤوسي ليغو.|كنت نايم لما اتصلت.`,d:`Quando criança, eu ___ futebol todo dia.|كنت ألعب (jogar)|jogava|joguei|jogo
+Nós ___ perto da praia naquela época.|كنا ساكنين|morávamos|moramos|moraremos
+Antes, eu ___ cedo todo dia.|كنت أصحى|acordava|acordei|acordo
+Quando eu era criança, eu ___ à escola a pé.|كنت أروح|ia|fui|vou
+Eu ___ quando você ligou.|كنت نايم|dormia|dormi|durmo
+Ele sempre ___ tarde.|كان يوصل|chegava|chegou|chega`},
+{id:'g-superl',ic:'🏆',t:'الأفضل والأكتر: o mais، -íssimo',s:'التفضيل والمبالغة',intro:'• «الأكتر / الأـ»: <em>o mais</em> + صفة: <em>o mais barato</em> (الأرخص).<br>• شواذ: <em>o melhor</em> (الأحسن)، <em>o pior</em> (الأسوأ)، <em>o maior</em> (الأكبر)، <em>o menor</em> (الأصغر).<br>• «كتير كتير»: بنزيد <em>-íssimo</em>: <em>caro → caríssimo</em>، <em>lindo → lindíssimo</em>.<br>• وبالحكي: <em>super</em> + صفة: <em>super legal</em>.',r:`Este é o mais barato.|إيستشي إي أو مايس باراتو.|هاد الأرخص.
+É o melhor restaurante da cidade.|إي أو ميليور هيستاورانتشي دا سيدادجي.|أحسن مطعم بالمدينة.
+Foi o pior dia da semana.|فوي أو بيور دجيا دا سيمانا.|كان أسوأ يوم بالأسبوع.
+O Brasil é o maior país da América do Sul.|أو برازيو إي أو مايور بايس دا أميريكا دو سوو.|البرازيل أكبر دولة بأمريكا الجنوبية.
+Ela é a mais alta da turma.|إيلا إي آ مايس آوتا دا تورما.|هي الأطول بالصف.
+Está caríssimo!|إيستا كاريسيمو!|كتير غالي!
+A praia é lindíssima.|آ برايا إي ليندجيسيما.|البحر حلو كتير كتير.
+O filme é super legal.|أو فيومي إي سوبير ليغاو.|الفيلم كتير حلو.
+Muitíssimo obrigado.|موينتشيسيمو أوبريغادو.|ألف شكر.`,d:`É o ___ barato da loja.|الأكتر|mais|muito|tão
+É o ___ restaurante da cidade.|الأحسن|melhor|mais bom|bom
+Foi o ___ dia do ano.|الأسوأ|pior|mais ruim|mau
+Este celular está ___!|كتير غالي|caríssimo|caríssima|mais caríssimo
+É o ___ país da América do Sul.|الأكبر|maior|mais grande|grandíssimo
+Ela é a mais alta ___ turma.|بالصف (de + a)|da|na|do`},
+];
+/* دمج: بيضيف السطور الجديدة بدون تكرار */
+function _bmerge(a,b){if(!b)return a;const have=new Set(lines(a||'').map(x=>x[0]));const add=lines(b).filter(x=>!have.has(x[0])).map(x=>x.join('|'));return add.length?(a?a+'\n':'')+add.join('\n'):a}
+
 /* ===== الأساسيات: أبواب مرتبة، كل باب فيه شرح وأمثلة بصوت وتمرين ===== */
 const BT=[
 {id:'sobrevivencia',ic:'🆘',t:'جمل النجاة',s:'أول جمل لازم تحفظها',intro:'هاي الجمل بتنقذك بأي موقف: لما ما تفهم، أو بدك حدا يعيد، أو بدك تسأل عن كلمة.',r:`Não entendi.|ناو إينتيندجي.|ما فهمت.
@@ -9448,6 +10069,7 @@ Valeu!|ڤاليو!|يسلمو! (عامي)
 Com certeza.|كون سيرتيزا.|أكيد.
 Tá bom.|تا بون.|ماشي.`},
 ];
+if(typeof BMORE!=='undefined'){BT.forEach(t=>{t.r=_bmerge(t.r,BMORE[t.id])});BNEW.forEach(([after,o])=>{const i=BT.findIndex(x=>x.id===after);BT.splice(i<0?BT.length:i+1,0,o)})}
 BT.forEach(t=>{t.R=lines(t.r).map(([pt,pron,ar])=>({pt,pron,ar,key:'b|'+pt}))});
 function vBasics(){
   const done=S.bs||{};
@@ -9464,9 +10086,9 @@ function vBasic(id){
   const nx=LST[i+1]||(LST===BT?BG[0]:null);const gram=LST===BG;
   const show=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><span class="eyebrow">${gram?'القواعد الأساسية':'الأساسيات'} · الباب ${i+1} من ${LST.length}</span><h1 style="font-size:24px">${t.ic} ${esc(t.t)}</h1><span class="muted">${esc(t.s)}</span></div>
    <div class="card lesson">${Pp(t.intro)}${X(t.r)}${t.tip?TIP(t.tip):''}</div>
-   <div class="row"><button class="btn primary" id="bq">تمرين: ${gram?t.D.length+2:Math.min(8,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
+   <div class="row"><button class="btn primary" id="bq">تمرين: ${gram?Math.min(10,t.D.length)+2:Math.min(10,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
     $('#bq').onclick=quiz};
-  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=gram?shuffle(t.D.map(drillQ).concat(shuffle(pool).slice(0,2).map((w,n)=>n?qListen(w,pool):qPt2Ar(w,pool)))):shuffle(pool).slice(0,Math.min(8,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
+  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=gram?shuffle(shuffle(t.D).slice(0,10).map(drillQ).concat(shuffle(pool).slice(0,2).map((w,n)=>n?qListen(w,pool):qPt2Ar(w,pool)))):shuffle(pool).slice(0,Math.min(10,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
     runQuiz($('#qb'),qs,{title:t.t,retry:quiz,onDone:p=>{S.bs=S.bs||{};if(S.bs[id]==null||p>S.bs[id]){S.bs[id]=p;save()}},next:nx?{label:'التالي: '+nx.t+' ←',href:'#basic-'+nx.id}:{label:'الرجوع إلى الأساسيات',href:'#basics'}})};
   show();
 }
@@ -9650,6 +10272,7 @@ O trânsito hoje está ___.|أسوأ|pior|mais mau|ruim
 É a ___ cidade do Brasil.|أكبر|maior|mais grande|grande
 Este é ___ caro.|أقل|menos|mais|tão`},
 ];
+if(typeof GMORE!=='undefined'){BG.forEach(t=>{const m=GMORE[t.id];if(m){t.r=_bmerge(t.r,m.r);t.d=_bmerge(t.d,m.d)}});GNEW.forEach(o=>BG.push(o))}
 BG.forEach(t=>{t.cat='g';t.R=lines(t.r).map(([pt,pron,ar])=>({pt,pron,ar,key:'b|'+pt}));t.D=t.d?lines(t.d):[]});
 
 /* ===== قصص وحوارات مسموعة: واحدة لكل وحدة ===== */
