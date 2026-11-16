@@ -10536,7 +10536,7 @@ const isFinal=k=>/^f\d$/.test(String(k));
 const PREVIEW=3;
 const WIN=3;
 function chOpen(id){const u=unitOf(id);if(!u)return false;const L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L)||chDone(id))return true;
-  let free=WIN;for(const uu of unitsOf(L)){for(const c of uu.chs){if(chDone(c))continue;if(c===id)return true;if(--free<=0)return false}if(!exDone(uu.n))return false}return false}
+  let free=WIN;for(const uu of unitsOf(L)){for(const c of uu.chs){if(chDone(c))continue;if(c===id)return true;if(--free<=0)return false}}return false}
 const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||lvFree(n)||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||lvFree(lvOf(u))||EXAMS[k].chs.every(chDone))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(L.n<(S.placeLv||1))continue;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+UN(k);
@@ -10821,7 +10821,7 @@ function vSettings(){
 let chState={id:0,step:null};
 function vChapter(id){
   const c=CH[id-1];if(!c)return vHome();
-  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">دايمًا عندك 3 دروس مفتوحة قدامك: كل ما تنجح بدرس (70% أو أكثر) بينفتح اللي بعده. وأول درس بكل وحدة بينفتح بعد ما تنجح باختبار الوحدة اللي قبلها بـ 90%.</p></div>`;return}
+  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">دايمًا عندك 3 دروس مفتوحة قدامك: كل ما تنجح بدرس (70% أو أكثر) بينفتح اللي بعده. والترتيب بيكمّل من وحدة للي بعدها.</p></div>`;return}
   if(chState.id!==id){chState={id,step:(stepsOf(id).find(([k])=>!stepDone(id,k))||STEPS[0])[0]}}
   const st=chState.step;
   app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${UN(c.u)} · الدرس ${CN(id)}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
