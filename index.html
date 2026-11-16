@@ -620,7 +620,7 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
   function aiInit(){if(aiP)return aiP;aiP=(async()=>{const B='https://www.gstatic.com/firebasejs/13.3.0/';
     const [appM,aiM,acM]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-ai.js'),import(B+'firebase-app-check.js')]);
     const app=appM.initializeApp(FB_CONFIG,'ai');
-    if(AI_SITEKEY.length>20&&!AI_SITEKEY.startsWith('/*'))acM.initializeAppCheck(app,{provider:new acM.ReCaptchaV3Provider(AI_SITEKEY),isTokenAutoRefreshEnabled:true});
+    if(AI_SITEKEY.length>20&&!AI_SITEKEY.startsWith('/*'))acM.initializeAppCheck(app,{provider:new acM.ReCaptchaEnterpriseProvider(AI_SITEKEY),isTokenAutoRefreshEnabled:true});
     return {aiM,ai:aiM.getAI(app,{backend:new aiM.GoogleAIBackend()})}})();aiP.catch(()=>{aiP=null});return aiP}
   const MODELS=['gemini-3.5-flash','gemini-3-flash','gemini-flash-latest','gemini-3.1-flash-lite','gemini-2.5-flash'];
   const mapErr=e=>{const m=String((e&&(e.message||e.code))||e);if(/429|quota|exhausted|rate/i.test(m))return {code:'rate_limited',message:m};if(/app.?check|403|permission|PERMISSION_DENIED|API has not been used|disabled|api-not-enabled|unauthenticated|401/i.test(m))return {code:'setup',message:m};return {code:'error',message:m}};
