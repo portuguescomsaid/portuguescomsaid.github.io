@@ -502,6 +502,41 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .qfoot:has(.fb.show){background:var(--paper);padding:8px 0 4px;box-shadow:0 -10px 14px -10px rgba(0,0,0,.18);border-radius:16px 16px 0 0}
 .qfoot .fb{margin:0}.qfoot .row{margin:0}.qfoot #nx{width:100%;font-size:18px;padding:14px}
 .quiz{min-height:calc(100vh - 150px)}
+
+.hlw{all:unset;cursor:pointer;border-bottom:2px dotted var(--green);color:inherit;font:inherit}.hlw.x{border-bottom-color:var(--sun,#E8AE00)}.hlw:active{background:var(--green-soft)}
+.pair{white-space:nowrap;unicode-bidi:isolate}
+
+.nbadge{position:absolute;top:-6px;inset-inline-end:-6px;background:var(--bad);color:#fff;border-radius:99px;min-width:18px;height:18px;font:700 11px/18px var(--f-pt);text-align:center;padding:0 4px}
+#admchip.has-n{position:relative}#admchip.has-n::after{content:attr(data-n);position:absolute;top:-6px;inset-inline-end:-6px;background:var(--bad);color:#fff;border-radius:99px;min-width:18px;height:18px;font:700 11px/18px var(--f-pt);text-align:center;padding:0 4px}
+.msg-it,.msg-adm{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;background:var(--card);display:grid;gap:4px}
+.msg-it.fresh{border-color:var(--green);box-shadow:0 0 0 2px var(--green-soft)}
+.msg-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.msg-tx{margin:2px 0;white-space:pre-wrap}
+.msg-rep{background:var(--green-soft);border-radius:10px;padding:8px 10px}
+.m-st{font-size:12px;font-weight:700;border-radius:99px;padding:2px 8px}.m-new{background:#FFF3BF;color:#8a6100}.m-rec{background:#E7F5FF;color:#1864AB}.m-done{background:#D3F9D8;color:#2B8A3E}.m-rep{background:#F3F0FF;color:#6741D9}
+.inb-card{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;position:relative}.ib-ic{font-size:30px}.ib-n{margin-inline-start:auto;background:var(--bad);color:#fff;border-radius:99px;padding:2px 10px;font-weight:800}
+
+.kc-bar{display:block;width:80%;height:8px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden;margin:4px auto 0}.kc-bar i{display:block;height:100%;background:var(--kf,#2F9E44);border-radius:99px;transition:width .5s}
+.kc-bar.big{width:100%;height:14px;margin:0}.kprog{display:grid;gap:6px;text-align:center}.kprog b{color:var(--kf)}
+.kcat.kdone-c{background:linear-gradient(180deg,#EBFBEE,var(--kb));border-color:#2F9E44}.kcat.kdone-c .kc-ord{background:#2F9E44}
+.kcat.klock{filter:grayscale(.85);opacity:.6}
+.tuca{display:flex;align-items:flex-start;gap:10px}.tc-b{font-size:44px;line-height:1;animation:tbob 2.4s ease-in-out infinite}.tc-m{background:#fff;border:3px solid var(--kb,#FFE8CC);border-radius:18px 18px 18px 4px;padding:10px 14px;font-weight:600;flex:1;box-shadow:0 3px 0 rgba(0,0,0,.06)}
+@keyframes tbob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-6px) rotate(4deg)}}
+.kstick .ks-row{display:flex;flex-wrap:wrap;gap:6px}.ks{font-size:28px;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#f1f3f5;filter:grayscale(1);opacity:.35}.ks.on{filter:none;opacity:1;background:#FFF3BF;box-shadow:0 0 0 2px #FCC419;animation:pop .5s}
+.kgames{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kgame{display:grid;justify-items:center;gap:2px;text-decoration:none;color:inherit;background:#fff;border:3px solid var(--kb);border-radius:18px;padding:12px 8px;box-shadow:0 4px 0 var(--kb)}
+.kgame span{font-size:34px}.kgame b{color:var(--kf);font-size:17px}.kgame small{color:#666;font-size:12px}.kgame em{font-style:normal;color:#F08C00;letter-spacing:2px}.kgame.ok{border-color:#2F9E44;box-shadow:0 4px 0 #8CE99A}.kgame.bonus{border-style:dashed}
+.kcard.learned{border-color:#2F9E44}.klearn{position:absolute;top:6px;right:8px;background:#2F9E44;color:#fff;border-radius:99px;width:24px;height:24px;display:grid;place-items:center;font-weight:800;z-index:2}
+.kf-row.learned{border-color:#8CE99A}
+.kcard.pop,.bounce{animation:pop .45s}@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+.shake{animation:shake .45s}@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.kopt{position:relative}.kcheer{position:absolute;inset-inline:0;top:-14px;margin:auto;width:max-content;max-width:95%;background:#2F9E44;color:#fff;border-radius:99px;padding:3px 12px;font-weight:800;font-size:15px;animation:pop .5s}
+.kq-bar{flex:1;height:10px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden;margin:0 10px}.kq-bar i{display:block;height:100%;background:var(--kf)}
+.kq-top{display:flex;align-items:center}
+.kw-pic{display:grid;place-items:center}.kw-pic .kpic{width:min(70vw,260px);height:min(70vw,260px)}.kw-pic .kemo{font-size:120px}
+.kwopts{display:grid;gap:10px}.kwo{display:flex;gap:8px;align-items:stretch}.kwo-s{font-size:26px;border:0;border-radius:16px;background:var(--kb);padding:0 16px;cursor:pointer}.kwb{flex:1;text-align:center}.kwb b{font-size:24px;color:var(--kf)}
+.knew{display:grid;gap:4px;justify-items:center;background:#fff;border-radius:18px;padding:12px;margin:10px 0}.kn-st{font-size:64px;animation:pop .8s}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}.confetti i{position:absolute;top:-30px;width:10px;height:14px;border-radius:3px;font-style:normal;font-size:22px;animation:cfall linear forwards}
+@keyframes cfall{to{transform:translateY(110vh) rotate(540deg)}}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -516,7 +551,7 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="#path"><span class="pt">Português</span><span class="flag"></span><small>برتغالي مع سعيد</small></a>
-  <div class="chips"><span class="chip" title="نقاط الخبرة"><b id="hxp">0</b> XP</span><span class="chip" title="أيام ورا بعض"><b id="hst">0</b> يوم</span><a class="chip" id="admchip" href="#admin" aria-label="لوحة التحكم" hidden>📊</a><a class="chip" href="#settings" aria-label="الإعدادات">⚙</a></div>
+  <div class="chips"><span class="chip" title="نقاط الخبرة"><b id="hxp">0</b> XP</span><span class="chip" title="أيام ورا بعض"><b id="hst">0</b> يوم</span><a class="chip" id="admchip" href="#admin" aria-label="لوحة التحكم" hidden>📊</a><a class="chip" href="#settings" aria-label="الإعدادات" style="position:relative">⚙<span id="msgbadge" class="nbadge" hidden></span></a></div>
 </div></header>
 <nav class="tabs" id="tabs">
   <a href="#path" data-r="path"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H14a3.5 3.5 0 0 0 0-7h-4a3.5 3.5 0 0 1 0-7h5.5"/></svg>المسار</a>
@@ -834,7 +869,7 @@ H('كيف ترد على «كيفك؟»')+X(`Tudo bem, e você?|تودو بين،
 Tudo ótimo!|تودو أوتشيمو!|كل إشي ممتاز!
 Mais ou menos.|مايس أو مينوس.|نص نص.
 Tô bem, obrigado.|تو بين، أوبريغادو.|أنا منيح، شكرًا.`)+
-TIP('<b>tô</b> = estou بالحكي اليومي، و<b>tá</b> = está. بتسمعهم كل يوم بالبرازيل.')+
+TIP('<bdi dir="ltr" class="pair"><b>tô</b> = estou</bdi> بالحكي اليومي، و<b>tá</b> = está. بتسمعهم كل يوم بالبرازيل.')+
 H('كلمات المجاملة')+X(`Por favor.|بور فاڤور.|لو سمحت.
 Obrigado.|أوبريغادو.|شكرًا (لما يحكيها رجل).
 Obrigada.|أوبريغادا.|شكرًا (لما تحكيها امرأة).
@@ -848,7 +883,7 @@ Até logo!|أتيه لوغو!|بشوفك بعدين!
 Até amanhã!|أتيه أمانيا!|لبكرة!
 Até mais!|أتيه مايس!|نشوفك!
 Bom fim de semana!|بون فين دجي سيمانا!|ويكند سعيد!`)+
-H('بالواتساب')+Pp('البرازيليين بيكتبوا مختصرات كثير: <b dir="ltr">blz</b> = beleza، <b dir="ltr">vc</b> = você، <b dir="ltr">tb</b> = também، <b dir="ltr">obg</b> = obrigado.'),
+H('بالواتساب')+Pp('البرازيليين بيكتبوا مختصرات كثير: <bdi dir="ltr" class="pair"><b>blz</b> = beleza</bdi>، <bdi dir="ltr" class="pair"><b>vc</b> = você</bdi>، <bdi dir="ltr" class="pair"><b>tb</b> = também</bdi>، <bdi dir="ltr" class="pair"><b>obg</b> = obrigado</bdi>.'),
 w:`oi|أوي|أهلين
 olá|أولا|أهلًا
 bom dia|بون دجيا|صباح الخير
@@ -1111,7 +1146,7 @@ a gente está|إستا: إحنا
 nós estamos|إستاموس: إحنا
 vocês estão|إستاو: إنتو
 eles / elas estão|إستاو: هم`)+
-TIP('بالحكي: <em>tô</em> = estou، <em>tá</em> = está، <em>tão</em> = estão. مثال: <em>Tô cansado.</em> = أنا تعبان.')+
+TIP('بالحكي: <bdi dir="ltr" class="pair"><em>tô</em> = estou</bdi>، <bdi dir="ltr" class="pair"><em>tá</em> = está</bdi>، <bdi dir="ltr" class="pair"><em>tão</em> = estão</bdi>. مثال: <em>Tô cansado.</em> = أنا تعبان.')+
 H('SER ولا ESTAR؟')+Pp('<b>ser</b> للإشي الثابت: مين إنت، شو طبعك، شو شغلتك. <b>estar</b> للإشي المؤقت: شعورك هلأ، مكانك، حالتك.')+X(`Ela é calma.|إيلا إيه كاوما.|هي شخصية هادية. (طبعها)
 Hoje ela está nervosa.|أوجي إيلا إستا نيرڤوزا.|اليوم هي متوترة. (مؤقت)
 Ele é feliz.|إيلي إيه فيليز.|هو إنسان سعيد.
@@ -1992,7 +2027,7 @@ H('كيف رايح؟')+TB(`de carro|بالسيارة
 de ônibus|بالباص
 de Uber|بأوبر
 a pé|مشي`)+
-TIP('بالحكي: <em>pra</em> = para، و<em>pro</em> = para o. مثال: <em>Vou pro centro.</em> = رايح عالبلد.')+
+TIP('بالحكي: <bdi dir="ltr" class="pair"><em>pra</em> = para</bdi>، و<em>pro</em> = para o. مثال: <em>Vou pro centro.</em> = رايح عالبلد.')+
 H('الاتجاهات')+X(`Vire à direita.|ڤيري آ دجيريتا.|لف يمين.
 Vire à esquerda.|ڤيري آ إسكيردا.|لف شمال.
 Siga reto.|سيغا هيتو.|دغري.
@@ -4531,7 +4566,7 @@ Esqueci de pagar a conta.|إسكيسي دجي باغار آ كونتا.|نسيت
 Você confia nele?|ڤوسيه كونفيا نيلي؟|هل تثق به؟
 Assisti ao jogo ontem.|أسيستشي آو جوغو أونتين.|شاهدت المباراة أمس.
 Vou para o Rio no ano que vem.|ڤو بارا أو هيو نو آنو كي ڤين.|سأذهب (لأعيش) إلى ريو السنة القادمة.`)+
-TIP('حروف الجر تندمج: em + ele = <b>nele</b>، de + ela = <b>dela</b>، em + isso = <b>nisso</b>.'),
+TIP('حروف الجر تندمج: <bdi dir="ltr" class="pair">em + ele = <b>nele</b></bdi>، <bdi dir="ltr" class="pair">de + ela = <b>dela</b></bdi>، <bdi dir="ltr" class="pair">em + isso = <b>nisso</b></bdi>.'),
 w:`gostar de|غوستار دجي|يحب
 precisar de|بريسيزار دجي|يحتاج
 pensar em|بينسار إين|يفكر في
@@ -4584,7 +4619,7 @@ Mesmo que seja difícil, não vou desistir.|ميزمو كي سيجا دجيفي�
 H('قارن مع indicativo')+TB(`Embora ele seja rico, é simples.|embora + subjuntivo
 Apesar de ele ser rico, é simples.|apesar de + infinitivo
 Ele é rico, mas é simples.|mas + indicativo`,null,false)+
-TIP('<b>caso</b> (في حال) + presente do subjuntivo، أما <b>se</b> (إذا) للمستقبل + futuro do subjuntivo: <em>Caso precise</em> = <em>Se precisar</em>.'),
+TIP('<b>caso</b> (في حال) + presente do subjuntivo، أما <b>se</b> (إذا) للمستقبل + futuro do subjuntivo: <bdi dir="ltr" class="pair"><em>Caso precise</em> = <em>Se precisar</em></bdi>.'),
 w:`embora|إيمبورا|بالرغم من أن
 para que|بارا كي|لكي
 caso|كازو|في حال
@@ -6527,715 +6562,655 @@ EXAMS[25]={chs:[97,98,99,100],passage:'Quando recebi a proposta de emprego, fiqu
 EXAMS.f4.chs.push(93,94,95,96);
 EXAMS.f5.chs.push(97,98,99,100);
 
-/* ===== كلمات وجمل إضافية موزّعة على الفصول ===== */
+/* ===== كلمات وجمل إضافية من دفتر سعيد، مرتبة حسب موضوع كل فصل ===== */
 const EXTRA={
-2:{w:`bem|بيم|بخير / جيداً
-sim|سيم|نعم
+2:{w:`bem|بين|بخير / جيداً
+sim|سين|نعم
 não|ناو|لا
-risco|هيسكو|مخاطرة
-vivo|ڤيڤو|حي / عايش
-sugestão|سوجيستاو|اقتراح
-também|تامبيم|كمان / أيضاً
 nada|نادا|ولا إشي
 tudo|تودو|كل إشي
-livre|ليڤري|فاضي / حر
-lotado|لوتادو|مزدحم / مليان
-quebrada|كيبرادا|مكسورة / خربانة
-pronto|پرونتو|جاهز
-pronta|پرونتا|جاهزة
-esperando|إسپيراندو|عم يستنى
-obrigada|أوبريغادا|شكراً من امرأة
 claro|كلارو|أكيد / طبعاً
-com certeza|كوم سيرتيزا|أكيد
+também|تامبيم|كمان / أيضاً
+pronto|برونتو|جاهز
+pronta|برونتا|جاهزة
 né não|نيه ناو|مش هيك؟
-aí sim|آيي سيم|هيك تمام
+aí sim|آيي سين|هيك تمام
 tá bom|تا بوم|ماشي / تمام
+obrigada|أوبريغادا|شكراً من امرأة
 tudo certo|تودو سيرتو|كل شيء تمام
-sem problema|سيم پروبليما|بدون مشكلة
-vontade|ڤونتادجي|رغبة / نفس`,s:`Muito obrigada!|مويتو أوبريغادا|شكراً جزيلاً، بصيغة المتحدثة
-Como vai o senhor?|كومو ڤاي أو سينهور؟|كيف حضرتك؟
-Bem, obrigado, e você?|بيم أوبريغادو إي ڤوسيه؟|بخير، شكراً، وإنت؟
-Pode ser?|پودجي سير؟|ممكن؟ / مناسب؟
-O que você quer?|أو كي ڤوسيه كير؟|شو بدك؟
+com certeza|كون سيرتيزا|أكيد
+sem problema|سين بروبليما|بدون مشكلة
+entendi|إنتيندجي|فهمت`,s:`Pode ser?|بودجي سير؟|ممكن؟ / مناسب؟
 Que legal!|كي ليغاو!|يا سلام! / شو حلو!
+Pode repetir?|بودجي هيبيتشير؟|ممكن تعيد؟
+Muito obrigada!|مويتو أوبريغادا|شكراً جزيلاً، بصيغة المتحدثة
 Eu não entendi.|إيو ناو إنتيندجي|أنا ما فهمت
-Pode repetir?|پودجي هيپيتشير؟|ممكن تعيد؟
-Espere um minuto.|إسپيري أوم مينوتو|استنى دقيقة
-O shopping tá lotado hoje.|أو شوپينغ تا لوتادو أوجي|المول مليان اليوم
-Pode ficar tranquilo.|پودجي فيكار ترانكويلو|خليك مطمن
-Muito obrigada! Tchau.|مويتو أوبريغادا تشاو|شكراً كتير مع السلامة`},
+O que você quer?|أو كي ڤوسي كير؟|شو بدك؟
+Como vai o senhor?|كومو ڤاي أو سينهور؟|كيف حضرتك؟
+Bem, obrigado, e você?|بين أوبريغادو إي ڤوسي؟|بخير، شكراً، وإنت؟
+Muito obrigada! Tchau.|مويتو أوبريغادا تشاو|شكراً كتير مع السلامة
+Não sei.|ناو ساي|ما بعرف`},
 3:{w:`qual|كواو|أي / ما
-de onde|دجي أونجي|من وين
 como|كومو|كيف
 elas|إيلاس|هن
-leitura|ليتورا|قراءة
-escuta|إسكوتا|استماع
-oralidade|أوراليدادجي|تحدث شفهي
-professor|پروفيسور|معلم
-estudante|إستودانتشي|طالب
-colegas|كوليغاس|زملاء
-inscrição|إنسكريساو|تسجيل
-origem|أوريجيم|أصل / منشأ
 somos|سوموس|إحنا نكون
 tenho|تينيو|عندي
-espaço|إسپاسو|مساحة
-anotações|أنوتاساويس|ملاحظات
-pessoas|پيسواس|أشخاص
 amiga|أميغا|صديقة
-amigos|أميغوس|أصدقاء
-professores|پروفيسوريس|معلمون
 aulas|آولاس|حصص
-livro|ليڤرو|كتاب
-texto|تيكستو|نص`,s:`Ele é um aluno.|إيلي إيه أوم ألونو|هو طالب
-Quem são eles?|كين ساو إيليس؟|مين هم؟
-Qual é seu nome?|كواو إيه سيو نومي؟|شو اسمك؟
-Qual é o seu nome?|كواو إيه أو سيو نومي؟|شو اسمك؟
-Qual é o seu nome completo?|كواو إيه أو سيو نومي كومپليتو؟|شو اسمك الكامل؟
+amigos|أميغوس|أصدقاء
+colegas|كوليغاس|زملاء
+professor|بروفيسور|معلم
+estudante|إستودانتشي|طالب
+ser|سير|يكون، صفة ثابتة أو هوية
+sou|سو|أنا أكون
+quais|كوايس|أي للجمع
+são|ساو|هم يكونوا
+tem|تيم|عنده / عندها
+estudamos|إستوداموس|إحنا بندرس`,s:`Ele é um aluno.|إيلي إيه أوم ألونو|هو طالب
 Meu nome é Ana.|ميو نومي إيه آنا|اسمي آنا
 Eu tenho 23 anos.|إيو تينيو ڤينتشي إي تريس آنوس|عمري 23 سنة
 Eu faço biologia.|إيو فاسو بيولوجيا|أنا بدرس أحياء
-Nós estudamos aos sábados.|نوس إستوداموس آوس سابادوس|إحنا بندرس كل سبت
-Esse livro deve ser encapado.|إيسي ليڤرو ديڤي سير إنكاپادو|هذا الكتاب لازم يتغلف
-Vamos preencher um formulário.|ڤاموس پرينشير أوم فورمولاريو|خلينا نعبي استمارة
-Quando as aulas começam?|كواندو آز آولاس كوميسام؟|إمتى بتبدأ الحصص؟
-As aulas começam semana que vem, na segunda-feira, às 15h00min.|آز آولاس كوميسام سيمانا كي ڤيم نا سيغوندا فيرا آز كينزي أوراس|الحصص بتبدأ الأسبوع الجاي الاثنين الساعة 3
-Escute o diálogo que seus professores irão interpretar e complete o que falta.|إسكوتشي أو دجيالوغو كي سيوس پروفيسوريس إيراو إنتيرپريتار إي كومپليتشي أو كي فالتا|اسمع الحوار اللي رح يمثلوه المعلمين وكمل الناقص
-Agora, vamos praticar!|أغورا ڤاموس پراتشيكار|هلا خلينا نتدرب!
-Complete usando os pronomes interrogativos certos.|كومپليتشي أوزاندو أوس پرونوميس إنتيروغاتشيڤوس سيرتوس|كمل باستخدام أدوات الاستفهام الصحيحة
-Leia o texto e responda às perguntas.|ليا أو تيكستو إي هيسپوندا آز پيرغونتاس|اقرأ النص وجاوب عن الأسئلة
-Use esse espaço para anotações.|أوزي إيسي إسپاسو پارا أنوتاساويس|استخدم هاي المساحة للملاحظات
-Conte para seus colegas da sala um pouco sobre sua família.|كونتشي پارا سيوس كوليغاس دا سالا أوم پوكو سوبرِ سوا فاميليا|احكي لزملائك شوي عن عيلتك
-Fale o parentesco e as características de cada pessoa da sua família.|فالي أو پارينتيسكو إي آس كاراكتيغيستيكاس دجي كادا پيسوا دا سوا فاميليا|احكي صلة القرابة وصفات كل شخص بعيلتك
-Se precisar, use o espaço abaixo para fazer anotações.|سي پريسيزار أوزي أو إسپاسو أبايشو پارا فازير أنوتاساويس|إذا احتجت استخدم المساحة تحت للملاحظات
-Vamos estudar o vocabulário de família.|ڤاموس إستودار أو ڤوكابولاريو دجي فاميليا|خلينا ندرس مفردات العائلة
-Complete com os nomes de cada familiar.|كومپليتشي كوم أوس نوميس دجي كادا فاميليار|كمل بأسماء أفراد العائلة
-Leia a conversa entre essas duas amigas.|ليا آ كونڤيرسا إنتري إيساس دواس أميغاس|اقرأ الحوار بين الصاحبتين
-Agora, responda às perguntas sobre as duas famílias.|أغورا هيسپوندا آز پيرغونتاس سوبرِ آس دواس فاميلياس|هلا جاوب عن أسئلة العيلتين
-No texto abaixo, grife os pronomes demonstrativos.|نو تيكستو أبايشو غريفي أوس پرونوميس ديمونستراتشيڤوس|بالنص تحت حدد أسماء الإشارة
-Complete as frases utilizando ESTE(A), ESSE(A) e AQUELE(A) como está na imagem.|كومپليتشي آس فرازيس أوتشيليزاندو إيستشي إيسي إي آكيلي كومو إستا نا إيماجيم|كمل الجمل بأسماء الإشارة مثل الصورة
-Se sim, qual?|سي سيم كواو؟|إذا آه، أي واحد؟
-Esses são os meus colegas.|إيسيس ساو أوز ميوس كوليغاس|هدول زملائي`},
-4:{w:`quantos|كوانتوس|كم للمذكر الجمع
-quantas|كوانتاس|كم للمؤنث الجمع
-unidade|أونيدادجي|وحدة / حبة
-uma|أوما|واحدة
+Qual é o seu nome?|كواو إيه أو سيو نومي؟|شو اسمك؟
+Quem é ele?|كين إيه إيلي؟|مين هو؟
+Quem é ela?|كين إيه إيلا؟|مين هي؟
+Eu sou estudante.|إيو سو إستودانتشي|أنا طالب`},
+4:{w:`uma|أوما|واحدة
+mil|ميو|ألف
 duas|دواس|اثنتان
-vinte e três|ڤينتشي إي تريس|ثلاثة وعشرون
-terceiro|تيرسيرو|ثالث
-metade|ميتادجي|نصف
 onze|أونزي|أحد عشر
 doze|دوزي|اثنا عشر
+metade|ميتادجي|نصف
 quinze|كينزي|خمسة عشر
 trinta|ترينتا|ثلاثون
+quantos|كوانتوس|كم للمذكر الجمع
+quantas|كوانتاس|كم للمؤنث الجمع
+unidade|أونيدادجي|وحدة / حبة
+terceiro|تيرسيرو|ثالث
 quarenta|كوارينتا|أربعون
-mil|ميو|ألف
-centavos|سينتاڤوس|سنتافوس`,s:`Quanto custa esse carro?|كوانتو كوستا إيسي كاهّو؟|بكم هاي السيارة؟
+centavos|سينتاڤوس|سنتافوس
+vinte e três|ڤينتشي إي تريس|ثلاثة وعشرون`,s:`Quanto custa esse carro?|كوانتو كوستا إيسي كاهّو؟|بكم هاي السيارة؟
 Meia dúzia = 6 unidades.|ميا دوزيا سييس أونيدادجيس|نصف دزينة يعني ست وحدات`},
-5:{w:`brasileira|برازيلييرا|برازيلية
-brasileiros|برازيلييروس|برازيليون
-São Paulo|ساو پاولو|ساو باولو
+5:{w:`origem|أوريجيم|أصل / منشأ
+de onde|دجي أونجي|من وين
+países|بايزيس|بلدان
 São Paulo|ساو باولو|ساو باولو
-países|پايزيس|بلدان`,s:`Ela é do Egito.|إيلا إيه دو إيجيتو|هي من مصر`},
-6:{w:`calma|كاوما|هادئة
-divertida|دجيڤيرتشيدا|مرحة
-nervosa|نيرڤوزا|متوترة
-ser|سير|يكون، صفة ثابتة أو هوية
-sou|سو|أنا أكون
-estão|إستاو|هم موجودين
-ruim|هويم|سيئ
-novo|نوڤو|جديد
-nova|نوڤا|جديدة
-velho|ڤيليو|قديم / كبير بالعمر
-velha|ڤيليا|قديمة / كبيرة بالعمر
-fácil|فاسيو|سهل
-difíceis|دجيفيسيس|صعبة للجمع
-impossível|إمپوسيڤيو|مستحيل
-certo|سيرتو|صحيح
-errado|إهادو|غلط
-correto|كوهّيتو|صحيح
-completo|كومپليتو|كامل
-separado|سيپارادو|منفصل
-junto|جونتو|مع بعض
-igual|إيغواو|متساوي / نفس الشيء
-diferente|دجيفيرينتشي|مختلف
-especial|إسپيسياو|مميز / خاص
-comum|كوموم|مشترك / عادي
-castanhos|كستانيوس|بنية للجمع
-pretos|پريتوس|سود للجمع
-verdes|ڤيردجيس|خضراء للجمع
-loiros|لويروس|أشقر للجمع
-amarela|أماريلا|صفراء
-cor|كور|لون
-encaracolados|إنكاراكولادوس|مجعد للجمع
-compridos|كومپريدوس|طويل للجمع
-longos|لونغوس|طويل للجمع`,s:`Como você se sente?|كومو ڤوسيه سي سينتشي؟|كيف حاسس حالك؟
-Eu me sinto bem.|إيو مي سينتو بيم|حاسس حالي منيح
-Ela está sempre feliz e é muito amigável.|إيلا إستا سيمپري فيليز إي إيه مويتو أميغاڤيو|هي دايماً مبسوطة وودودة كثير
-Ela é uma pessoa calma e divertida, mas hoje ela está nervosa.|إيلا إيه أوما پيسوا كاوما إي دجيڤيرتشيدا ماس أوجي إيلا إستا نيرڤوزا|هي هادئة ومرحة بس اليوم متوترة
-Seus olhos são verdes e ela tem a pele branca.|سيوس أوليوس ساو ڤيردجيس إي إيلا تيم آ پيلي برانكا|عيونها خضراء وبشرتها بيضاء
-Ele é gordo, tem cabelo longo e encaracolado.|إيلي إيه غوردو تيم كابيلو لونغو إي إنكاراكولادو|هو ممتلئ وشعره طويل ومجعد
-Ele usa barba e tem os olhos castanhos iguais aos meus.|إيلي أوزا باربا إي تيم أوز أوليوس كستانيوس إيغوايس آوس ميوس|عنده لحية وعيونه بنية مثل عيوني`},
-7:{w:`escrita|إسكريتا|كتابة
+brasileira|برازيلييرا|برازيلية
+brasileiros|برازيلييروس|برازيليون
 mundo|موندو|العالم
-partes|پارتشيس|أجزاء
-várias|ڤارياس|متعددة
-principais|پرينسيپايس|رئيسية
-principalmente|پرينسيپالمنتشي|خصوصاً
-muito|مويتو|كثير / جداً
-muitos|مويتوس|كثيرون
-muitas|مويتاس|كثيرات
-pouco|پوكو|قليل
-algum|ألغوم|أي / بعض
-alguma|ألغوما|أي / بعض للمؤنث
-nenhum|نينيوم|ولا واحد
-todos|تودوس|الجميع / كلهم
-todas|توداس|الجميع للمؤنث
-cada|كادا|كل واحد / كل
-outro|أوترو|آخر
-outros|أوتروس|آخرون / أخرى
-ou|أو|أو
+vive|ڤيڤي|بيعيش`,s:`Ela é do Egito.|إيلا إيه دو إيجيتو|هي من مصر`},
+6:{w:`vivo|ڤيڤو|حي / عايش
+vontade|ڤونتادجي|رغبة / نفس
+ruim|هويم|سيئ
+calma|كاوما|هادئة
+estão|إستاو|هم موجودين
+fácil|فاسيو|سهل
+certo|سيرتو|صحيح
+igual|إيغواو|متساوي / نفس الشيء
+comum|كوموم|مشترك / عادي
+errado|إهادو|غلط
+nervosa|نيرڤوزا|متوترة
+correto|كوهّيتو|صحيح
+difíceis|دجيفيسيس|صعبة للجمع
+completo|كومبليتو|كامل
+separado|سيبارادو|منفصل
+especial|إسبيسياو|مميز / خاص
+diferente|دجيفيرينتشي|مختلف
+impossível|إمبوسيڤيو|مستحيل
+estou|إستو|أنا موجود / بحالة معينة
+estamos|إستاموس|إحنا موجودين
+contente|كونتينتشي|مبسوط
+sente|سينتشي|بيحس
+sinto|سينتو|أنا بحس`,s:`Pode ficar tranquilo.|بودجي فيكار ترانكويلو|خليك مطمن
+Eu me sinto bem.|إيو مي سينتو بين|حاسس حالي منيح
+Como você se sente?|كومو ڤوسي سي سينتشي؟|كيف حاسس حالك؟
+Ela está sempre feliz e é muito amigável.|إيلا إستا سيمبري فيليز إي إيه مويتو أميغاڤيو|هي دايماً مبسوطة وودودة كثير
+Ela é uma pessoa calma e divertida, mas hoje ela está nervosa.|إيلا إيه أوما بيسوا كاوما إي دجيڤيرتشيدا ماس أوجي إيلا إستا نيرڤوزا|هي هادئة ومرحة بس اليوم متوترة
+Como é?|كومو إيه؟|كيف هو بطبيعته؟
+Como está?|كومو إستا؟|كيف وضعه حالياً؟
+Por que ela está nervosa?|بور كي إيلا إستا نيرڤوزا؟|ليش هي متوترة؟`},
+7:{w:`junto|جونتو|مع بعض
 e|إي|و
-com|كوم|مع
-sem|سيم|بدون
-para|پارا|إلى / من أجل
+o|أو|الـ للمذكر
+ou|أو|أو
 de|دجي|من / تبع
 do|دو|من الـ للمذكر
 da|دا|من الـ للمؤنث
-dos|دوس|من الـ للجمع المذكر
-das|داس|من الـ للجمع المؤنث
 em|إيم|في
 no|نو|في الـ للمذكر
 na|نا|في الـ للمؤنث
-nas|ناس|في الـ للجمع المؤنث
 ao|آو|إلى الـ / عند الـ للمذكر
-aos|آوس|إلى الـ / عند الـ للجمع المذكر
-o|أو|الـ للمذكر
 os|أوس|الـ للجمع المذكر
-cheguei|شيغيي|أنا وصلت
-estudam|إستودام|هم بيدرسوا
-objeto|أوبجيتو|غرض / شيء
-frases|فرازيس|جمل
-palavra|پالاڤرا|كلمة
-vocabulário|ڤوكابولاريو|مفردات
-pronomes|پرونوميس|ضمائر
-possessivos|پوسيسيڤوس|ضمائر الملكية
-demonstrativos|ديمونستراتشيڤوس|أسماء الإشارة
-interrogativos|إنتيرّوغاتشيڤوس|أدوات الاستفهام
-feminino|فيمينينو|مؤنث
-masculino|ماسكولينو|مذكر
-singular|سينغولار|مفرد
-plural|پلوراو|جمع
-passado|پاسادو|الماضي
-por último|پور أولتشيمو|وأخيراً`,s:`Por que você está aprendendo português?|پور كي ڤوسيه إستا أپرينديندو پورتوغيس؟|ليش بتتعلم برتغالي؟
-Quando vocês estudam português?|كواندو ڤوسيس إستودام پورتوغيس؟|إمتى بتدرسوا برتغالي؟`},
-8:{w:`o que|أو كي|شو / ماذا
-estou|إستو|أنا موجود / بحالة معينة
-estamos|إستاموس|إحنا موجودين
+com|كون|مع
+sem|سين|بدون
+dos|دوس|من الـ للجمع المذكر
+das|داس|من الـ للجمع المؤنث
+nas|ناس|في الـ للجمع المؤنث
+aos|آوس|إلى الـ / عند الـ للجمع المذكر
+cada|كادا|كل واحد / كل
+para|بارا|إلى / من أجل
+muito|مويتو|كثير / جداً
+pouco|بوكو|قليل
+algum|ألغوم|أي / بعض
+todos|تودوس|الجميع / كلهم
+todas|توداس|الجميع للمؤنث
+outro|أوترو|آخر
+várias|ڤارياس|متعددة
+muitos|مويتوس|كثيرون
+muitas|مويتاس|كثيرات
+alguma|ألغوما|أي / بعض للمؤنث
+nenhum|نينيوم|ولا واحد
+outros|أوتروس|آخرون / أخرى
+estudam|إستودام|هم بيدرسوا`,s:``},
+8:{w:`esperando|إسبيراندو|عم يستنى
+o que|أو كي|شو / ماذا
 fazendo|فازيندو|عم يعمل
-moro|مورو|أنا ساكن
-procurando|پروكوراندو|عم يدور
-receber|هيسيبير|يستلم
-enviar|إنڤيار|يرسل
-entendi|إنتيندجي|فهمت
-preciso|پريسيزو|أنا محتاج
-precisa|پريسيزا|بيحتاج
-queria|كيريا|كنت بدي / بدي بصيغة مهذبة
-consegui|كونسيغي|قدرت
 consigo|كونسيغو|أنا بقدر
-podemos|پوديموس|بنقدر
-permitir|پيرميتشير|يسمح
-combinar|كومبينار|يتفق
-funcionar|فونسيونار|يشتغل / يعمل
-funciona|فونسيونا|بيشتغل
-parar|پارار|يوقف
+podemos|بوديموس|بنقدر
+consegui|كونسيغي|قدرت
 continuar|كونتشينوار|يكمل
-voltei|ڤولتيي|رجعت
-sair|ساير|يطلع / يخرج
-entrar|إنترار|يدخل
-virar|ڤيرار|يلف / يدور
-seguir|سيغير|يكمل الطريق /
-quais|كوايس|أي للجمع`,s:`Quem é ele?|كين إيه إيلي؟|مين هو؟
-Quem é ela?|كين إيه إيلا؟|مين هي؟
-Por que eles estão contentes?|پور كي إيليس إستاو كونتينتشيس؟|ليش هم مبسوطين؟
-O uso de pronomes demonstrativos depende de onde está localizado o objeto.|أو أوزو دجي پرونوميس ديمونستراتشيڤوس ديپينجي دجي أونجي إستا لوكاليزادو أو أوبجيتو|استخدام أسماء الإشارة بيعتمد على مكان الشيء
-No Brasil, no português falado não usamos os dois pronomes este e esta.|نو برازيو نو پورتوغيس فالادو ناو أوزاموس أوس دويز پرونوميس إيستشي إي إيستا|بالبرازيل في الحكي اليومي غالباً ما بنستخدم este وesta
-Ficar devendo = não tem.|فيكار ديڤيندو ناو تيم|يظل مديناً / ما عنده، بحسب سياق الدرس
-Ela está feliz porque tem muitos amigos brasileiros.|إيلا إستا فيليز پوركي تيم مويتوس أميغوس برازيلييروس|هي مبسوطة لأنه عندها أصحاب برازيليين كثير
-Ela está nervosa porque tem uma entrevista de emprego.|إيلا إستا نيرڤوزا پوركي تيم أوما إنتريڤيستا دجي إمپريغو|متوترة لأنه عندها مقابلة عمل
-Ela está procurando emprego como enfermeira.|إيلا إستا پروكوراندو إمپريغو كومو إنفيرميرا|هي بتدور على شغل كممرضة`},
-9:{w:`filhos|فيليوس|أبناء
-irmãos|إرماوس|إخوة
-irmãs|إرماس|أخوات
+procurando|بروكوراندو|عم يدور`,s:`Quando vocês estudam português?|كواندو ڤوسيس إستودام بورتوغيس؟|إمتى بتدرسوا برتغالي؟
+Por que você está aprendendo português?|بور كي ڤوسي إستا أبرينديندو بورتوغيس؟|ليش بتتعلم برتغالي؟
+Por que eles estão contentes?|بور كي إيليس إستاو كونتينتشيس؟|ليش هم مبسوطين؟
+Ela está procurando emprego como enfermeira.|إيلا إستا بروكوراندو إمبريغو كومو إنفيرميرا|هي بتدور على شغل كممرضة
+Ela está feliz porque tem muitos amigos brasileiros.|إيلا إستا فيليز بوركي تيم مويتوس أميغوس برازيلييروس|هي مبسوطة لأنه عندها أصحاب برازيليين كثير
+Ela está nervosa porque tem uma entrevista de emprego.|إيلا إستا نيرڤوزا بوركي تيم أوما إنتريڤيستا دجي إمبريغو|متوترة لأنه عندها مقابلة عمل`},
+9:{w:`pessoas|بيسواس|أشخاص
 avós|أڤوس|أجداد / جدات
-primos|پريموس|أبناء العمومة أو الخؤولة
-prima|پريما|بنت العم أو الخال
-primas|پريماس|بنات العمومة أو الخؤولة
-sobrinha|سوبرينيا|بنت الأخ أو الأخت
-sobrinhas|سوبرينياس|بنات الأخ أو الأخت
 neta|نيتا|حفيدة
-netas|نيتاس|حفيدات
-cunhada|كونيادا|أخت الزوج أو الزوجة
-mulher|مولير|امرأة / زوجة
 bebê|بيبيه|رضيع
-irmãozinho|إرماوزينيو|الأخ الصغير
-gêmeas|جيمياس|توأم بنتان
-grávida|غراڤيدا|حامل
-parentesco|پارينتيسكو|صلة القرابة
-familiares|فاميلياريس|أفراد العائلة / الأقارب
-filhas|فيلياس|بنات
 tios|تشيوس|أعمام / أخوال
+irmãs|إرماس|أخوات
+prima|بريما|بنت العم أو الخال
+netas|نيتاس|حفيدات
 netos|نيتوس|أحفاد
 homem|أوميم|رجل
+filhos|فيليوس|أبناء
+irmãos|إرماوس|إخوة
+primos|بريموس|أبناء العمومة أو الخؤولة
+primas|بريماس|بنات العمومة أو الخؤولة
+mulher|مولير|امرأة / زوجة
+gêmeas|جيمياس|توأم بنتان
+filhas|فيلياس|بنات
 garoto|غاروتو|ولد
 garota|غاروتا|بنت
-priminho|پريمينيو|ابن عم صغير
-paterno|پاتيرنو|من جهة الأب
-paterna|پاتيرنا|من جهة الأب للمؤنث
-maternos|ماتيرنوس|من جهة الأم للجمع`,s:`O pai do meu pai é meu avô.|أو پاي دو ميو پاي إيه ميو أڤو|أبو أبوي هو جدي
-A mãe do meu pai é minha avó.|آ ماي دو ميو پاي إيه مينيا أڤو|أم أبوي هي جدتي
-O irmão da minha mãe é meu tio.|أو إرماو دا مينيا ماي إيه ميو تشيو|أخو أمي هو خالي
-Os filhos do meu tio são meus primos.|أوس فيليوس دو ميو تشيو ساو ميوس پريموس|أولاد عمي هم أبناء عمي
-A irmã do meu marido é minha cunhada.|آ إرما دو ميو ماريدو إيه مينيا كونيادا|أخت زوجي هي سلفتي أو نسيبتي
-As filhas de nossos filhos são nossas netas.|آس فيلياس دجي نوسوس فيليوس ساو نوساس نيتاس|بنات أولادنا حفيداتنا
-A esposa de meu filho é minha nora.|آ إسپوزا دجي ميو فيليو إيه مينيا نورا|زوجة ابني هي كنتي
-As filhas de seus tios são suas primas.|آس فيلياس دجي سيوس تشيوس ساو سواس پريماس|بنات أعمامك أو أخوالك قريباتك
-O pai de minha mulher é meu sogro.|أو پاي دجي مينيا مولير إيه ميو سوغرو|أبو زوجتي هو حماي
-A filha do seu pai é sua irmã.|آ فيليا دو سيو پاي إيه سوا إرما|بنت أبوك أختك
-Eu tenho uma irmã.|إيو تينيو أوما إرما|عندي أخت
-Você tem uma família bem grande!|ڤوسيه تيم أوما فاميليا بيم غرانجي|عندك عيلة كبيرة كثير!
-Sim, eu tenho muitos irmãos.|سيم إيو تينيو مويتوس إرماوس|آه عندي إخوة كثير
-Eles são parecidos com você?|إيليس ساو پاريسيدوس كوم ڤوسيه؟|هم بشبهوك؟
-Você não é parecida com o Lucas.|ڤوسيه ناو إيه پاريسيدا كوم أو لوكاس|إنتِ مش شبه لوكاس
-Essa família é muito grande!|إيسا فاميليا إيه مويتو غرانجي|هاي العيلة كبيرة كثير!
-O que elas gostam de fazer?|أو كي إيلاس غوستام دجي فازير؟|شو بحبوا يعملوا؟
+cunhada|كونيادا|أخت الزوج أو الزوجة
+grávida|غراڤيدا|حامل
+paterno|باتيرنو|من جهة الأب
+paterna|باتيرنا|من جهة الأب للمؤنث
+sobrinha|سوبرينيا|بنت الأخ أو الأخت
+priminho|بريمينيو|ابن عم صغير
+maternos|ماتيرنوس|من جهة الأم للجمع
+sobrinhas|سوبرينياس|بنات الأخ أو الأخت
+irmãozinho|إرماوزينيو|الأخ الصغير
+parentesco|بارينتيسكو|صلة القرابة
+familiares|فاميلياريس|أفراد العائلة / الأقارب
+brincar|برينكار|يلعب`,s:`Eu tenho uma irmã.|إيو تينيو أوما إرما|عندي أخت
 Quem está grávida?|كين إستا غراڤيدا؟|مين حامل؟
-Elas gostam de brincar de bonecas e de jogar bola.|إيلاس غوستام دجي برينكار دجي بونيكاس إي دجي جوغار بولا|بحبوا يلعبوا بالعرائس وبالكرة
-Quantas pessoas tem?|كوانتاس پيسواس تيم؟|كم شخص فيها؟
-Ela tem três pessoas.|إيلا تيم تريس پيسواس|فيها ثلاثة أشخاص
-Eu também tenho um gato.|إيو تامبيم تينيو أوم غاتو|عندي كمان قط
+Quantas pessoas tem?|كوانتاس بيسواس تيم؟|كم شخص فيها؟
+Ela tem três pessoas.|إيلا تيم تريس بيسواس|فيها ثلاثة أشخاص
 O meu irmão é adulto.|أو ميو إرماو إيه أدولتو|أخوي بالغ
-A minha família tem quatro pessoas.|آ مينيا فاميليا تيم كواترو پيسواس|عيلتي فيها أربعة أشخاص
+Eu também tenho um gato.|إيو تامبيم تينيو أوم غاتو|عندي كمان قط
+O pai do meu pai é meu avô.|أو باي دو ميو باي إيه ميو أڤو|أبو أبوي هو جدي
+O que elas gostam de fazer?|أو كي إيلاس غوستام دجي فازير؟|شو بحبوا يعملوا؟
+Sim, eu tenho muitos irmãos.|سين إيو تينيو مويتوس إرماوس|آه عندي إخوة كثير
+Eles são parecidos com você?|إيليس ساو باريسيدوس كون ڤوسي؟|هم بشبهوك؟
+Essa família é muito grande!|إيسا فاميليا إيه مويتو غرانجي|هاي العيلة كبيرة كثير!
+A mãe do meu pai é minha avó.|آ ماي دو ميو باي إيه مينيا أڤو|أم أبوي هي جدتي
 Esse bebê é o meu irmãozinho.|إيسي بيبيه إيه أو ميو إرماوزينيو|هذا البيبي أخوي الصغير
-Eu amo esta foto com toda a minha família!|إيو آمو إيستا فوتو كوم تودا آ مينيا فاميليا|بحب هاي الصورة مع كل عيلتي
-Ela parece com a mãe porque as duas são baixas, gordas e têm olhos castanhos.|إيلا پاريسي كوم آ ماي پوركي آز دواس ساو بايشاس غورداس إي تيم أوليوس كستانيوس|بتشبه أمها لأن الاثنين قصيرات وممتلئات وعيونهن بنية
+A filha do seu pai é sua irmã.|آ فيليا دو سيو باي إيه سوا إرما|بنت أبوك أختك
+O irmão da minha mãe é meu tio.|أو إرماو دا مينيا ماي إيه ميو تشيو|أخو أمي هو خالي
+Você tem uma família bem grande!|ڤوسي تيم أوما فاميليا بين غرانجي|عندك عيلة كبيرة كثير!
+Você não é parecida com o Lucas.|ڤوسي ناو إيه باريسيدا كون أو لوكاس|إنتِ مش شبه لوكاس
+O pai de minha mulher é meu sogro.|أو باي دجي مينيا مولير إيه ميو سوغرو|أبو زوجتي هو حماي
 As duas famílias têm mãe e filhos.|آز دواس فاميلياس تيم ماي إي فيليوس|العائلتين فيهم أم وأبناء
-Ela é pequena, tem três pessoas: eu, minha mãe e meu irmão.|إيلا إيه پيكينا تيم تريس پيسواس إيو مينيا ماي إي ميو إرماو|هي صغيرة وفيها ثلاثة أشخاص أنا وأمي وأخي`},
+A esposa de meu filho é minha nora.|آ إسبوزا دجي ميو فيليو إيه مينيا نورا|زوجة ابني هي كنتي
+A minha família tem quatro pessoas.|آ مينيا فاميليا تيم كواترو بيسواس|عيلتي فيها أربعة أشخاص
+Os filhos do meu tio são meus primos.|أوس فيليوس دو ميو تشيو ساو ميوس بريموس|أولاد عمي هم أبناء عمي
+A irmã do meu marido é minha cunhada.|آ إرما دو ميو ماريدو إيه مينيا كونيادا|أخت زوجي هي سلفتي أو نسيبتي
+As filhas de seus tios são suas primas.|آس فيلياس دجي سيوس تشيوس ساو سواس بريماس|بنات أعمامك أو أخوالك قريباتك
+Eu amo esta foto com toda a minha família!|إيو آمو إيستا فوتو كون تودا آ مينيا فاميليا|بحب هاي الصورة مع كل عيلتي
+As filhas de nossos filhos são nossas netas.|آس فيلياس دجي نوسوس فيليوس ساو نوساس نيتاس|بنات أولادنا حفيداتنا
+Elas gostam de brincar de bonecas e de jogar bola.|إيلاس غوستام دجي برينكار دجي بونيكاس إي دجي جوغار بولا|بحبوا يلعبوا بالعرائس وبالكرة
+Ela é pequena, tem três pessoas: eu, minha mãe e meu irmão.|إيلا إيه بيكينا تيم تريس بيسواس إيو مينيا ماي إي ميو إرماو|هي صغيرة وفيها ثلاثة أشخاص أنا وأمي وأخي
+Ela parece com a mãe porque as duas são baixas, gordas e têm olhos castanhos.|إيلا باريسي كون آ ماي بوركي آز دواس ساو بايشاس غورداس إي تيم أوليوس كستانيوس|بتشبه أمها لأن الاثنين قصيرات وممتلئات وعيونهن بنية`},
 10:{w:`meus|ميوس|توعي للمذكر الجمع
-minhas|مينياس|توعاتي للمؤنث الجمع
 seus|سيوس|توعك للمذكر الجمع
 suas|سواس|توعك للمؤنث الجمع
 delas|ديلاس|تاعهن
+minhas|مينياس|توعاتي للمؤنث الجمع
 nossos|نوسوس|توعنا للمذكر الجمع
-nossas|نوساس|توعنا للمؤنث الجمع`,s:`Ela parece mais o pai dela ou a mãe?|إيلا پاريسي مايس أو پاي ديلا أو آ ماي؟|هي بتشبه أبوها أكثر ولا أمها؟
-O carro é meu.|أو كاهّو إيه ميو|السيارة تاعتي
+nossas|نوساس|توعنا للمؤنث الجمع`,s:`O carro é meu.|أو كاهّو إيه ميو|السيارة تاعتي
+Meu irmão é aquele.|ميو إرماو إيه آكيلي|أخوي هو ذاك
 Essas bananas são suas.|إيساس باناناس ساو سواس|هاي الموزات تاعتكم
-Ela parece mais com o pai dela ou a mãe?|إيلا پاريسي مايس كوم أو پاي ديلا أو آ ماي؟|بتشبه أبوها أكثر ولا أمها؟
-O meu irmão é adulto, a pessoa mais alta da família.|أو ميو إرماو إيه أدولتو آ پيسوا مايس آلتا دا فاميليا|أخي بالغ وهو أطول شخص بالعائلة
-A minha família tem quatro pessoas: meu pai, minha mãe, minha irmã e eu.|آ مينيا فاميليا تيم كواترو پيسواس ميو پاي مينيا ماي مينيا إرما إي إيو|عيلتي فيها أربعة: أبوي وأمي وأختي وأنا
-Meu pai é alto, tem cabelo grisalho, curto e crespo.|ميو پاي إيه آلتو تيم كابيلو غريزاليو كورتو إي كريسپو|أبوي طويل وشعره أشيب وقصير ومجعد
-O irmão de minha mulher é meu cunhado.|أو إرماو دجي مينيا موليير إيه ميو كونيادو|أخو زوجتي نسيبي
-A minha mãe é aquela mulher que está segurando o bebê.|آ مينيا ماي إيه آكيلا موليير كي إستا سيغوراندو أو بيبيه|أمي هي المرأة اللي ماسكة البيبي
-O meu avô é aquele que está perto da minha avó.|أو ميو أڤو إيه آكيلي كي إستا پيرتو دا مينيا أڤو|جدي هو اللي واقف جنب ستي
-Aqueles são os nossos pais.|آكيليس ساو أوز نوسوس پايس|هذولاك أهلنا
 Essas são as suas irmãs.|إيساس ساو آس سواس إرماس|هدول أخواتك
 Aqueles são os seus tios?|آكيليس ساو أوز سيوس تشيوس؟|هذولاك أعمامك؟
-Meu irmão é aquele.|ميو إرماو إيه آكيلي|أخوي هو ذاك`},
-11:{w:`estes|إيستشيس|هؤلاء للمذكر القريب
+Aqueles são os nossos pais.|آكيليس ساو أوز نوسوس بايس|هذولاك أهلنا
+O irmão de minha mulher é meu cunhado.|أو إرماو دجي مينيا موليير إيه ميو كونيادو|أخو زوجتي نسيبي
+Ela parece mais com o pai dela ou a mãe?|إيلا باريسي مايس كون أو باي ديلا أو آ ماي؟|بتشبه أبوها أكثر ولا أمها؟
+O meu avô é aquele que está perto da minha avó.|أو ميو أڤو إيه آكيلي كي إستا بيرتو دا مينيا أڤو|جدي هو اللي واقف جنب ستي
+O meu irmão é adulto, a pessoa mais alta da família.|أو ميو إرماو إيه أدولتو آ بيسوا مايس آلتا دا فاميليا|أخي بالغ وهو أطول شخص بالعائلة
+Meu pai é alto, tem cabelo grisalho, curto e crespo.|ميو باي إيه آلتو تيم كابيلو غريزاليو كورتو إي كريسبو|أبوي طويل وشعره أشيب وقصير ومجعد
+A minha mãe é aquela mulher que está segurando o bebê.|آ مينيا ماي إيه آكيلا موليير كي إستا سيغوراندو أو بيبيه|أمي هي المرأة اللي ماسكة البيبي
+A minha família tem quatro pessoas: meu pai, minha mãe, minha irmã e eu.|آ مينيا فاميليا تيم كواترو بيسواس ميو باي مينيا ماي مينيا إرما إي إيو|عيلتي فيها أربعة: أبوي وأمي وأختي وأنا`},
+11:{w:`livro|ليڤرو|كتاب
+estes|إيستشيس|هؤلاء للمذكر القريب
 estas|إيستاس|هؤلاء للمؤنث القريب
 esses|إيسيس|هؤلاء / أولئك للمذكر
 essas|إيساس|هؤلاء / أولئك للمؤنث
 aqueles|آكيليس|أولئك للمذكر البعيد
-aquelas|آكيلاس|أولئك للمؤنث البعيد`,s:`Este gato é meu.|إيستشي غاتو إيه ميو|هذا القط تاعي
+aquelas|آكيلاس|أولئك للمؤنث البعيد`,s:`Quem são eles?|كين ساو إيليس؟|مين هم؟
+Esses são os meus colegas.|إيسيس ساو أوز ميوس كوليغاس|هدول زملائي
+Este gato é meu.|إيستشي غاتو إيه ميو|هذا القط تاعي
 Esse gato é meu.|إيسي غاتو إيه ميو|هذا القط تاعي
+Este livro é meu.|إيستشي ليڤرو إيه ميو|هذا الكتاب تاعي
 Aquele gato é meu.|آكيلي غاتو إيه ميو|ذاك القط تاعي
-Essa menina é sua amiga.|إيسا مينينا إيه سوا أميغا|هاي البنت صاحبتك
-Esse computador está quebrado.|إيسي كومپوتادور إستا كيبرادو|هذا الكمبيوتر خربان
 Esta cama é grande.|إيستا كاما إيه غرانجي|هذا السرير كبير
 Este livro é legal.|إيستشي ليڤرو إيه ليغاو|هذا الكتاب حلو
-Aquela casa amarela é minha.|آكيلا كازا أماريلا إيه مينيا|ذاك البيت الأصفر تاعي
 Aquele é o meu celular.|آكيلي إيه أو ميو سيلولار|ذاك تلفوني
+Essa menina é sua amiga.|إيسا مينينا إيه سوا أميغا|هاي البنت صاحبتك
+Este é o meu computador.|إيستشي إيه أو ميو كومبوتادور|هذا كمبيوتري
+Aquela casa amarela é minha.|آكيلا كازا أماريلا إيه مينيا|ذاك البيت الأصفر تاعي
 Esta foto é da minha família.|إيستا فوتو إيه دا مينيا فاميليا|هاي صورة عيلتي
-Este livro é meu.|إيستشي ليڤرو إيه ميو|هذا الكتاب تاعي
-Este é o meu computador.|إيستشي إيه أو ميو كومپوتادور|هذا كمبيوتري
-Essas mulheres são francesas.|إيساس مولييريس ساو فرانسيساس|هالنساء فرنسيات`},
-12:{w:`alta|آلتا|طويلة
+Essas mulheres são francesas.|إيساس مولييريس ساو فرانسيساس|هالنساء فرنسيات
+Esse computador está quebrado.|إيسي كومبوتادور إستا كيبرادو|هذا الكمبيوتر خربان`},
+12:{w:`cor|كور|لون
+novo|نوڤو|جديد
+nova|نوڤا|جديدة
+velho|ڤيليو|قديم / كبير بالعمر
+velha|ڤيليا|قديمة / كبيرة بالعمر
+pretos|بريتوس|سود للجمع
+verdes|ڤيردجيس|خضراء للجمع
+loiros|لويروس|أشقر للجمع
+longos|لونغوس|طويل للجمع
+amarela|أماريلا|صفراء
+divertida|دجيڤيرتشيدا|مرحة
+castanhos|كستانيوس|بنية للجمع
+compridos|كومبريدوس|طويل للجمع
+encaracolados|إنكاراكولادوس|مجعد للجمع
+bom|بوم|جيد
+boa|بوا|جيدة
+alta|آلتا|طويلة
+roxo|هوشو|بنفسجي
 baixa|بايشا|قصيرة
 magra|ماغرا|نحيفة
 gordo|غوردو|ممتلئ / سمين
 gorda|غوردا|ممتلئة / سمينة
 idosa|إيدوزا|كبيرة في السن
-adulto|أدولتو|بالغ
-pequena|پيكينا|صغيرة
-bonita|بونيتا|جميلة
-contente|كونتينتشي|مبسوط
-parecido|پاريسيدو|شبيه
-parecida|پاريسيدا|شبيهة
-encaracolado|إنكاراكولادو|مجعد
-crespo|كريسپو|شديد التجعد
-comprido|كومپريدو|طويل
-preta|پريتا|سوداء
-branca|برانكا|بيضاء
-castanha|كاستانيا|بنية
+preta|بريتا|سوداء
 loiro|لويرو|أشقر
 loira|لويرا|شقراء
-grisalho|غريزاليو|أشيب
 cinza|سينزا|رمادي
-morena|مورينا|سمراء
 negra|نيغرا|سوداء
 ruiva|هويڤا|حمراء الشعر
-amarelo|أماريلو|أصفر
-roxo|هوشو|بنفسجي
-cabelos|كابيلوس|شعر
-nariz|ناريز|أنف
-cor de mel|كور دجي ميو|بلون العسل
-características|كاراكتيغيستيكاس|صفات / خصائص
+adulto|أدولتو|بالغ
+bonita|بونيتا|جميلة
+crespo|كريسبو|شديد التجعد
+branca|برانكا|بيضاء
+morena|مورينا|سمراء
 normal|نورماو|عادي
-parecidos|پاريسيدوس|متشابهين
-bom|بوم|جيد
-boa|بوا|جيدة`,s:`Como é o Brasil?|كومو إيه أو برازيو؟|كيف البرازيل؟
-É muito bonito.|إيه مويتو بونيتو|جميل جداً
-Como é?|كومو إيه؟|كيف هو بطبيعته؟
-Como está?|كومو إستا؟|كيف وضعه حالياً؟
-Como eles são?|كومو إيليس ساو؟|كيف شكلهم / صفاتهم؟
-Você é baixa!|ڤوسيه إيه بايشا|إنتِ قصيرة!
-Você não é ruiva!|ڤوسيه ناو إيه هويڤا|إنتِ مش حمرا الشعر!
-Você tem olhos pretos!|ڤوسيه تيم أوليوس پريتوس|عيونك سود!
-Tenho cabelo médio, liso e castanho.|تينيو كابيلو ميديو ليزو إي كاستانيو|شعري متوسط الطول وناعم وبني
-Meus olhos são grandes e castanhos.|ميوس أوليوس ساو غرانجيس إي كاستانيوس|عيوني كبار وبنيات
-Tenho a pele branca.|تينيو آ پيلي برانكا|بشرتي بيضاء
-Minha mãe é idosa, alta, gorda e tem cabelo liso, curto e preto.|مينيا ماي إيه إيدوزا آلتا غوردا إي تيم كابيلو ليزو كورتو إي پريتو|أمي كبيرة بالسن وطويلة وممتلئة وشعرها ناعم وقصير وأسود
-Seus olhos são verdes.|سيوس أوليوس ساو ڤيرجيس|عيونها خضر
+pequena|بيكينا|صغيرة
+amarelo|أماريلو|أصفر
+cabelos|كابيلوس|شعر
+parecido|باريسيدو|شبيه
+parecida|باريسيدا|شبيهة
+comprido|كومبريدو|طويل
+castanha|كاستانيا|بنية
+grisalho|غريزاليو|أشيب
+parecidos|باريسيدوس|متشابهين
+cor de mel|كور دجي ميو|بلون العسل
+encaracolado|إنكاراكولادو|مجعد
+parece|باريسي|بيشبه / يبدو
+descrever|ديسكريڤير|يوصف`,s:`Ele é gordo, tem cabelo longo e encaracolado.|إيلي إيه غوردو تيم كابيلو لونغو إي إنكاراكولادو|هو ممتلئ وشعره طويل ومجعد
+Seus olhos são verdes e ela tem a pele branca.|سيوس أوليوس ساو ڤيردجيس إي إيلا تيم آ بيلي برانكا|عيونها خضراء وبشرتها بيضاء
+Ele usa barba e tem os olhos castanhos iguais aos meus.|إيلي أوزا باربا إي تيم أوز أوليوس كستانيوس إيغوايس آوس ميوس|عنده لحية وعيونه بنية مثل عيوني
 Ele é gordo.|إيلي إيه غوردو|هو ممتلئ
+Você é baixa!|ڤوسي إيه بايشا|إنتِ قصيرة!
+Como eles são?|كومو إيليس ساو؟|كيف شكلهم / صفاتهم؟
 Ele usa barba.|إيلي أوزا باربا|هو عنده لحية
-O nosso gato é cinza e branco.|أو نوسو غاتو إيه سينزا إي برانكو|قطنا رمادي وأبيض
-Meu cabelo é crespo, longo e castanho.|ميو كابيلو إيه كريسپو لونغو إي كاستانيو|شعري شديد التجعد وطويل وبني
-Meu pai é alto.|ميو پاي إيه آلتو|أبوي طويل
-Ele é magro e tem olhos castanhos.|إيلي إيه ماغرو إي تيم أوليوس كاستانيوس|هو نحيف وعيونه بنية
-A pele dele é negra.|آ پيلي ديلي إيه نيغرا|بشرته سوداء
-Minha mãe é baixa, gorda e tem os cabelos longos, loiros e encaracolados.|مينيا ماي إيه بايشا غوردا إي تيم أوس كابيلوس لونغوس لويروس إي إنكاراكولادوس|أمي قصيرة وممتلئة وشعرها طويل وأشقر ومجعد
+É muito bonito.|إيه مويتو بونيتو|جميل جداً
+Meu pai é alto.|ميو باي إيه آلتو|أبوي طويل
+Como é o Brasil?|كومو إيه أو برازيو؟|كيف البرازيل؟
+Você não é ruiva!|ڤوسي ناو إيه هويڤا|إنتِ مش حمرا الشعر!
+Tenho a pele branca.|تينيو آ بيلي برانكا|بشرتي بيضاء
+A pele dele é negra.|آ بيلي ديلي إيه نيغرا|بشرته سوداء
+A pele dela é morena.|آ بيلي ديلا إيه مورينا|بشرتها سمراء
+Você tem olhos pretos!|ڤوسي تيم أوليوس بريتوس|عيونك سود!
+Seus olhos são verdes.|سيوس أوليوس ساو ڤيرجيس|عيونها خضر
 Minha irmã é alta e magra.|مينيا إرما إيه آلتا إي ماغرا|أختي طويلة ونحيفة
-A pele dela é morena.|آ پيلي ديلا إيه مورينا|بشرتها سمراء`},
-13:{w:`milho|ميليو|ذرة
-fritura|فريتورا|قلي / مقليات
+O nosso gato é cinza e branco.|أو نوسو غاتو إيه سينزا إي برانكو|قطنا رمادي وأبيض
+Ele é magro e tem olhos castanhos.|إيلي إيه ماغرو إي تيم أوليوس كاستانيوس|هو نحيف وعيونه بنية
+Meus olhos são grandes e castanhos.|ميوس أوليوس ساو غرانجيس إي كاستانيوس|عيوني كبار وبنيات
+Tenho cabelo médio, liso e castanho.|تينيو كابيلو ميديو ليزو إي كاستانيو|شعري متوسط الطول وناعم وبني
+Meu cabelo é crespo, longo e castanho.|ميو كابيلو إيه كريسبو لونغو إي كاستانيو|شعري شديد التجعد وطويل وبني
+Minha mãe é idosa, alta, gorda e tem cabelo liso, curto e preto.|مينيا ماي إيه إيدوزا آلتا غوردا إي تيم كابيلو ليزو كورتو إي بريتو|أمي كبيرة بالسن وطويلة وممتلئة وشعرها ناعم وقصير وأسود
+Minha mãe é baixa, gorda e tem os cabelos longos, loiros e encaracolados.|مينيا ماي إيه بايشا غوردا إي تيم أوس كابيلوس لونغوس لويروس إي إنكاراكولادوس|أمي قصيرة وممتلئة وشعرها طويل وأشقر ومجعد
+Ela tem os olhos castanhos e o cabelo preto, liso e médio.|إيلا تيم أوز أوليوس كستانيوس إي أو كابيلو بريتو ليزو إي ميديو|عيونها بنية وشعرها أسود وناعم ومتوسط
+Eu sou baixa.|إيو سو بايشا|أنا قصيرة
+Eu sou jovem, alta e magra.|إيو سو جوڤيم آلتا إي ماغرا|أنا شابة وطويلة ونحيفة
+Sou gorda e tenho um nariz grande.|سو غوردا إي تينيو أوم ناريز غرانجي|أنا ممتلئة وعندي أنف كبير
+Eu sou a menina que está usando um vestido roxo.|إيو سو آ مينينا كي إستا أوزاندو أوم ڤيستشيدو هوشو|أنا البنت اللي لابسة فستان بنفسجي
+Eu sou baixa, tenho olhos castanhos, sou gorda e tenho um nariz grande.|إيو سو بايشا تينيو أوليوس كستانيوس سو غوردا إي تينيو أوم ناريز غرانجي|أنا قصيرة وعيوني بنية وممتلئة وأنفي كبير`},
+13:{w:`principalmente|برينسيبالمنتشي|خصوصاً
+PF|بي إف|اختصار prato feito
 café|كافيه|قهوة
-sabor|سابور|نكهة / طعم
-comidas|كوميداس|أكلات
-deliciosas|ديليسيوزاس|لذيذة
-feijão preto|فيجاو پريتو|فاصوليا سوداء
-carne seca|كارني سيكا|لحم مجفف
-linguiça|لينغويسا|نقانق
-linguiça calabresa|لينغويسا كالابريزا|سجق كالابريزا
 bife|بيفي|ستيك
-filé de peixe|فيليه دجي پيشي|فيليه سمك
-queijo|كيجو|جبنة
-sanduíche|ساندويتشي|ساندويش
-macarrão|ماكاراو|مكرونة
-lasanha|لازانيا|لازانيا
-pizza|پيتسا|بيتزا
+lula|لولا|حبار / كاليماري
+milho|ميليو|ذرة
+pizza|بيتسا|بيتزا
 sushi|سوشي|سوشي
 gyoza|غيوزا|زلابية يابانية محشوة
+leite|ليتشي|حليب
+queijo|كيجو|جبنة
 farofa|فاروفا|دقيق كاسافا محمص
-beirute|بيروتشي|ساندويش برازيلي بخبز عربي
-charuto de repolho|شاروتو دجي هيپوليو|ملفوف محشي
 tabule|تابولي|تبولة
-feijoada|فيجوادا|طبخة فاصوليا سوداء باللحوم
-brigadeiro|بريغاديرو|حلوى شوكولاتة برازيلية
-tapioca|تاپيوكا|كريب من نشا الكاسافا
-prato feito|پراتو فيتو|وجبة برازيلية جاهزة
-PF|پي إف|اختصار prato feito
-leite condensado|ليتشي كوندينسادو|حليب مكثف
-manteiga|مانتيغا|زبدة
-cacau em pó|كاكاو إيم پو|كاكاو بودرة
+típico|تشيبيكو|تقليدي / مميز
+típica|تشيبيكا|تقليدية / مميزة
+fritura|فريتورا|قلي / مقليات
+comidas|كوميداس|أكلات
+lasanha|لازانيا|لازانيا
+beirute|بيروتشي|ساندويش برازيلي بخبز عربي
+tapioca|تابيوكا|كريب من نشا الكاسافا
 recheio|هيشييو|حشوة
 camarão|كاماراو|جمبري
-lula|لولا|حبار / كاليماري
 dourado|دورادو|نوع سمك دورادو
-pescada branca|پيسكادا برانكا|سمك بيسكادا أبيض
-gelo|جيلو|ثلج
-típico|تشيپيكو|تقليدي / مميز
-típica|تشيپيكا|تقليدية / مميزة
-fresco|فريسكو|طازج
-fresca|فريسكا|طازجة
-congelado|كونجيلادو|مجمد
-congelada|كونجيلادا|مجمدة
-limpo|ليمپو|نظيف
-limpa|ليمپا|نظيفة
+linguiça|لينغويسا|نقانق
+macarrão|ماكاراو|مكرونة
+feijoada|فيجوادا|طبخة فاصوليا سوداء باللحوم
+manteiga|مانتيغا|زبدة
 alimento|أليمنتو|غذاء
-leite|ليتشي|حليب
-batatas fritas|باتاتاس فريتاس|بطاطا مقلية`,s:`No almoço, gosto de arroz, frango e salada.|نو أوموسو غوستو دجي أهوش فرانغو إي سالادا|بالغداء بحب الرز والدجاج والسلطة
-Não conheço nenhum prato típico brasileiro na Palestina.|ناو كونيسو نينيوم پراتو تشيپيكو برازيلييرو نا پالستشينا|ما بعرف طبق برازيلي تقليدي بفلسطين
-Eu gosto de maqluba, musakhan e maftoul.|إيو غوستو دجي مقلوبة مسخن إي مفتول|بحب المقلوبة والمسخن والمفتول
-O Brasil é cheio de frutas e verduras!|أو برازيو إيه شيو دجي فروتاس إي ڤيردوراس|البرازيل مليانة فواكه وخضرة
-Qual você mais gosta?|كواو ڤوسيه مايس غوستا؟|أي واحد بتحب أكثر؟
-Os brasileiros gostam de comidas de várias partes do mundo.|أوس برازيلييروس غوستام دجي كوميداس دجي ڤارياس پارتشيس دو موندو|البرازيليين بحبوا أكلات من أنحاء العالم
-Eu gosto muito de comida árabe, principalmente shawarma e quibe.|إيو غوستو مويتو دجي كوميدا آرابي پرينسيپالمنتشي شاورما إي كيبي|بحب كثير الأكل العربي وخصوصاً الشاورما والكبة
-Também gosto de pizza e lasanha.|تامبيم غوستو دجي پيتسا إي لازانيا|وكمان بحب البيتزا واللازانيا
-Tem gyoza de frango?|تيم غيوزا دجي فرانغو؟|في غيوزا بالدجاج؟
-O que você gosta de comer?|أو كي ڤوسيه غوستا دجي كومير؟|شو بتحب تاكل؟`},
-14:{w:`frutas|فروتاس|فواكه
-legumes|ليغوميس|خضار
-verduras|ڤيردوراس|خضرة
-banana|بانانا|موز
-manga|مانغا|مانجا
-alho|آليو|ثوم
-acelga|أسيلغا|سلق
-salsinha|ساوسينيا|بقدونس
-coentro|كوينترو|كزبرة
-típicas|تشيپيكاس|تقليدية / مميزة للجمع المؤنث
+sanduíche|ساندويتشي|ساندويش
+deliciosas|ديليسيوزاس|لذيذة
+carne seca|كارني سيكا|لحم مجفف
+brigadeiro|بريغاديرو|حلوى شوكولاتة برازيلية
+prato feito|براتو فيتو|وجبة برازيلية جاهزة
+cacau em pó|كاكاو إيم بو|كاكاو بودرة
+feijão preto|فيجاو بريتو|فاصوليا سوداء
+filé de peixe|فيليه دجي بيشي|فيليه سمك
+pescada branca|بيسكادا برانكا|سمك بيسكادا أبيض
+batatas fritas|باتاتاس فريتاس|بطاطا مقلية
+leite condensado|ليتشي كوندينسادو|حليب مكثف
+linguiça calabresa|لينغويسا كالابريزا|سجق كالابريزا
+charuto de repolho|شاروتو دجي هيبوليو|ملفوف محشي
 maqluba|مقلوبة|مقلوبة
-musakhan|مسخّن|مسخن
 maftoul|مفتول|مفتول
-shawarma|شاورما|شاورما`,s:`Tem alguma comida brasileira em seu país de origem?|تيم ألغوما كوميدا برازيلييرا إيم سيو پايز دجي أوريجيم؟|في أكل برازيلي ببلدك الأصلي؟
-Quais comidas típicas do seu país que você gosta e que não têm no Brasil?|كوايس كوميداس تشيپيكاس دو سيو پايز كي ڤوسيه غوستا إي كي ناو تيم نو برازيو؟|شو الأكلات التقليدية اللي بتحبها من بلدك ومش موجودة بالبرازيل؟
-São comidas típicas da Palestina e são difíceis de encontrar no Brasil.|ساو كوميداس تشيپيكاس دا پالستشينا إي ساو دجيفيسيس دجي إنكونترار نو برازيو|هاي أكلات فلسطينية وصعب تلاقيها بالبرازيل
-Sim, nos dois países temos laranja, limão, uva e banana.|سيم نوس دويز پايزيس تيموس لارانجا ليماو أوڤا إي بانانا|آه بالبلدين عنا برتقال وليمون وعنب وموز`},
-15:{w:`médio|ميديو|متوسط
-ácido|آسيدو|حمضي
-limonada|ليمونادا|ليمونادة
-salgadinho|ساوغادجينيو|سناك مالح
-molho agridoce|موليو أغريدوسي|صلصة حلوة وحامضة
-batata frita|باتاتا فريتا|بطاطا مقلية
-chocolate|شوكولاتشي|شوكولاتة
-fraco|فراكو|ضعيف
-suave|سواڤي|خفيف / لطيف
-temperatura ambiente|تيمپيراتورا أمبيينتشي|حرارة الغرفة
-sem sal|سيم ساو|بدون ملح
-sem açúcar|سيم أسوكار|بدون سكر
-temperos|تيمپيروس|توابل
-intensidade|إنتينسيدادجي|شدة / قوة
-sopa|سوپا|شوربة
-chocolate granulado|شوكولاتشي غرانولادو|حبيبات شوكولاتة
-polvilho doce|پولڤيليو دوسي|نشا كاسافا حلو
-bem doce|بيم دوسي|حلو كثير
-alimentos|أليمنتوس|أغذية
-temperatura|تيمپيراتورا|درجة الحرارة`,s:`Ela tem os olhos castanhos e o cabelo preto, liso e médio.|إيلا تيم أوز أوليوس كستانيوس إي أو كابيلو پريتو ليزو إي ميديو|عيونها بنية وشعرها أسود وناعم ومتوسط`},
-16:{w:`refeições|هيفيساويس|وجبات
-lanche da manhã|لانشي دا مانيا|سناك الصبح
-café da tarde|كافيه دا تارجي|وجبة خفيفة بعد الظهر
-café colonial|كافيه كولونيال|وجبة برازيلية متنوعة وغنية
-tomo|تومو|أنا بشرب / بتناول
-toma|توما|هو أو هي بيشرب
-tomamos|توماموس|إحنا بنشرب
-tomam|تومام|هم بيشربوا
-tomei|توميي|شربت / تناولت
-tomarei|توماريي|سأتناول
-almoça|أوموسا|هو بيتغدى
-almoçamos|أوموساموس|إحنا بنتغدى
-almoçam|أوموسام|هم بيتغدوا
-almocei|أوموسيي|تغديت
-almoçarei|أوموساريي|سأتغدى
-janto|جانتو|أنا بتعشى
-jantamos|جانتاموس|إحنا بنتعشى
-jantam|جانتام|هم بيتعشوا
-jantei|جانتَي|تعشيت
-jantarei|جانتاريي|سأتعشى
-ovos|أوڤوس|بيض
-são|ساو|هم يكونوا
-tem|تيم|عنده / عندها
+musakhan|مسخّن|مسخن
+shawarma|شاورما|شاورما
 gosto|غوستو|أنا بحب
-vai|ڤاي|هو رح يروح / رح يعمل
-utilizar|أوتشيليزار|يستخدم
-interpretar|إنتيرپريتار|يمثل / يفسر
-praticar|پراتشيكار|يتدرب
-começam|كوميسام|بيبدأوا
 conheço|كونيسو|أنا بعرف
 conhece|كونيسي|هو بعرف
 recomendo|هيكوميندو|أنا بنصح
-admiram|أدميرام|هم بيعجبوا بـ
-parece|پاريسي|بيشبه / يبدو
-ficando|فيكاندو|عم يصير / عم يضل
-tirar|تشيرار|يشيل / يطلع
-colocar|كولوكار|يحط
-botar|بوتار|يحط بالعامية
-trazer|ترازير|يجيب
-buscar|بوسكار|يجيب / يدور على`,s:`Eu tomo café da manhã.|إيو تومو كافيه دا مانيا|أنا بفطر
+gosta|غوستا|هو بحب / هي بتحب
+gostar|غوستار|يحب
+gostam|غوستام|هم بحبوا`,s:`Tem gyoza de frango?|تيم غيوزا دجي فرانغو؟|في غيوزا بالدجاج؟
+Qual você mais gosta?|كواو ڤوسي مايس غوستا؟|أي واحد بتحب أكثر؟
+O que você gosta de comer?|أو كي ڤوسي غوستا دجي كومير؟|شو بتحب تاكل؟
+Também gosto de pizza e lasanha.|تامبيم غوستو دجي بيتسا إي لازانيا|وكمان بحب البيتزا واللازانيا
+Eu gosto de maqluba, musakhan e maftoul.|إيو غوستو دجي مقلوبة مسخن إي مفتول|بحب المقلوبة والمسخن والمفتول
+No almoço, gosto de arroz, frango e salada.|نو أوموسو غوستو دجي أهوش فرانغو إي سالادا|بالغداء بحب الرز والدجاج والسلطة
+Não conheço nenhum prato típico brasileiro na Palestina.|ناو كونيسو نينيوم براتو تشيبيكو برازيلييرو نا بالستشينا|ما بعرف طبق برازيلي تقليدي بفلسطين
+Os brasileiros gostam de comidas de várias partes do mundo.|أوس برازيلييروس غوستام دجي كوميداس دجي ڤارياس بارتشيس دو موندو|البرازيليين بحبوا أكلات من أنحاء العالم
+Eu gosto muito de comida árabe, principalmente shawarma e quibe.|إيو غوستو مويتو دجي كوميدا آرابي برينسيبالمنتشي شاورما إي كيبي|بحب كثير الأكل العربي وخصوصاً الشاورما والكبة
+Tem alguma comida brasileira em seu país de origem?|تيم ألغوما كوميدا برازيلييرا إيم سيو بايز دجي أوريجيم؟|في أكل برازيلي ببلدك الأصلي؟
+São comidas típicas da Palestina e são difíceis de encontrar no Brasil.|ساو كوميداس تشيبيكاس دا بالستشينا إي ساو دجيفيسيس دجي إنكونترار نو برازيو|هاي أكلات فلسطينية وصعب تلاقيها بالبرازيل
+Quais comidas típicas do seu país que você gosta e que não têm no Brasil?|كوايس كوميداس تشيبيكاس دو سيو بايز كي ڤوسي غوستا إي كي ناو تيم نو برازيو؟|شو الأكلات التقليدية اللي بتحبها من بلدك ومش موجودة بالبرازيل؟`},
+14:{w:`fresco|فريسكو|طازج
+fresca|فريسكا|طازجة
+alho|آليو|ثوم
+manga|مانغا|مانجا
+frutas|فروتاس|فواكه
+banana|بانانا|موز
+acelga|أسيلغا|سلق
+legumes|ليغوميس|خضار
+coentro|كوينترو|كزبرة
+verduras|ڤيردوراس|خضرة
+salsinha|ساوسينيا|بقدونس`,s:`O Brasil é cheio de frutas e verduras!|أو برازيو إيه شيو دجي فروتاس إي ڤيردوراس|البرازيل مليانة فواكه وخضرة
+Sim, nos dois países temos laranja, limão, uva e banana.|سين نوس دويز بايزيس تيموس لارانجا ليماو أوڤا إي بانانا|آه بالبلدين عنا برتقال وليمون وعنب وموز`},
+15:{w:`gelo|جيلو|ثلج
+sabor|سابور|نكهة / طعم
+médio|ميديو|متوسط
+ácido|آسيدو|حمضي
+fraco|فراكو|ضعيف
+suave|سواڤي|خفيف / لطيف
+sem sal|سين ساو|بدون ملح
+limonada|ليمونادا|ليمونادة
+temperos|تيمبيروس|توابل
+bem doce|بين دوسي|حلو كثير
+chocolate|شوكولاتشي|شوكولاتة
+alimentos|أليمنتوس|أغذية
+salgadinho|ساوغادجينيو|سناك مالح
+sem açúcar|سين أسوكار|بدون سكر
+temperatura|تيمبيراتورا|درجة الحرارة
+molho agridoce|موليو أغريدوسي|صلصة حلوة وحامضة
+chocolate granulado|شوكولاتشي غرانولادو|حبيبات شوكولاتة
+temperatura ambiente|تيمبيراتورا أمبيينتشي|حرارة الغرفة`,s:``},
+16:{w:`sopa|سوبا|شوربة
+tomo|تومو|أنا بشرب / بتناول
+toma|توما|هو أو هي بيشرب
+ovos|أوڤوس|بيض
+tomam|تومام|هم بيشربوا
+tomei|توميي|شربت / تناولت
+janto|جانتو|أنا بتعشى
+almoça|أوموسا|هو بيتغدى
+jantam|جانتام|هم بيتعشوا
+jantei|جانتَي|تعشيت
+tomamos|توماموس|إحنا بنشرب
+tomarei|توماريي|سأتناول
+almoçam|أوموسام|هم بيتغدوا
+almocei|أوموسيي|تغديت
+jantamos|جانتاموس|إحنا بنتعشى
+jantarei|جانتاريي|سأتعشى
+refeições|هيفيساويس|وجبات
+almoçamos|أوموساموس|إحنا بنتغدى
+almoçarei|أوموساريي|سأتغدى
+café da tarde|كافيه دا تارجي|وجبة خفيفة بعد الظهر
+café colonial|كافيه كولونيال|وجبة برازيلية متنوعة وغنية
+lanche da manhã|لانشي دا مانيا|سناك الصبح
+comer|كومير|يأكل
+esquentar|إسكينتار|يسخن`,s:`Vou almoçar.|ڤو أوموسار|رح أتغدى
 Nós almoçamos.|نوس أوموساموس|إحنا بنتغدى
-Eles tomam café da tarde.|إيليس تومام كافيه دا تارجي|هم بيتناولوا سناك العصر
-Eu janto todos os dias, todas as noites, às dez horas.|إيو جانتو تودوس أوس دجياس توداس آز نويتشيس آز ديز أوراس|أنا بتعشى كل ليلة الساعة عشرة
-Eu jantei ontem às vinte e três horas.|إيو جانتَي أونتيم آز ڤينتشي إي تريس أوراس|تعشيت مبارح الساعة 11 بالليل
-Amanhã eu almoçarei tarde.|أمانيا إيو أوموساريي تارجي|بكرة رح أتغدى متأخر
+Eu tomo café da manhã.|إيو تومو كافيه دا مانيا|أنا بفطر
 Amanhã eu não jantarei.|أمانيا إيو ناو جانتاريي|بكرة مش رح أتعشى
-Ontem eu não tomei café da manhã.|أونتيم إيو ناو توميي كافيه دا مانيا|مبارح ما فطرت
-Eu tomarei café da manhã às dez horas.|إيو توماريي كافيه دا مانيا آز ديز أوراس|رح أفطر الساعة عشرة
-Vou almoçar.|ڤو أوموسار|رح أتغدى
 Vou tomar café da manhã.|ڤو تومار كافيه دا مانيا|رح أفطر
-Eu tomo café da manhã, almoço e janto todos os dias.|إيو تومو كافيه دا مانيا أوموسو إي جانتو تودوس أوس دجياس|أنا بفطر وبتغدى وبتعشى كل يوم
-Às vezes, também faço um lanche à tarde.|آز ڤيزيس تامبيم فاسو أوم لانشي آ تارجي|أحياناً باكل سناك العصر
-No café da manhã, gosto de comer pão, queijo e ovos.|نو كافيه دا مانيا غوستو دجي كومير پاو كيجو إي أوڤوس|بالفطور بحب آكل خبز وجبنة وبيض
-Na janta, gosto de comer sanduíche ou sopa.|نا جانتا غوستو دجي كومير ساندويتشي أو سوپا|بالعشاء بحب ساندويش أو شوربة
+Eles tomam café da tarde.|إيليس تومام كافيه دا تارجي|هم بيتناولوا سناك العصر
+Amanhã eu almoçarei tarde.|أمانيا إيو أوموساريي تارجي|بكرة رح أتغدى متأخر
+Ontem eu não tomei café da manhã.|أونتيم إيو ناو توميي كافيه دا مانيا|مبارح ما فطرت
+Eu jantei ontem às vinte e três horas.|إيو جانتَي أونتيم آز ڤينتشي إي تريس أوراس|تعشيت مبارح الساعة 11 بالليل
+Eu tomarei café da manhã às dez horas.|إيو توماريي كافيه دا مانيا آز ديز أوراس|رح أفطر الساعة عشرة
 Quais são suas refeições no dia a dia?|كوايس ساو سواس هيفيساويس نو دجيا آ دجيا؟|شو وجباتك اليومية؟
-O que você gosta de comer no café da manhã, no almoço e na janta?|أو كي ڤوسيه غوستا دجي كومير نو كافيه دا مانيا نو أوموسو إي نا جانتا؟|شو بتحب تاكل بالفطور والغداء والعشا؟
-No Brasil, há três tipos de refeições principais: o café da manhã, o almoço e a janta.|نو برازيو آ تريس تشيپوس دجي هيفيساويس پرينسيپايس أو كافيه دا مانيا أو أوموسو إي آ جانتا|بالبرازيل في ثلاث وجبات رئيسية: الفطور والغداء والعشاء`},
-17:{w:`isopor|إيزوپور|صندوق فلين عازل
-Pix|پيكس|نظام تحويل فوري بالبرازيل
-shopping|شوپينغ|مول
-reais|هيايس|ريالات برازيلية
-preço|پريسو|سعر
-compras|كومپراس|مشتريات
+Às vezes, também faço um lanche à tarde.|آز ڤيزيس تامبيم فاسو أوم لانشي آ تارجي|أحياناً باكل سناك العصر
+Na janta, gosto de comer sanduíche ou sopa.|نا جانتا غوستو دجي كومير ساندويتشي أو سوبا|بالعشاء بحب ساندويش أو شوربة
+Eu tomo café da manhã, almoço e janto todos os dias.|إيو تومو كافيه دا مانيا أوموسو إي جانتو تودوس أوس دجياس|أنا بفطر وبتغدى وبتعشى كل يوم
+No café da manhã, gosto de comer pão, queijo e ovos.|نو كافيه دا مانيا غوستو دجي كومير باو كيجو إي أوڤوس|بالفطور بحب آكل خبز وجبنة وبيض
+Eu janto todos os dias, todas as noites, às dez horas.|إيو جانتو تودوس أوس دجياس توداس آز نويتشيس آز ديز أوراس|أنا بتعشى كل ليلة الساعة عشرة
+O que você gosta de comer no café da manhã, no almoço e na janta?|أو كي ڤوسي غوستا دجي كومير نو كافيه دا مانيا نو أوموسو إي نا جانتا؟|شو بتحب تاكل بالفطور والغداء والعشا؟
+No Brasil, há três tipos de refeições principais: o café da manhã, o almoço e a janta.|نو برازيو آ تريس تشيبوس دجي هيفيساويس برينسيبايس أو كافيه دا مانيا أو أوموسو إي آ جانتا|بالبرازيل في ثلاث وجبات رئيسية: الفطور والغداء والعشاء`},
+17:{w:`lotado|لوتادو|مزدحم / مليان
+queria|كيريا|كنت بدي / بدي بصيغة مهذبة
+preciso|بريسيزو|أنا محتاج
+precisa|بريسيزا|بيحتاج
+congelado|كونجيلادو|مجمد
+congelada|كونجيلادا|مجمدة
+Pix|بيكس|نظام تحويل فوري بالبرازيل
 loja|لوجا|محل
-produtos|پرودوتوس|منتجات
-quantidade|كوانتچيدادجي|كمية
-quilo de camarão|كيلو دجي كاماراو|كيلو جمبري
-embalagem|إمبالاجيم|تغليف
 saco|ساكو|كيس
+reais|هيايس|ريالات برازيلية
+preço|بريسو|سعر
+isopor|إيزوبور|صندوق فلين عازل
+compras|كومبراس|مشتريات
+shopping|شوبينغ|مول
+produtos|برودوتوس|منتجات
+embalagem|إمبالاجيم|تغليف
 caríssimo|كاريسيمو|غالي جداً
-ficar devendo|فيكار ديڤيندو|يبقى عليه دين`,s:`Qual é o seu Pix?|كواو إيه أو سيو پيكس؟|شو رقم أو مفتاح البيكس تبعك؟
-Quanto é o Pix?|كوانتو إيه أو پيكس؟|قديش المبلغ على بيكس؟
-Quanto tá?|كوانتو تا؟|بكم؟ بالعامية`},
-18:{w:`endereço|إنديريسو|عنوان`,s:`Eu moro em São Paulo.|إيو مورو إيم ساو پاولو|أنا ساكن بساو باولو
-Aquela janela está quebrada.|آكيلا جانيلا إستا كيبرادا|ذاك الشباك مكسور
-Onde você mora? Seu endereço.|أوندجي ڤوسيه مورا؟ سيو إنديريسو|وين ساكنة؟ عنوانك`},
-19:{w:`porta-malas|پورتا مالاس|صندوق السيارة
-metrô|ميترو|مترو
-passagem|پاساجيم|تذكرة / أجرة
-trânsito|ترانزيتو|حركة المرور / أزمة سير
-em frente|إيم فرينتشي|للأمام
-Liberdade|ليبيردادجي|حي ليبيردادجي
-lugares|لوغاريس|أماكن
-quero|كيرو|أنا بدي
+quantidade|كوانتچيدادجي|كمية
+ficar devendo|فيكار ديڤيندو|يبقى عليه دين
+quilo de camarão|كيلو دجي كاماراو|كيلو جمبري
 quer|كير|هو بده / هي بدها
-vão|ڤاو|هم رح يروحوا / رح يعملوا
-vamos|ڤاموس|خلينا / إحنا بنروح
-localizado|لوكاليزادو|موجود بمكان
-abaixo|أبايشو|تحت / أدناه
-entre|إنتري|بين
-dar|دار|يعطي
-dirigir|دجيريجير|يسوق
-estacionar|إستاسيونار|يصف السيارة
-estacionamento|إستاسيونامينتو|موقف سيارات
-terceiro andar|تيرسيرو أندار|الطابق الثالث
+quero|كيرو|أنا بدي`,s:`O shopping tá lotado hoje.|أو شوبينغ تا لوتادو أوجي|المول مليان اليوم
+Quanto tá?|كوانتو تا؟|بكم؟ بالعامية
+Quanto é o Pix?|كوانتو إيه أو بيكس؟|قديش المبلغ على بيكس؟
+Qual é o seu Pix?|كواو إيه أو سيو بيكس؟|شو رقم أو مفتاح البيكس تبعك؟`},
+18:{w:`moro|مورو|أنا ساكن
+limpo|ليمبو|نظيف
+limpa|ليمبا|نظيفة
+endereço|إنديريسو|عنوان
+moram|مورام|هم ساكنين`,s:`Eu moro em São Paulo.|إيو مورو إيم ساو باولو|أنا ساكن بساو باولو
+Aquela janela está quebrada.|آكيلا جانيلا إستا كيبرادا|ذاك الشباك مكسور
+Onde você mora? Seu endereço.|أوندجي ڤوسي مورا؟ سيو إنديريسو|وين ساكنة؟ عنوانك`},
+19:{w:`sair|ساير|يطلع / يخرج
+parar|بارار|يوقف
+virar|ڤيرار|يلف / يدور
+entrar|إنترار|يدخل
+seguir|سيغير|يكمل الطريق /
 aí|آيي|عندك / هناك
+metrô|ميترو|مترو
+vamos|ڤاموس|خلينا / إحنا بنروح
+entre|إنتري|بين
+atrás|أتراس|ورا
+abaixo|أبايشو|تحت / أدناه
 dentro|دينترو|جوا
+lugares|لوغاريس|أماكن
+dirigir|دجيريجير|يسوق
 em cima|إيم سيما|فوق
 embaixo|إيمبايشو|تحت
 ao lado|آو لادو|بجانب
-na frente|نا فرينتشي|قدام
-atrás|أتراس|ورا
-perto de|پيرتو دجي|قريب من
+passagem|باساجيم|تذكرة / أجرة
+trânsito|ترانزيتو|حركة المرور / أزمة سير
+perto de|بيرتو دجي|قريب من
 longe de|لونجي دجي|بعيد عن
+em frente|إيم فرينتشي|للأمام
+na frente|نا فرينتشي|قدام
+localizado|لوكاليزادو|موجود بمكان
+estacionar|إستاسيونار|يصف السيارة
 ao lado de|آو لادو دجي|جنب
-em frente de|إيم فرينتشي دجي|أمام`,s:`Tô procurando vaga.|تو پروكوراندو ڤاغا|بدور على موقف فاضي
-Estacionando.|إستاسيوناندو|بصف السيارة
-Onde você está?|أونجي ڤوسيه إستا؟|وين إنت؟
-Como posso chegar ao metrô?|كومو پوسو شيغار آو ميترو؟|كيف بوصل للمترو؟
+porta-malas|بورتا مالاس|صندوق السيارة
+em frente de|إيم فرينتشي دجي|أمام
+estacionamento|إستاسيونامينتو|موقف سيارات
+terceiro andar|تيرسيرو أندار|الطابق الثالث`,s:`Estacionando.|إستاسيوناندو|بصف السيارة
+Onde você está?|أونجي ڤوسي إستا؟|وين إنت؟
+Tô procurando vaga.|تو بروكوراندو ڤاغا|بدور على موقف فاضي
+A passagem custa R$ 4,40.|آ باساجيم كوستا كواترو هيايس إي كوارينتا سينتاڤوس|التذكرة بأربعة ريالات وأربعين سنتافو
+Como posso chegar ao metrô?|كومو بوسو شيغار آو ميترو؟|كيف بوصل للمترو؟
+Ela vai para a praia todo ano.|إيلا ڤاي بارا آ برايا تودو آنو|هي بتروح على الشاطئ كل سنة
 Siga em frente e vire à direita.|سيغا إيم فرينتشي إي ڤيري آ ديريتا|امشِ لقدام ولف يمين
-Quanto custa a passagem de ônibus?|كوانتو كوستا آ پاساجيم دجي أونيبوس؟|بكم تذكرة الباص؟
-A passagem custa R$ 4,40.|آ پاساجيم كوستا كواترو هيايس إي كوارينتا سينتاڤوس|التذكرة بأربعة ريالات وأربعين سنتافو
-Onde fica a Polícia Federal?|أونجي فيكا آ پوليسيا فيديراو؟|وين الشرطة الفيدرالية؟
-Porque amanhã eles vão viajar.|پوركي أمانيا إيليس ڤاو ڤياجار|لأنهم بكرة رح يسافروا
-Ela vai para a praia todo ano.|إيلا ڤاي پارا آ پرايا تودو آنو|هي بتروح على الشاطئ كل سنة`},
-20:{w:`no sábado|نو سابادو|يوم السبت
-aos sábados|آوس سابادوس|أيام السبت / كل سبت
-todas as noites|توداس آز نويتشيس|كل ليلة
-todo ano|تودو آنو|كل سنة
-há um mês|آ أوم ميس|منذ شهر
-há dois meses|آ دويز ميزيس|منذ شهرين
-inteiro|إنتيرو|كامل
-dia a dia|دجيا آ دجيا|الحياة اليومية
-de manhã|دجي مانيا|الصبح
-à tarde|آ تارجي|بعد الظهر
-às dez horas|آز ديز أوراس|الساعة عشرة
-às vinte e três horas|آز ڤينتشي إي تريس أوراس|الساعة 23 / 11 بالليل
-às quinze horas|آز كينزي أوراس|الساعة 3 العصر
+Quanto custa a passagem de ônibus?|كوانتو كوستا آ باساجيم دجي أونيبوس؟|بكم تذكرة الباص؟
+Eu estou no terceiro andar, perto da iMax.|إيو إستو نو تيرسيرو أندار بيرتو دا آي ماكس|أنا بالطابق الثالث جنب آي ماكس
+Estou aqui.|إستو أكي|أنا هون`},
+20:{w:`começam|كوميسام|بيبدأوا
+dias|دجياس|أيام
+anos|آنوس|سنوات
 horas|أوراس|ساعات / الساعة
+manhã|مانيا|صباح
+antes|أنتشيس|قبل
+noites|نويتشيس|ليالي
+inteiro|إنتيرو|كامل
+à tarde|آ تارجي|بعد الظهر
 demorar|ديمورار|يتأخر / يأخذ وقت
 sábados|سابادوس|أيام السبت
-dias|دجياس|أيام
-noites|نويتشيس|ليالي
-manhã|مانيا|صباح
-anos|آنوس|سنوات
-antes|أنتشيس|قبل`,s:`Por que você está atrasado?|پور كي ڤوسيه إستا أترازادو؟|ليش إنت متأخر؟
-Quanto tempo você vai demorar para chegar?|كوانتو تيمپو ڤوسيه ڤاي ديمورار پارا شيغار؟|قديش بدك وقت لتوصل؟`},
-21:{w:`escutar|إسكوتار|يسمع / ينصت
-manter|مانتير|يحافظ على
-subir|سوبير|يطلع / يصعد
-correr|كوهير|يركض
-andar|أندار|يمشي
-comer|كومير|يأكل
-gostar|غوستار|يحب
-trabalhar|تراباليار|يشتغل
-vir|ڤير|يجي
+todo ano|تودو آنو|كل سنة
+de manhã|دجي مانيا|الصبح
+no sábado|نو سابادو|يوم السبت
+há um mês|آ أوم ميس|منذ شهر
+dia a dia|دجيا آ دجيا|الحياة اليومية
+aos sábados|آوس سابادوس|أيام السبت / كل سبت
+às dez horas|آز ديز أوراس|الساعة عشرة
+há dois meses|آ دويز ميزيس|منذ شهرين
+todas as noites|توداس آز نويتشيس|كل ليلة
+às quinze horas|آز كينزي أوراس|الساعة 3 العصر
+às vinte e três horas|آز ڤينتشي إي تريس أوراس|الساعة 23 / 11 بالليل`,s:`Quando as aulas começam?|كواندو آز آولاس كوميسام؟|إمتى بتبدأ الحصص؟
+Nós estudamos aos sábados.|نوس إستوداموس آوس سابادوس|إحنا بندرس كل سبت
+As aulas começam semana que vem, na segunda-feira, às 15h00min.|آز آولاس كوميسام سيمانا كي ڤيم نا سيغوندا فيرا آز كينزي أوراس|الحصص بتبدأ الأسبوع الجاي الاثنين الساعة 3
+Por que você está atrasado?|بور كي ڤوسي إستا أترازادو؟|ليش إنت متأخر؟
+Quanto tempo você vai demorar para chegar?|كوانتو تيمبو ڤوسي ڤاي ديمورار بارا شيغار؟|قديش بدك وقت لتوصل؟
+Eu estou atrasado.|إيو إستو أترازادو|أنا متأخر`},
+21:{w:`sugestão|سوجيستاو|اقتراح
+tirar|تشيرار|يشيل / يطلع
+botar|بوتار|يحط بالعامية
+trazer|ترازير|يجيب
+buscar|بوسكار|يجيب / يدور على
+colocar|كولوكار|يحط
+dar|دار|يعطي
 ir|إير|يروح
 ter|تير|عنده / يملك
-repetir|هيپيتشير|يعيد
-cortar|كورتار|يقطع
-esquentar|إسكينتار|يسخن
-misturar|ميستورار|يخلط
-abrir|أبرير|يفتح
-fechar|فيشار|يسكر / يغلق
-guardar|غواردار|يحفظ / يخزن
-lavar|لاڤار|يغسل
-repor|هيپور|يعيد تعبئة / يعوض
-entrevista de emprego|إنتريڤيستا دجي إمپريغو|مقابلة عمل
-temos|تيموس|عنا
-gosta|غوستا|هو بحب / هي بتحب
-gostam|غوستام|هم بحبوا
-faço|فاسو|أنا بعمل
 vou|ڤو|أنا رح أروح / رح أعمل
-veio|ڤيو|إجا / إجت
-chegou|شيغو|وصل / وصلت
-comeu|كوميو|أكل / أكلت
-estudamos|إستوداموس|إحنا بندرس
-moram|مورام|هم ساكنين
-trabalha|تراباليا|بيشتغل
-ficou|فيكو|صار / بقي
+faço|فاسو|أنا بعمل
 deve|ديڤي|لازم / ينبغي
-pode|پودجي|بيقدر / ممكن
-posso|پوسو|أنا بقدر
-precisar|پريسيزار|يحتاج
-sente|سينتشي|بيحس
-sinto|سينتو|أنا بحس
-vive|ڤيڤي|بيعيش
-vê|ڤيه|بيشوف
+pode|بودجي|بيقدر / ممكن
 digo|دجيغو|أنا بحكي / بقول
 sobe|سوبي|بيطلع
-corre|كوهي|بيركض
 ando|أندو|أنا بمشي
-andando|أنداندو|عم يمشي
-correndo|كوهيندو|عم يركض
-brincar|برينكار|يلعب
+usar|أوزار|يستخدم
+subir|سوبير|يطلع / يصعد
+andar|أندار|يمشي
+abrir|أبرير|يفتح
+lavar|لاڤار|يغسل
+repor|هيبور|يعيد تعبئة / يعوض
+temos|تيموس|عنا
+posso|بوسو|أنا بقدر
+corre|كوهي|بيركض
 jogar|جوغار|يلعب / يرمي
-preencher|پرينشير|يعبي استمارة
-completar|كومپليتار|يكمل
+manter|مانتير|يحافظ على
+correr|كوهير|يركض
+cortar|كورتار|يقطع
+fechar|فيشار|يسكر / يغلق
+escutar|إسكوتار|يسمع / ينصت
+repetir|هيبيتشير|يعيد
+guardar|غواردار|يحفظ / يخزن
+andando|أنداندو|عم يمشي
+misturar|ميستورار|يخلط
+trabalha|تراباليا|بيشتغل
+precisar|بريسيزار|يحتاج
+correndo|كوهيندو|عم يركض
 escrever|إسكريڤير|يكتب
-descrever|ديسكريڤير|يوصف
-grifar|غريفار|يحدد بقلم
-usar|أوزار|يستخدم`,s:`O que você faz?|أو كي ڤوسيه فاز؟|شو بتعمل / شو شغلك؟
-Ela é enfermeira.|إيلا إيه إنفيرميرا|هي ممرضة
-Por que ela está nervosa?|پور كي إيلا إستا نيرڤوزا؟|ليش هي متوترة؟`},
-22:{w:`olho|أوليو|عين
-hospital|أوسپيتاو|مستشفى
-enfermeira|إنفيرميرا|ممرضة
+trabalhar|تراباليار|يشتغل`,s:`O que você faz?|أو كي ڤوسي فاز؟|شو بتعمل / شو شغلك؟
+Ela é enfermeira.|إيلا إيه إنفيرميرا|هي ممرضة`},
+22:{w:`nariz|ناريز|أنف
+pé|بيه|قدم
 mão|ماو|يد
-braço|براسو|ذراع
-perna|پيرنا|رجل / ساق
-pé|پيه|قدم
+olho|أوليو|عين
 boca|بوكا|فم
+braço|براسو|ذراع
+perna|بيرنا|رجل / ساق
 dentes|دينتشيس|أسنان
-médica|ميدجيكا|طبيبة`,s:`A nossa médica é aquela.|آ نوسا ميدجيكا إيه آكيلا|طبيبتنا هي تلك`},
-23:{w:`ontem à noite|أونتيم آ نويتشي|مبارح بالليل`,s:`Eu estou atrasado.|إيو إستو أترازادو|أنا متأخر
-Eu sou estudante.|إيو سو إستودانتشي|أنا طالب
-Não sei.|ناو ساي|ما بعرف
-Eu sou jovem, alta e magra.|إيو سو جوڤيم آلتا إي ماغرا|أنا شابة وطويلة ونحيفة
-Eu sou baixa.|إيو سو بايشا|أنا قصيرة
-Sou gorda e tenho um nariz grande.|سو غوردا إي تينيو أوم ناريز غرانجي|أنا ممتلئة وعندي أنف كبير
-Eu paguei com Pix.|إيو پاغيي كوم پيكس|دفعت ببيكس
-Eu estou no terceiro andar, perto da iMax.|إيو إستو نو تيرسيرو أندار پيرتو دا آي ماكس|أنا بالطابق الثالث جنب آي ماكس
-Já cheguei.|جا شيغيي|وصلت
-Eu sou baixa, tenho olhos castanhos, sou gorda e tenho um nariz grande.|إيو سو بايشا تينيو أوليوس كستانيوس سو غوردا إي تينيو أوم ناريز غرانجي|أنا قصيرة وعيوني بنية وممتلئة وأنفي كبير
-Eu sou a menina que está usando um vestido roxo.|إيو سو آ مينينا كي إستا أوزاندو أوم ڤيستشيدو هوشو|أنا البنت اللي لابسة فستان بنفسجي`},
-24:{w:``,s:`Já comeu?|جا كوميو؟|أكلت من قبل؟
-Quando você veio para cá?|كواندو ڤوسيه ڤيو پارا كا؟|إمتى جيت لهون؟
-Eu vim para o Brasil em 2014.|إيو ڤيم پارا أو برازيو إيم دويز ميل إي كاتورزي|جيت للبرازيل سنة 2014
+médica|ميدجيكا|طبيبة
+hospital|أوسبيتاو|مستشفى
+enfermeira|إنفيرميرا|ممرضة`,s:`A nossa médica é aquela.|آ نوسا ميدجيكا إيه آكيلا|طبيبتنا هي تلك`},
+23:{w:`cheguei|شيغيي|أنا وصلت
+passado|باسادو|الماضي
+voltei|ڤولتيي|رجعت
+ontem à noite|أونتيم آ نويتشي|مبارح بالليل
+chegou|شيغو|وصل`,s:`Já cheguei.|جا شيغيي|وصلت
+Eu paguei com Pix.|إيو باغيي كون بيكس|دفعت ببيكس`},
+24:{w:`vê|ڤيه|بيشوف
+vir|ڤير|يجي
+veio|ڤيو|إجا / إجت
+comeu|كوميو|أكل / أكلت
+ficou|فيكو|صار / بقي`,s:`Já comeu?|جا كوميو؟|أكلت من قبل؟
 Eu vim de ônibus.|إيو ڤيم دجي أونيبوس|جيت بالباص
-Quando você veio para o Brasil?|كواندو ڤوسيه ڤيو پارا أو برازيو؟|إمتى جيت للبرازيل؟
-Sim, eu já comi comida de outros países.|سيم إيو جا كومي كوميدا دجي أوتروس پايزيس|آه أكلت من قبل أكلات من بلدان ثانية
-Estou aqui.|إستو أكي|أنا هون`},
-26:{w:``,s:`Porque tinha trânsito.|پوركي تينيا ترانزيتو|لأنه كان في أزمة سير
-Minha amiga era professora aqui.|مينيا أميغا إيرا پروفيسورا أكي|صاحبتي كانت معلمة هون`},
-38:{w:``,s:`Os pronomes possessivos são usados quando queremos falar que alguém é dono de alguma coisa.|أوس پرونوميس پوسيسيڤوس ساو أوزادوس كواندو كيريموس فالار كي ألغيم إيه دونو دجي ألغوما كويزا|ضمائر الملكية بنستخدمها لما نحكي إن حدا بملك إشي`},
+Quando você veio para cá?|كواندو ڤوسي ڤيو بارا كا؟|إمتى جيت لهون؟
+Eu vim para o Brasil em 2014.|إيو ڤيم بارا أو برازيو إيم دويز ميل إي كاتورزي|جيت للبرازيل سنة 2014
+Quando você veio para o Brasil?|كواندو ڤوسي ڤيو بارا أو برازيو؟|إمتى جيت للبرازيل؟
+Sim, eu já comi comida de outros países.|سين إيو جا كومي كوميدا دجي أوتروس بايزيس|آه أكلت من قبل أكلات من بلدان ثانية`},
+25:{w:`por último|بور أولتشيمو|وأخيراً`,s:``},
+26:{w:``,s:`Porque tinha trânsito.|بوركي تينيا ترانزيتو|لأنه كان في أزمة سير
+Minha amiga era professora aqui.|مينيا أميغا إيرا بروفيسورا أكي|صاحبتي كانت معلمة هون`},
+27:{w:`inscrição|إنسكريساو|تسجيل
+preencher|برينشير|يعبي استمارة`,s:`Qual é o seu nome completo?|كواو إيه أو سيو نومي كومبليتو؟|شو اسمك الكامل؟
+Vamos preencher um formulário.|ڤاموس برينشير أوم فورمولاريو|خلينا نعبي استمارة
+Onde fica a Polícia Federal?|أونجي فيكا آ بوليسيا فيديراو؟|وين الشرطة الفيدرالية؟`},
+29:{w:`enviar|إنڤيار|يرسل
+receber|هيسيبير|يستلم`,s:`Espere um minuto.|إسبيري أوم مينوتو|استنى دقيقة`},
+30:{w:`livre|ليڤري|فاضي / حر
+combinar|كومبينار|يتفق`,s:``},
+31:{w:`professores|بروفيسوريس|معلمون`,s:`Esse livro deve ser encapado.|إيسي ليڤرو ديڤي سير إنكابادو|هذا الكتاب لازم يتغلف`},
+36:{w:`entrevista de emprego|إنتريڤيستا دجي إمبريغو|مقابلة عمل`,s:``},
+38:{w:`vai|ڤاي|هو رح يروح / رح يعمل
+vão|ڤاو|هم رح يروحوا / رح يعملوا`,s:`Porque amanhã eles vão viajar.|بوركي أمانيا إيليس ڤاو ڤياجار|لأنهم بكرة رح يسافروا`},
+40:{w:`quebrada|كيبرادا|مكسورة / خربانة
+funciona|فونسيونا|بيشتغل
+funcionar|فونسيونار|يشتغل / يعمل`,s:``},
 };
-Object.entries(EXTRA).forEach(([id,e])=>{const c=CH[id-1];if(!c)return;const byLen=a=>a.sort((x,y)=>x[0].length-y[0].length);e={w:byLen(lines(e.w)).map(x=>x.join('|')).join('\n'),s:byLen(lines(e.s)).map(x=>x.join('|')).join('\n')};const hw=new Set(c.W.map(x=>x.pt)),hs=new Set(c.S.map(x=>x.pt));lines(e.w).forEach(([pt,pron,ar])=>{if(pt&&!hw.has(pt))c.W.push({pt,pron,ar,ch:c.id,key:'w|'+pt,x:1})});lines(e.s).forEach(([pt,pron,ar])=>{if(pt&&!hs.has(pt))c.S.push({pt,pron,ar,ch:c.id,key:'s|'+pt,x:1})})});
+const _nk=t=>String(t).toLowerCase().replace(/[.!?¿¡,]/g,'').trim();const MAINSET=new Set(CH.flatMap(c=>[...c.W,...c.S]).filter(x=>!x.x).map(x=>_nk(x.pt)));
+Object.entries(EXTRA).forEach(([id,e])=>{const c=CH[id-1];if(!c)return;const byLen=a=>a.sort((x,y)=>x[0].length-y[0].length);e={w:byLen(lines(e.w)).map(x=>x.join('|')).join('\n'),s:byLen(lines(e.s)).map(x=>x.join('|')).join('\n')};const hw=new Set(c.W.map(x=>x.pt)),hs=new Set(c.S.map(x=>x.pt));lines(e.w).forEach(([pt,pron,ar])=>{if(pt&&!hw.has(pt)&&!MAINSET.has(_nk(pt)))c.W.push({pt,pron,ar,ch:c.id,key:'w|'+pt,x:1})});lines(e.s).forEach(([pt,pron,ar])=>{if(pt&&!hs.has(pt)&&!MAINSET.has(_nk(pt)))c.S.push({pt,pron,ar,ch:c.id,key:'s|'+pt,x:1})})});
 
 /* ===== كلمات وجمل إضافية: المستوى الثالث B1 (43–60) ===== */
 const EXTRA_MORE={
@@ -10237,45 +10212,84 @@ function hydrateKidPics(root){
 }
 const kStars=id=>((S.kids||{})[id]||0);
 
+/* ===== تقدّم الأطفال: متعلَّم، مكتمل، مفتوح بالترتيب ===== */
+const KPREV=3;
+const kLearned=key=>!!((S.kidW||{})[key]);
+const kDone=k=>kStars(k.id)>=2&&(!k.F.length||kStars(k.id+'_f')>=2);
+const kOpen=k=>k.ord<=KPREV||canSkip()||kDone(k)||(()=>{const p=KIDS.find(x=>x.ord===k.ord-1);return !p||kDone(p)})();
+const kPct=k=>{const all=k.L.concat(k.F);return all.length?Math.round(all.filter(x=>kLearned(x.key)).length/all.length*100):0};
+const KCHEER=['Muito bem!','Isso!','Parabéns!','Que legal!','Show!','Mandou bem!'];
+const KCHEER_AR={'Muito bem!':'برافو!','Isso!':'هيك!','Parabéns!':'مبروك!','Que legal!':'شو حلو!','Show!':'رهيب!','Mandou bem!':'عملتها صح!'};
+function confetti(n=60){const box=document.createElement('div');box.className='confetti';const em=['🎉','⭐','🎈','✨','💛','🌈'];
+  for(let j=0;j<n;j++){const s=document.createElement('i');s.textContent=Math.random()<.35?em[j%em.length]:'';s.style.left=Math.random()*100+'vw';s.style.background=s.textContent?'transparent':`hsl(${Math.random()*360},90%,60%)`;s.style.animationDelay=(Math.random()*.6)+'s';s.style.animationDuration=(1.6+Math.random()*1.4)+'s';box.appendChild(s)}
+  document.body.appendChild(box);setTimeout(()=>box.remove(),3600)}
+function tuca(msg){return `<div class="tuca"><span class="tc-b">🦜</span><span class="tc-m">${msg}</span></div>`}
+
 function vKids(){
-  const card=k=>`<a class="kcat" href="#kids-${k.id}" style="--kb:${k.bg};--kf:${k.fg}"><span class="kc-ord">${k.ord}</span><span class="kc-ic">${k.ic}</span><b lang="pt-BR" dir="ltr">${esc(k.pt)}</b><span>${esc(k.ar)}</span><span class="kc-n">${k.L.length} كلمة${k.F.length?' · '+k.F.length+' جملة':''}</span><span class="kc-st">${'★'.repeat(kStars(k.id))}${'☆'.repeat(3-kStars(k.id))}</span></a>`;
-  const tw=KIDS.reduce((a,k)=>a+k.L.length,0),tf=KIDS.reduce((a,k)=>a+k.F.length,0);
+  const doneN=KIDS.filter(kDone).length;
+  const card=k=>{const op=kOpen(k),dn=kDone(k),pc=kPct(k);
+    return `<a class="kcat${dn?' kdone-c':''}${op?'':' klock'}" href="${op?'#kids-'+k.id:'#kids'}" data-lock="${op?'':esc(KIDS.find(x=>x.ord===k.ord-1).ar)}" style="--kb:${k.bg};--kf:${k.fg}"><span class="kc-ord">${dn?'✓':k.ord}</span><span class="kc-ic">${op?k.ic:'🔒'}</span><b lang="pt-BR" dir="ltr">${esc(k.pt)}</b><span>${esc(k.ar)}</span>
+     <span class="kc-bar"><i style="width:${pc}%"></i></span><span class="kc-n">${dn?'خلّصته 🎉':pc?'تعلّمت '+pc+'%':k.L.length+' كلمة'+(k.F.length?' · '+k.F.length+' جملة':'')}</span><span class="kc-st">${'★'.repeat(kStars(k.id))}${'☆'.repeat(3-kStars(k.id))}</span></a>`};
+  const nextK=KIDS.find(k=>kOpen(k)&&!kDone(k));
   app.innerHTML=`<div class="stack kids">
-   <div class="kids-hero"><span class="kh-ic">🧸</span><div><h1>${P('Português para crianças')}</h1><p>برتغالي للأطفال: ابدأ من الخطوة 1 بالترتيب. اضغط على الصورة واسمع الكلمة، وبعدين العب! (${tw} كلمة و${tf} جملة)</p></div></div>
-   ${KGROUPS.map(g=>`<section class="kgroup"><h2 class="kg-h">${g.ic} ${esc(g.ar)}</h2><div class="kgrid">${KIDS.filter(k=>k.g===g.id).map(card).join('')}</div></section>`).join('')}
+   <div class="kids-hero"><span class="kh-ic">🧸</span><div><h1>${P('Português para crianças')}</h1><p>اضغط على الصورة واسمع الكلمة، وبعدين العب واجمع النجوم والملصقات! كل قسم بتخلّصه بيفتحلك اللي بعده.</p></div></div>
+   ${tuca(nextK?`يلا نكمّل! القسم الجاي: <a href="#kids-${nextK.id}"><b>${esc(nextK.ar)}</b></a> ${nextK.ic}`:'خلّصت كل الأقسام! إنت بطل 🏆')}
+   <section class="card kstick"><h2 class="kg-h">🏅 ألبوم الملصقات <small class="muted">${doneN} / ${KIDS.length}</small></h2><div class="ks-row">${KIDS.map(k=>`<span class="ks${kDone(k)?' on':''}" title="${esc(k.ar)}">${k.ic}</span>`).join('')}</div></section>
+   ${KGROUPS.map(g=>{const ks=KIDS.filter(k=>k.g===g.id),dn=ks.filter(kDone).length;return `<section class="kgroup"><h2 class="kg-h">${g.ic} ${esc(g.ar)} <small class="muted">${dn}/${ks.length}</small></h2><div class="kgrid">${ks.map(card).join('')}</div></section>`}).join('')}
    <p class="muted kcredit">الصور من ويكيبيديا (Wikimedia Commons) برخص حرة.</p></div>`;
+  $$('.klock').forEach(a=>a.onclick=e=>{e.preventDefault();a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');toast('خلّص قسم «'+a.dataset.lock+'» أول وبينفتح هاد 🔓')});
 }
 function vKidsCat(id){
-  const k=KIDS.find(x=>x.id===id);if(!k)return vKids();
-  const fs=kStars(id+'_f');
+  const k=KIDS.find(x=>x.id===id);if(!k)return vKids();if(!kOpen(k)){toast('خلّص القسم اللي قبله أول 🔓');location.hash='#kids';return}
+  const fs=kStars(id+'_f'),ws=kStars(id),pc=kPct(k),nx=KIDS.find(x=>x.ord===k.ord+1);
+  const games=`<div class="kgames">
+     <a class="kgame${ws>=2?' ok':''}" href="#kidsgame-${k.id}"><span>🎮</span><b>لعبة الكلمات</b><small>اسمع واختار الصورة</small><em>${'★'.repeat(ws)}${'☆'.repeat(3-ws)}</em></a>
+     ${k.F.length?`<a class="kgame${fs>=2?' ok':''}" href="#kidsgame-${k.id}_f"><span>💬</span><b>لعبة الجمل</b><small>اسمع الجملة وافهمها</small><em>${'★'.repeat(fs)}${'☆'.repeat(3-fs)}</em></a>`:''}
+     <a class="kgame bonus" href="#kidsgame-${k.id}_w"><span>🔤</span><b>شو اسمها؟</b><small>شوف الصورة واختار الكلمة</small><em>${'★'.repeat(kStars(k.id+'_w'))}${'☆'.repeat(3-kStars(k.id+'_w'))}</em></a></div>`;
   app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}">
-   <div class="kcat-h"><span class="kc-ic">${k.ic}</span><div><h1 lang="pt-BR" dir="ltr">${esc(k.pt)}</h1><span>${esc(k.ar)}</span></div></div>
-   <div class="row" style="justify-content:center"><a class="btn kbtn" href="#kidsgame-${k.id}">🎮 لعبة الكلمات</a>${k.F.length?`<a class="btn kbtn" href="#kidsgame-${k.id}_f">💬 لعبة الجمل</a>`:''}</div>
-   <h2 class="kg-h">🖼️ الكلمات</h2>
-   <div class="kcards">${k.L.map(it=>`<button class="kcard" data-say="${esc(it.pt)}">${kidPic(k,it)}<b lang="pt-BR" dir="ltr">${esc(it.pt)}</b><span class="kpron">${esc(it.pron)}</span><span class="kar">${esc(it.ar)}</span><span class="kspk">🔊</span></button>`).join('')}</div>
-   ${k.F.length?`<h2 class="kg-h">💬 جمل نقولها <span class="kc-st">${'★'.repeat(fs)}${'☆'.repeat(3-fs)}</span></h2>
-   <div class="kfr">${k.F.map(f=>`<div class="kf-row"><span class="kf-e">${f.em}</span><div class="kf-t"><b lang="pt-BR" dir="ltr">${esc(f.pt)}</b><span class="kpron">${esc(f.pron)}</span><span class="kar">${esc(f.ar)}</span></div><span class="dlg-btns"><button class="spk" data-say="${esc(f.pt)}" aria-label="استمع">${SPK}</button><button class="spk slow" data-say="${esc(f.pt)}" data-slow="1" aria-label="ببطء">🐢</button></span></div>`).join('')}</div>`:''}
-   <div class="row" style="justify-content:center"><a class="btn kbtn" href="#kidsgame-${k.id}">🎮 لعبة الكلمات</a>${k.F.length?`<a class="btn kbtn" href="#kidsgame-${k.id}_f">💬 لعبة الجمل</a>`:''}<a class="btn" href="#kids">🧸 الأقسام</a></div></div>`;
+   <div class="kcat-h"><span class="kc-ic">${k.ic}</span><div><h1 lang="pt-BR" dir="ltr">${esc(k.pt)}</h1><span>${esc(k.ar)} · القسم ${k.ord} من ${KIDS.length}</span></div></div>
+   <div class="kprog"><span class="kc-bar big"><i style="width:${pc}%"></i></span><b>${kDone(k)?'خلّصت القسم 🎉':'تعلّمت '+pc+'%'}</b></div>
+   ${tuca(kDone(k)?(nx?`برافو! انفتحلك القسم الجاي: <a href="#kids-${nx.id}"><b>${esc(nx.ar)}</b></a> ${nx.ic}`:'برافو! خلّصت كل شي 🏆'):'١) اضغط على الصور واسمع الكلمات &nbsp;٢) العب لعبة الكلمات'+(k.F.length?' ولعبة الجمل':'')+' وجيب ⭐⭐ عشان تخلّص القسم')}
+   ${games}
+   <h2 class="kg-h">🖼️ الكلمات <small class="muted">الكلمات اللي عليها ✓ تعلّمتها</small></h2>
+   <div class="kcards">${k.L.map(it=>`<button class="kcard${kLearned(it.key)?' learned':''}" data-say="${esc(it.pt)}" data-kk="${esc(it.key)}">${kLearned(it.key)?'<span class="klearn">✓</span>':''}${kidPic(k,it)}<b lang="pt-BR" dir="ltr">${esc(it.pt)}</b><span class="kpron">${esc(it.pron)}</span><span class="kar">${esc(it.ar)}</span><span class="kspk">🔊</span></button>`).join('')}</div>
+   ${k.F.length?`<h2 class="kg-h">💬 جمل نقولها</h2>
+   <div class="kfr">${k.F.map(f=>`<div class="kf-row${kLearned(f.key)?' learned':''}"><span class="kf-e">${kLearned(f.key)?'✅':f.em}</span><div class="kf-t"><b lang="pt-BR" dir="ltr">${esc(f.pt)}</b><span class="kpron">${esc(f.pron)}</span><span class="kar">${esc(f.ar)}</span></div><span class="dlg-btns"><button class="spk" data-say="${esc(f.pt)}" aria-label="استمع">${SPK}</button><button class="spk slow" data-say="${esc(f.pt)}" data-slow="1" aria-label="ببطء">🐢</button></span></div>`).join('')}</div>`:''}
+   ${games}
+   <div class="row" style="justify-content:center"><a class="btn" href="#kids">🧸 كل الأقسام</a>${nx&&kOpen(nx)?`<a class="btn kbtn" href="#kids-${nx.id}">التالي: ${esc(nx.ar)} ${nx.ic}</a>`:''}</div></div>`;
   hydrateKidPics(app);
+  $$('.kcard').forEach(b=>b.addEventListener('click',()=>{b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}));
 }
 function vKidsGame(id){
-  const fm=/_f$/.test(id),base=id.replace(/_f$/,'');const k0=KIDS.find(x=>x.id===base);if(!k0)return vKids();
-  const k=fm?Object.assign({},k0,{phrase:true,color:false,num:false,L:k0.F}):k0;
-  const rounds=shuffle(k.L).slice(0,Math.min(8,k.L.length));let i=0,ok=0;
+  const mode=/_f$/.test(id)?'f':/_w$/.test(id)?'w':'p',base=id.replace(/_[fw]$/,'');const k0=KIDS.find(x=>x.id===base);if(!k0)return vKids();
+  if(!kOpen(k0)){location.hash='#kids';return}
+  const k=mode==='f'?Object.assign({},k0,{phrase:true,color:false,num:false,L:k0.F}):k0;
+  const wasDone=kDone(k0);
+  const rounds=shuffle(k.L).slice(0,Math.min(8,k.L.length));let i=0,ok=0,streak=0;
   const draw=()=>{
-    if(i>=rounds.length){const st=ok>=rounds.length?3:ok>=rounds.length*.7?2:ok>=rounds.length*.4?1:0;S.kids=S.kids||{};if(st>kStars(id)){S.kids[id]=st;save()}else touch();
+    if(i>=rounds.length){const st=ok>=rounds.length?3:ok>=rounds.length*.7?2:ok>=rounds.length*.4?1:0;S.kids=S.kids||{};if(st>kStars(id)){S.kids[id]=st}addXP(ok);save();
+      const nowDone=kDone(k0),nx=KIDS.find(x=>x.ord===k0.ord+1);const newSticker=nowDone&&!wasDone;
       app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}"><div class="kdone"><div class="kd-st">${'⭐'.repeat(st)||'💪'}</div><h1>${st===3?'برافو! ممتاز!':st?'شاطر!':'كمان مرة!'}</h1><p>${ok} من ${rounds.length} صح</p>
-       <div class="row" style="justify-content:center"><button class="btn kbtn" id="kag">🔁 العب كمان</button><a class="btn" href="#kids-${base}">📖 تعلّم ${fm?'الجمل':'الكلمات'}</a><a class="btn" href="#kids">🧸 الأقسام</a></div></div></div>`;
-      $('#kag').onclick=()=>vKidsGame(id);say(st?'Muito bem!':'Vamos tentar de novo!');return}
-    const t=rounds[i],opts=shuffle([t,...shuffle(k.L.filter(x=>x!==t)).slice(0,3)]);
-    app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}"><div class="kq-top"><span>${i+1} / ${rounds.length}</span><span>${'⭐'.repeat(ok)}</span></div>
-     <button class="kq-say" id="kqs">🔊 <b lang="pt-BR" dir="ltr">${esc(t.pt)}</b></button><p class="kq-h">اسمع واختار الصورة الصحيحة</p>
-     <div class="kopts">${opts.map((o,n)=>`<button class="kopt" data-n="${n}">${kidPic(k,o)}${k.phrase||k.showAr?`<span class="kar">${esc(o.ar)}</span>`:''}</button>`).join('')}</div></div>`;
+       ${newSticker?`<div class="knew"><span class="kn-st">${k0.ic}</span><b>ربحت ملصق جديد! خلّصت قسم «${esc(k0.ar)}» 🎉</b>${nx?`<span>وانفتحلك: ${esc(nx.ar)} ${nx.ic}</span>`:''}</div>`:st<2?tuca('بدك ⭐⭐ عشان تخلّص. جرّب كمان مرة، إنت قدها! 💪'):''}
+       <div class="row" style="justify-content:center"><button class="btn kbtn" id="kag">🔁 العب كمان</button><a class="btn" href="#kids-${base}">📖 رجوع للقسم</a>${newSticker&&nx?`<a class="btn kbtn" href="#kids-${nx.id}">التالي: ${esc(nx.ar)} ←</a>`:''}</div></div></div>`;
+      $('#kag').onclick=()=>vKidsGame(id);if(st>=2)confetti(newSticker?110:60);say(st>=2?'Muito bem! Parabéns!':'Vamos tentar de novo!');return}
+    const t=rounds[i],opts=shuffle([t,...shuffle(k.L.filter(x=>x!==t&&x.ar!==t.ar&&(x.img!==t.img||x.img==='-')&&x.em!==t.em)).slice(0,mode==='w'?2:3)]);
+    const top=`<div class="kq-top"><span>${i+1} / ${rounds.length}</span><span class="kq-bar"><i style="width:${i/rounds.length*100}%"></i></span><span>${'⭐'.repeat(ok)}</span></div>`;
+    if(mode==='w'){
+      app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}">${top}<div class="kw-pic">${kidPic(k,t,true)}</div><p class="kq-h">شو اسم هاد؟ اسمع الكلمات واختار 👇</p>
+       <div class="kwopts">${opts.map((o,n)=>`<div class="kwo"><button class="kwo-s" data-say="${esc(o.pt)}" aria-label="استمع">🔊</button><button class="kopt kwb" data-n="${n}"><b lang="pt-BR" dir="ltr">${esc(o.pt)}</b></button></div>`).join('')}</div></div>`;
+    }else{
+      app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}">${top}
+       <button class="kq-say" id="kqs">🔊 <b lang="pt-BR" dir="ltr">${esc(t.pt)}</b></button><p class="kq-h">اسمع واختار ${mode==='f'?'المعنى الصحيح':'الصورة الصحيحة'} <button class="linkbtn" data-say="${esc(t.pt)}" data-slow="1">🐢 ببطء</button></p>
+       <div class="kopts">${opts.map((o,n)=>`<button class="kopt" data-n="${n}">${kidPic(k,o)}${k.phrase||k.showAr?`<span class="kar">${esc(o.ar)}</span>`:''}</button>`).join('')}</div></div>`;
+      const play=()=>say(t.pt);$('#kqs').onclick=play;setTimeout(play,350);
+    }
     hydrateKidPics(app);
-    const play=()=>say(t.pt);$('#kqs').onclick=play;setTimeout(play,350);
     $$('.kopt').forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.n];$$('.kopt').forEach(x=>x.disabled=true);
-      if(o===t){ok++;b.classList.add('good');say('Isso!')}else{b.classList.add('bad');$$('.kopt')[opts.indexOf(t)].classList.add('good');say(t.pt)}
-      setTimeout(()=>{i++;draw()},1300)});
+      if(o===t){ok++;streak++;b.classList.add('good','bounce');S.kidW=S.kidW||{};S.kidW[t.key]=1;const ch=KCHEER[Math.floor(Math.random()*KCHEER.length)];say(mode==='w'?t.pt:ch);
+        const fb=document.createElement('div');fb.className='kcheer';fb.textContent=(streak>=3?'🔥 '+streak+' ورا بعض! ':'')+KCHEER_AR[ch];b.appendChild(fb);if(streak>=3&&streak%3===0)confetti(25)}
+      else{streak=0;b.classList.add('bad','shake');$$('.kopt')[opts.indexOf(t)].classList.add('good');say(t.pt)}
+      setTimeout(()=>{i++;draw()},o===t?1200:1900)});
   };
   draw();
 }
@@ -10384,6 +10398,15 @@ async function say(text,slow,vo){
   if(useNet()){try{speechSynthesis.cancel()}catch(e){}return netPlay(parts.map(t=>({t,g,slow,v:vo&&vo.sev||0,vo})))}
   return devSpeak(parts.map(t=>({t,g,slow,vo})));
 }
+/* تمييز كلمات الدرس داخل الحوار: اضغط على الكلمة بتسمعها وبتشوف معناها */
+const HLC={};
+function hlWords(text,c){const k=c.id;if(!HLC[k]){const ws=c.W.filter(w=>w.pt&&w.pt.length>1).slice().sort((a,b)=>b.pt.length-a.pt.length);HLC[k]=ws}
+  const ws=HLC[k],low=text.toLowerCase();const marks=[];
+  ws.forEach(w=>{const p=w.pt.toLowerCase();let i=-1;while((i=low.indexOf(p,i+1))>=0){const b=low[i-1],e=low[i+p.length];const isL=ch=>ch&&/[a-zà-ÿç]/i.test(ch);if(isL(b)||isL(e))continue;if(marks.some(m=>i<m.e&&i+p.length>m.s))continue;marks.push({s:i,e:i+p.length,w})}});
+  if(!marks.length)return esc(text);marks.sort((x,y)=>x.s-y.s);let out='',pos=0;
+  marks.forEach(m=>{out+=esc(text.slice(pos,m.s))+`<button class="hlw${m.w.x?' x':''}" data-hw="${esc(m.w.pt)}" data-ha="${esc(m.w.ar)}">${esc(text.slice(m.s,m.e))}</button>`;pos=m.e});
+  return out+esc(text.slice(pos))}
+document.addEventListener('click',e=>{const b=e.target.closest('.hlw');if(!b)return;e.preventDefault();e.stopPropagation();say(b.dataset.hw);toast(b.dataset.hw+' = '+b.dataset.ha)},true);
 /* ===== أصوات الحوار: صوت مختلف لكل شخص ===== */
 const VOSP={};
 const VF=/(luciana|francisca|thalita|fernanda|joana|catarina|helena|maria|flo\b|grandma|av[óo]\b|sandy|shelley|vit[oó]ria|let[ií]cia|raquel|camila|female|feminin|google portugu[eê]s do brasil)/i;
@@ -10629,7 +10652,7 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
-  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
+  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='inbox')vInbox();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
@@ -10641,7 +10664,7 @@ function route(){
 window.addEventListener('hashchange',()=>{if(!navBack)navDepth++;navBack=false;route()});
 const TOP=['path','words','sentences','practice','basics','kids',''];
 let navDepth=0,navBack=false;
-function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h))return '#admin';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
+function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h)||h==='inbox')return '#admin';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
 function goBack(){
   const h=(location.hash||'#path').slice(1);
   const m=h.match(/^ch-(\d+)$/);
@@ -10726,11 +10749,11 @@ function vChapter(id){
   if(st==='lesson'){body.innerHTML=`<div class="card lesson">${c.lesson}</div><div class="row" style="margin-top:14px"><button class="btn primary" id="gonx">التالي: ${c.DL?'الحوار':'الكلمات'} ←</button></div>`;$('#gonx',body).onclick=()=>{mark(id,'lesson',true);go(c.DL?'dialog':'words')}}
   if(st==='dialog')vDialog(c,body,nav=>{mark(id,'dialog',true);if(nav)go('words')});
   if(st==='words'){
-    const list=()=>{body.innerHTML=`<p class="muted" style="margin:0 0 10px">${c.W.length} كلمة. اسمع كل كلمة وقولها بصوت عالي. بعدين اختبر حالك: 8 أسئلة، النجاح 70%.</p><div class="wgrid">${c.W.filter(w=>!w.x).map(wcard).join('')}</div>${c.W.some(w=>w.x)?`<h3 class="xtra-h">كلمات إضافية للدرس (${c.W.filter(w=>w.x).length})</h3><div class="wgrid">${c.W.filter(w=>w.x).map(wcard).join('')}</div>`:''}<div class="row" style="margin-top:14px"><button class="btn primary" id="startq">اختبار الكلمات ←</button></div>`;$('#startq',body).onclick=quiz};
+    const list=()=>{body.innerHTML=`<p class="muted" style="margin:0 0 10px">${c.W.length} كلمة. اسمع كل كلمة وقولها بصوت عالي. بعدين اختبر حالك: 8 أسئلة، النجاح 70%.</p><div class="wgrid">${c.W.filter(w=>!w.x).map(wcard).join('')}</div>${c.W.some(w=>w.x)?`<h3 class="xtra-h">🧩 كلمات إضافية بنفس موضوع الدرس (${c.W.filter(w=>w.x).length})</h3><p class="muted" style="margin:0 0 8px">من دفتر سعيد، مختارة لأنها بتنفعك بـ«${esc(c.ar)}». الكلمات اللي تحتها خط بالحوار هي من كلمات الدرس.</p><div class="wgrid">${c.W.filter(w=>w.x).map(wcard).join('')}</div>`:''}<div class="row" style="margin-top:14px"><button class="btn primary" id="startq">اختبار الكلمات ←</button></div>`;$('#startq',body).onclick=quiz};
     const quiz=()=>runQuiz(body,quizWords(c),{title:'اختبار الكلمات',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'words',true)},next:{label:'التالي: الجمل ←',href:'#ch-'+id,click:()=>go('sents')}});
     list();}
   if(st==='sents'){
-    const list=()=>{body.innerHTML=`<p class="muted" style="margin:0 0 10px">${c.S.length} جملة. اقرأ، اسمع، وقلّد. بعدين 7 أسئلة.</p><div class="slist">${c.S.filter(s=>!s.x).map(sitem).join('')}</div>${c.S.some(s=>s.x)?`<h3 class="xtra-h">جمل إضافية للدرس (${c.S.filter(s=>s.x).length})</h3><div class="slist">${c.S.filter(s=>s.x).map(sitem).join('')}</div>`:''}<div class="row" style="margin-top:14px"><button class="btn" id="spk">🎤 تمرين الحكي</button><button class="btn primary" id="startq">اختبار الجمل ←</button></div>`;$('#startq',body).onclick=quiz;$('#spk',body).onclick=()=>speakPractice(body,c.S.slice(),'تمرين الحكي · الدرس '+id,'#ch-'+id)};
+    const list=()=>{body.innerHTML=`<p class="muted" style="margin:0 0 10px">${c.S.length} جملة. اقرأ، اسمع، وقلّد. بعدين 7 أسئلة.</p><div class="slist">${c.S.filter(s=>!s.x).map(sitem).join('')}</div>${c.S.some(s=>s.x)?`<h3 class="xtra-h">🧩 جمل إضافية بنفس موضوع الدرس (${c.S.filter(s=>s.x).length})</h3><div class="slist">${c.S.filter(s=>s.x).map(sitem).join('')}</div>`:''}<div class="row" style="margin-top:14px"><button class="btn" id="spk">🎤 تمرين الحكي</button><button class="btn primary" id="startq">اختبار الجمل ←</button></div>`;$('#startq',body).onclick=quiz;$('#spk',body).onclick=()=>speakPractice(body,c.S.slice(),'تمرين الحكي · الدرس '+id,'#ch-'+id)};
     const quiz=()=>runQuiz(body,quizSents(c),{title:'اختبار الجمل',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'sents',true)},next:{label:'التالي: القواعد ←',href:'#ch-'+id,click:()=>go('drills')}});
     list();}
   if(st==='drills'){
@@ -10820,9 +10843,9 @@ function vGames(){
 /* ===== حوار الفصل ===== */
 function vDialog(c,body,done){
   VOSP['c'+c.id]=c.SP;const st={key:'c'+c.id,sp:c.SP,L:c.DL.map(x=>({pt:x.pt,who:x.s?'B':'A'}))};
-  const show=()=>{body.innerHTML=`<div class="card stack"><h2 style="font-size:19px;margin:0">حوار الدرس</h2><p class="muted" style="margin:0">اسمع الحوار كامل أول، بعدين اقرأ كل سطر مع النطق والمعنى، وقلّده بصوت عالي.</p>
+  const show=()=>{body.innerHTML=`<div class="card stack"><h2 style="font-size:19px;margin:0">حوار الدرس</h2><p class="muted" style="margin:0">اسمع الحوار كامل أول، بعدين اقرأ كل سطر مع النطق والمعنى، وقلّده بصوت عالي. الكلمات اللي تحتها خط هي كلمات الدرس: اضغط عليها بتسمعها وبتشوف معناها.</p>
    <div class="row"><button class="btn primary" id="playall">▶ اسمع الحوار كامل</button><button class="btn" id="stopall">⏹ وقّف</button></div></div>
-   <div class="dlg show-ar" style="margin-top:12px">${c.DL.map(x=>`<div class="dl ${x.s?'b':'a'}"><span class="who">${esc(c.SP[x.s])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(x.pt)}</span>${dlgBtns(x.pt,'c'+c.id,x.s)}</div><span class="pron">${esc(x.pron)}</span><div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
+   <div class="dlg show-ar" style="margin-top:12px">${c.DL.map(x=>`<div class="dl ${x.s?'b':'a'}"><span class="who">${esc(c.SP[x.s])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${hlWords(x.pt,c)}</span>${dlgBtns(x.pt,'c'+c.id,x.s)}</div><span class="pron">${esc(x.pron)}</span><div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
    <div class="row" style="margin-top:14px"><button class="btn primary" id="dq">اختبر فهمك (${c.DQ.length} أسئلة) ←</button></div>`;
     $('#playall',body).onclick=()=>playStory(st);$('#stopall',body).onclick=stopAudio;$('#dq',body).onclick=()=>quiz()};
   const passage=c.DL.map(x=>c.SP[x.s]+': '+x.pt).join(' ');
@@ -11036,6 +11059,83 @@ function bindBackup(){
   inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f)return;try{const o=JSON.parse(await f.text());const st=o&&o.S;if(!st||typeof st!=='object'||!st.ch)throw 0;
     S=Object.assign(defState(),st);migrate();try{buildMaps()}catch(e){}save();toast('رجع تقدّمك ✓');location.hash='#path';route()}catch(e){toast('الملف مش نسخة صحيحة من التطبيق')}inp.value=''};
 }
+
+/* ===== رسائل للإدارة: شكوى، ملاحظة، اقتراح، سؤال — والإدارة بترد ===== */
+const MTYPES={complaint:'😟 شكوى',note:'📝 ملاحظة',idea:'💡 اقتراح',question:'❓ سؤال'};
+const MSTAT={new:['جديدة','m-new'],received:['تم الاستلام ✓','m-rec'],done:['تم التعديل ✓✓','m-done'],replied:['وصل رد 💬','m-rep']};
+const fmtT=ts=>{try{const d=new Date(ts);return d.getDate()+'/'+(d.getMonth()+1)+' · '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}catch(e){return ''}};
+async function inboxGet(uid){try{const v=await readDoc('inbox/'+uid);return v&&Array.isArray(v.items)?v:{items:[]}}catch(e){return {items:[]}}}
+async function inboxSet(uid,v){await DB.doc('inbox/'+uid).set(v)}
+const MSG={mine:null};
+function msgBadge(n){const b=$('#msgbadge');if(b){b.textContent=n||'';b.hidden=!n}}
+async function msgCheck(){
+  if(!DB||!MY_ID)return;
+  const v=await inboxGet(MY_ID);MSG.mine=v;
+  const unseen=v.items.filter(m=>m.status!=='new'&&!m.seenU).length;msgBadge(unseen);
+  if(unseen&&!msgCheck.told){msgCheck.told=1;toast(unseen===1?'وصلك رد من الإدارة ✉️ (من الإعدادات)':'وصلك '+unseen+' ردود من الإدارة ✉️')}
+  if(IS_OWNER||IS_ADMIN){try{const all=await inboxAll();const n=all.reduce((a,r)=>a+r.items.filter(m=>m.status==='new').length,0);const c=$('#admchip');if(c){c.dataset.n=n||'';c.classList.toggle('has-n',!!n)}}catch(e){}}
+}
+(function waitCloud(){let k=0;const t=setInterval(()=>{k++;if(typeof cloudOK!=='undefined'&&cloudOK&&MY_ID){clearInterval(t);msgCheck()}else if(k>60)clearInterval(t)},1000)})();
+async function inboxAll(){
+  const res=await DB.collection('inbox').get();const arr=Array.isArray(res)?res:(res&&(res.docs||res.items||res.results))||[];
+  return arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,name:(d&&d.name)||'',email:(d&&d.email)||'',items:(d&&d.items)||[]}}).filter(r=>r.id);
+}
+
+/* --- عند المستخدم: بالإعدادات --- */
+function msgSettingsHTML(){
+  return `<section class="card settings" id="msgsec"><h2>✉️ راسل الإدارة</h2>
+   <p class="muted" style="margin:0">عندك شكوى، ملاحظة، اقتراح أو سؤال؟ اكتبلنا، وبيوصلك الرد هون.</p>
+   <div class="pager" id="mtype">${Object.entries(MTYPES).map(([k,l],i)=>`<button class="pill${i===1?' on':''}" data-mt="${k}">${l}</button>`).join('')}</div>
+   <textarea id="mtext" rows="4" class="sel" style="width:100%;min-height:96px;resize:vertical" placeholder="اكتب رسالتك بالتفصيل… (مثلًا: بالدرس 5 في كلمة مكتوبة غلط)"></textarea>
+   <div class="row"><button class="btn primary" id="msend">أرسل الرسالة</button></div>
+   <div id="mlist"><p class="muted" style="margin:0">جاري التحميل…</p></div></section>`;
+}
+function msgItemUser(m){const st=MSTAT[m.status]||MSTAT.new;
+  return `<div class="msg-it${m.status!=='new'&&!m.seenU?' fresh':''}"><div class="msg-top"><span>${MTYPES[m.type]||''}</span><span class="m-st ${st[1]}">${st[0]}</span></div>
+   <p class="msg-tx">${esc(m.text)}</p><small class="muted">${fmtT(m.t)}</small>
+   ${m.reply?`<div class="msg-rep"><b>رد الإدارة:</b> ${esc(m.reply)}<br><small class="muted">${fmtT(m.rt)}</small></div>`:''}</div>`}
+async function bindMsgSettings(){
+  const sec=$('#msgsec');if(!sec)return;let type='note';
+  $$('#mtype .pill').forEach(b=>b.onclick=()=>{type=b.dataset.mt;$$('#mtype .pill').forEach(x=>x.classList.toggle('on',x===b))});
+  const draw=v=>{const it=(v.items||[]).slice().reverse();$('#mlist').innerHTML=it.length?`<h3 style="margin:8px 0 6px;font-size:16px">رسائلك (${it.length})</h3>`+it.map(msgItemUser).join(''):'<p class="muted" style="margin:0">لسا ما بعتت رسائل.</p>'};
+  if(!DB||!MY_ID){$('#mlist').innerHTML='<p class="muted" style="margin:0">الرسائل بتشتغل لما تكون مسجّل دخول.</p>';$('#msend').disabled=true;return}
+  let v=await inboxGet(MY_ID);draw(v);
+  if(v.items.some(m=>m.status!=='new'&&!m.seenU)){v.items.forEach(m=>{if(m.status!=='new')m.seenU=1});try{await inboxSet(MY_ID,v)}catch(e){}msgBadge(0)}
+  $('#msend').onclick=async()=>{const t=$('#mtext').value.trim();if(t.length<3){toast('اكتب رسالتك أول');return}
+    $('#msend').disabled=true;try{v=await inboxGet(MY_ID);let name=MY_NAME;try{const me=await USER.me();name=(me&&me.name)||name}catch(e){}
+      v.name=name||v.name||'';v.items.push({id:Date.now().toString(36),type,text:t.slice(0,2000),t:Date.now(),status:'new'});v.t=Date.now();
+      await inboxSet(MY_ID,v);$('#mtext').value='';draw(v);toast('انبعتت رسالتك ✓ شكرًا!')}
+    catch(e){toast('ما قدرت أبعت الرسالة. تأكد من النت وجرّب كمان مرة.')}$('#msend').disabled=false};
+}
+if(typeof vSettings==='function'){const _vS=vSettings;vSettings=function(){_vS.apply(this,arguments);const st=$('.stack',app)||app;if(!$('#msgsec')){st.insertAdjacentHTML('beforeend',msgSettingsHTML());bindMsgSettings()}}}
+
+/* --- عند الإدارة: صندوق الرسائل --- */
+async function vInbox(){
+  if(!(IS_OWNER||IS_ADMIN)){location.hash='#path';return}
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">✉️ رسائل المستخدمين</h1><p class="muted" style="margin:4px 0 0">شكاوي وملاحظات واقتراحات. غيّر الحالة أو اكتب رد، وبيظهر عند الشخص بإعداداته.</p></div>
+   <div class="pager" id="mf">${[['open','المفتوحة'],['new','الجديدة'],['all','الكل']].map(([k,l],i)=>`<button class="pill${i===0?' on':''}" data-f="${k}">${l}</button>`).join('')}</div>
+   <div id="inb"><p class="muted">جاري التحميل…</p></div></div>`;
+  let all;try{all=await inboxAll()}catch(e){$('#inb').innerHTML='<p class="tip">ما قدرت أجيب الرسائل. إذا هاي أول مرة، تأكد إنك ضفت قاعدة <b>inbox</b> بقواعد Firestore.</p>';return}
+  let f='open';
+  const flat=()=>all.flatMap(r=>r.items.map(m=>({r,m}))).filter(({m})=>f==='all'?true:f==='new'?m.status==='new':m.status!=='done').sort((a,b)=>b.m.t-a.m.t);
+  const draw=()=>{const L=flat();$('#inb').innerHTML=L.length?L.map(({r,m})=>{const st=MSTAT[m.status]||MSTAT.new;return `<div class="card msg-adm" data-u="${esc(r.id)}" data-m="${esc(m.id)}">
+     <div class="msg-top"><b>${esc(r.name||'مستخدم')}</b><span class="m-st ${st[1]}">${st[0]}</span></div>
+     <div class="muted" style="font-size:13px">${MTYPES[m.type]||''} · ${fmtT(m.t)} · <a href="#admin-${esc(r.id)}">ملفه</a></div>
+     <p class="msg-tx">${esc(m.text)}</p>
+     ${m.reply?`<div class="msg-rep"><b>ردك:</b> ${esc(m.reply)}</div>`:''}
+     <div class="row" style="flex-wrap:wrap;gap:6px"><button class="btn" data-a="received">✓ تم الاستلام</button><button class="btn" data-a="done">✓✓ تم التعديل</button></div>
+     <textarea class="sel mrep" rows="2" style="width:100%" placeholder="اكتب رد…"></textarea><div class="row"><button class="btn primary" data-a="reply">أرسل الرد</button></div></div>`}).join(''):'<p class="muted">ما في رسائل هون.</p>';
+    $$('.msg-adm').forEach(card=>$$('[data-a]',card).forEach(b=>b.onclick=async()=>{const uid=card.dataset.u,mid=card.dataset.m,a=b.dataset.a;
+      const txt=$('.mrep',card).value.trim();if(a==='reply'&&!txt){toast('اكتب الرد أول');return}
+      b.disabled=true;try{const v=await inboxGet(uid);const m=v.items.find(x=>x.id===mid);if(!m)throw 0;
+        if(a==='reply'){m.reply=txt;m.rt=Date.now();if(m.status==='new'||m.status==='received')m.status='replied'}else m.status=a;
+        m.seenU=0;m.by=MY_NAME||'';await inboxSet(uid,v);const r=all.find(x=>x.id===uid);if(r)r.items=v.items;toast('تم ✓ وبيظهر عند المستخدم');draw();msgCheck()}
+      catch(e){toast('ما قدرت أحفظ. جرّب كمان مرة.');b.disabled=false}}))};
+  $$('#mf .pill').forEach(b=>b.onclick=()=>{f=b.dataset.f;$$('#mf .pill').forEach(x=>x.classList.toggle('on',x===b));draw()});
+  draw();
+}
+if(typeof vAdmin==='function'){const _vA=vAdmin;vAdmin=async function(){await _vA.apply(this,arguments);try{if(!(IS_OWNER||IS_ADMIN))return;const all=await inboxAll();const n=all.reduce((a,r)=>a+r.items.filter(m=>m.status==='new').length,0),open=all.reduce((a,r)=>a+r.items.filter(m=>m.status!=='done').length,0);
+  const st=$('.stack',app);if(st&&!$('#inbcard'))st.insertAdjacentHTML('afterbegin',`<a class="card inb-card" id="inbcard" href="#inbox"><span class="ib-ic">✉️</span><div><b>رسائل المستخدمين</b><br><span class="muted">${n?n+' جديدة · ':''}${open} مفتوحة</span></div>${n?`<span class="ib-n">${n}</span>`:''}</a>`)}catch(e){}}}
 
 /* ===================== التدريب: مراجعة، حكي، محادثة، قصص، أصوات، تحديد مستوى، شهادات ===================== */
 const dayNum=()=>{const d=new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*6e4)/864e5)};
