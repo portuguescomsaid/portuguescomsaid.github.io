@@ -702,22 +702,22 @@ const nrm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').rep
 const PHRASE={'cafe da manha':'🍳','fim de semana':'🗓️','bom dia':'☀️','boa tarde':'🌇','boa noite':'🌙','guarda chuva':'☂️','dor de cabeca':'🤕','posto de saude':'🏥','ponto de onibus':'🚏','carteira assinada':'📇','nota fiscal':'🧾','conta corrente':'🏦','meio ambiente':'🌍','redes sociais':'📱','pao de queijo':'🧀','carne de porco':'🐖','dor de garganta':'🗣️','exame de sangue':'🩸','previsao do tempo':'🌦️','chave pix':'📲','meia duzia':'🥚','casa de cambio':'💱','lição de casa':'📓','licao de casa':'📓','material escolar':'✏️','reuniao de pais':'👨‍👩‍👧','entrevista de emprego':'🤝','boletim de ocorrencia':'🚓','tudo bem':'👍','por favor':'🙏','de nada':'🙂','com licenca':'🙇','ate logo':'👋','ate amanha':'👋'};
 const EX={oi:'👋',ola:'👋',tchau:'👋',obrigado:'🙏',obrigada:'🙏',desculpa:'🙇',beleza:'👍',otimo:'👌',
 dia:'☀️',noite:'🌙',tarde:'🌇',manha:'🌅',hoje:'📅',ontem:'⏮️',amanha:'⏭️',anteontem:'⏮️',
-casa:'🏠',carro:'🚗',rua:'🛣️',mesa:'🪑',chave:'🔑',pao:'🍞',mae:'👩',pai:'👨',pais:'👪',filho:'👦',filha:'👧',filhos:'👨‍👩‍👧‍👦',familia:'👨‍👩‍👧‍👦',irmao:'👦',irma:'👧',irmaos:'👫',avo:'🧓',bebe:'👶',crianca:'🧒',criancas:'🧒',gato:'🐱',gatos:'🐱',cao:'🐕',cachorro:'🐕',marido:'🤵',esposa:'👰',mulher:'👩',homem:'👨',menino:'👦',menina:'👧',neto:'👶',neta:'👶',tio:'👨',tia:'👩',
+casa:'🏠',carro:'🚗',rua:'🛣️',cadeira:'🪑',chave:'🔑',pao:'🍞',mae:'👩',pai:'👨',filho:'👦',filha:'👧',filhos:'👨‍👩‍👧‍👦',familia:'👨‍👩‍👧‍👦',irmao:'👦',irma:'👧',irmaos:'👫',avo:'🧓',bebe:'👶',crianca:'🧒',criancas:'🧒',gato:'🐱',gatos:'🐱',cao:'🐕',cachorro:'🐕',marido:'🤵',esposa:'👰',mulher:'👩',homem:'👨',menino:'👦',menina:'👧',neto:'👶',neta:'👶',tio:'👨',tia:'👩',
 um:'1️⃣',uma:'1️⃣',dois:'2️⃣',duas:'2️⃣',tres:'3️⃣',quatro:'4️⃣',cinco:'5️⃣',seis:'6️⃣',sete:'7️⃣',oito:'8️⃣',nove:'9️⃣',dez:'🔟',zero:'0️⃣',cem:'💯',mil:'🔢',vinte:'🔢',cinquenta:'🔢',
 real:'💵',reais:'💵',centavo:'🪙',centavos:'🪙',dinheiro:'💵',pix:'📲',cartao:'💳',carta:'✉️',mail:'📧',
 agua:'💧',cafe:'☕',cha:'🍵',leite:'🥛',suco:'🧃',ovo:'🥚',ovos:'🥚',arroz:'🍚',feijao:'🫘',carne:'🥩',frango:'🍗',peixe:'🐟',salada:'🥗',sopa:'🍲',pizza:'🍕',sorvete:'🍦',chocolate:'🍫',banana:'🍌',maca:'🍎',uva:'🍇',morango:'🍓',abacaxi:'🍍',laranja:'🍊',limao:'🍋',limonada:'🍋',manga:'🥭',melancia:'🍉',mamao:'🍈',cenoura:'🥕',batata:'🥔',tomate:'🍅',cebola:'🧅',brocolis:'🥦',berinjela:'🍆',abobora:'🎃',alface:'🥬',couve:'🥬',figo:'🫐',tamara:'🌴',sal:'🧂',acucar:'🍬',pimenta:'🌶️',queijo:'🧀',sanduiche:'🥪',churrasco:'🍖',coxinha:'🍗',doce:'🍬',amargo:'☕',azedo:'🍋',salgado:'🧂',salgadinho:'🥨',quente:'🔥',frio:'🥶',fria:'🥶',gelado:'🧊',gelada:'🧊',calor:'🥵',chuva:'🌧️',sol:'☀️',neve:'❄️',nublado:'☁️',garoa:'🌦️',comida:'🍽️',fruta:'🍎',frutas:'🍎',legume:'🥕',verdura:'🥬',esfirra:'🫓',quibe:'🧆',lanche:'🥪',almoco:'🍽️',jantar:'🍽️',janta:'🍽️',sobremesa:'🍰',brigadeiro:'🍫',tapioca:'🫓',feijoada:'🫘',
 onibus:'🚌',uber:'🚕',taxi:'🚕',bicicleta:'🚲',aviao:'✈️',aeroporto:'✈️',posto:'⛽',gasolina:'⛽',semaforo:'🚦',sinaleiro:'🚦',direita:'➡️',esquerda:'⬅️',reto:'⬆️',perto:'📍',pertinho:'📍',longe:'🗺️',mapa:'🗺️',localizacao:'📍',centro:'🏙️',cidade:'🏙️',bairro:'🏘️',parque:'🌳',praia:'🏖️',mar:'🌊',escola:'🏫',hospital:'🏥',farmacia:'💊',mercado:'🛒',padaria:'🥖',restaurante:'🍽️',banco:'🏦',esquina:'↪️',
-medico:'🩺',medica:'🩺',remedio:'💊',febre:'🤒',dor:'🤕',tosse:'😷',gripe:'🤧',dente:'🦷',dentes:'🦷',cabeca:'🤕',barriga:'🤢',olho:'👁️',olhos:'👀',cabelo:'💇',barba:'🧔',vacina:'💉',ambulancia:'🚑',policia:'🚓',bombeiros:'🚒',fogo:'🔥',incendio:'🔥',socorro:'🆘',acidente:'💥',ladrao:'🦹',
+medico:'🩺',medica:'🩺',remedio:'💊',febre:'🤒',dor:'🤕',tosse:'😷',gripe:'🤧',dente:'🦷',dentes:'🦷',olho:'👁️',olhos:'👀',cabelo:'💇',barba:'🧔',vacina:'💉',ambulancia:'🚑',policia:'🚓',bombeiros:'🚒',fogo:'🔥',incendio:'🔥',socorro:'🆘',acidente:'💥',ladrao:'🦹',
 telefone:'📞',celular:'📱',ligacao:'📞',mensagem:'💬',audio:'🎙️',whatsapp:'💬',camera:'📷',foto:'📸',fotos:'📸',video:'🎬',videos:'🎬',computador:'💻',notebook:'💻',tv:'📺',
-trabalho:'💼',emprego:'💼',chefe:'👔',cliente:'🤝',reuniao:'👥',documento:'📄',documentos:'📄',passaporte:'🛂',formulario:'📋',cpf:'🪪',livro:'📖',caneta:'🖊️',aula:'🧑‍🏫',professora:'👩‍🏫',professor:'👨‍🏫',prova:'📝',nota:'🧾',uniforme:'👕',
+trabalho:'💼',emprego:'💼',chefe:'👔',cliente:'🤝',reuniao:'👥',documento:'📄',documentos:'📄',passaporte:'🛂',formulario:'📋',cpf:'🪪',livro:'📖',caneta:'🖊️',aula:'🧑‍🏫',professora:'👩‍🏫',professor:'👨‍🏫',prova:'📝',uniforme:'👕',
 roupa:'👕',casaco:'🧥',japona:'🧥',blusa:'👚',calca:'👖',sapato:'👞',tenis:'👟',meia:'🧦',
 quarto:'🛏️',sala:'🛋️',cozinha:'🍳',banheiro:'🚿',chuveiro:'🚿',torneira:'🚰',janela:'🪟',porta:'🚪',apartamento:'🏢',aluguel:'🔑',garagem:'🅿️',luz:'💡',vazamento:'💧',pia:'🚰',vaso:'🚽',
 feliz:'😊',triste:'😢',cansado:'😩',cansada:'😩',nervoso:'😬',nervosa:'😬',bravo:'😠',calmo:'😌',calma:'😌',doente:'🤒',fome:'🍽️',sede:'🥤',medo:'😨',pressa:'⏱️',saudade:'💭',amor:'❤️',amo:'❤️',
 festa:'🎉',aniversario:'🎂',natal:'🎄',carnaval:'🎭',presente:'🎁',futebol:'⚽',jogo:'⚽',gol:'⚽',time:'⚽',musica:'🎵',filme:'🎬',
-hora:'🕐',horas:'🕐',minuto:'⏱️',minutinho:'⏱️',relogio:'⏰',semana:'🗓️',mes:'🗓️',ano:'🗓️',anos:'🗓️',domingo:'📅',sabado:'📅',feira:'📅',abril:'📅',novembro:'📅',dezembro:'📅',junho:'📅',
+hora:'🕐',horas:'🕐',minuto:'⏱️',minutinho:'⏱️',relogio:'⏰',semana:'🗓️',mes:'🗓️',ano:'🗓️',anos:'🗓️',domingo:'📅',sabado:'📅',abril:'📅',novembro:'📅',dezembro:'📅',junho:'📅',
 brasil:'🇧🇷',palestina:'🇵🇸',egito:'🇪🇬',siria:'🇸🇾',libano:'🇱🇧',turquia:'🇹🇷',curitiba:'🌲',gaza:'🇵🇸',
 sim:'✅',certo:'✅',errado:'❌',pergunta:'❓',resposta:'💬',duvida:'❓',
-grande:'🐘',pequeno:'🐜',alto:'📏',alta:'📏',baixo:'📏',baixa:'📏',magro:'🧍',magra:'🧍',bonito:'✨',bonita:'✨',caro:'💸',barato:'🏷️',desconto:'🏷️',promocao:'🏷️',sacola:'🛍️',compras:'🛍️',quilo:'⚖️',duzia:'🥚',troco:'🪙',fila:'🧍‍♂️',caixa:'🧾',
+grande:'🐘',pequeno:'🐭',pequena:'🐭',alto:'🦒',alta:'🦒',bonito:'✨',bonita:'✨',caro:'💸',barato:'🏷️',desconto:'🏷️',promocao:'🏷️',sacola:'🛍️',compras:'🛍️',quilo:'⚖️',duzia:'🥚',troco:'🪙',fila:'🧍‍♂️',
 lixo:'🗑️',arvore:'🌳',lei:'⚖️',juiz:'⚖️',advogado:'⚖️',audiencia:'⚖️',multa:'💸',imposto:'💰',impostos:'💰',
 grafico:'📊',relatorio:'📊',planilha:'📊',dados:'📊',pesquisa:'🔎',cafezinho:'☕',
 comer:'🍽️',comi:'🍽️',comeu:'🍽️',como:'',falar:'🗣️',falo:'🗣️',fala:'🗣️',falei:'🗣️',falou:'🗣️',corra:'🏃',correr:'🏃',correndo:'🏃',corre:'🏃',leia:'📖',ler:'📖',sair:'🚪',saiu:'🚪',sai:'🚪',marcar:'📅',marcado:'📅',caiu:'📉',doi:'🤕',doem:'🤕',gravar:'🎥',gostoso:'😋',deliciosas:'😋',
@@ -9943,7 +9943,7 @@ Tire o sapato.|تشيري أو ساباتو.|اشلح الكندرة.|👞`},
  {id:'casa',g:'home',pt:'A casa',ar:'البيت',ic:'🏠',bg:'#D0EBFF',fg:'#1864AB',items:`casa|كازا|بيت|House|🏠
 quarto|كوارتو|غرفة نوم|Bedroom|🛏️
 cama|كاما|سرير|Bed|🛏️
-mesa|ميزا|طاولة|Table (furniture)|🪑
+mesa|ميزا|طاولة|Table (furniture)|🍽️
 cadeira|كاديرا|كرسي|Chair|🪑
 porta|بورتا|باب|Door|🚪
 janela|جانيلا|شبّاك|Window|🪟
