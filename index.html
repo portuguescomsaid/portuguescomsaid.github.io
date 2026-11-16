@@ -11565,6 +11565,7 @@ function vGoal(){
 function weekKey(){const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 (function(){const _add=addXP;addXP=function(n){const wk=weekKey();if(!S.wk||S.wk.k!==wk)S.wk={k:wk,x:0};S.wk.x+=Math.max(0,Math.round(n));_add(n);leaguePush()}})();
 var _lgT=0;
+(function(){let k=0;const t=setInterval(()=>{k++;if(typeof cloudOK!=='undefined'&&cloudOK&&MY_ID){clearInterval(t);leaguePush(true)}else if(k>90)clearInterval(t)},1000)})();
 async function leaguePush(force){if(!DB||!MY_ID)return;if(!force&&Date.now()-_lgT<60000)return;_lgT=Date.now();
   try{const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;let nm=(MY_NAME||'').trim().split(/\s+/)[0]||'';if(!nm){try{const me=await USER.me();nm=((me&&me.name)||'').trim().split(/\s+/)[0]}catch(e){}}
     await DB.doc('league/'+MY_ID).set({n:(nm||'طالب').slice(0,18),w:wk,x,t:Date.now()})}catch(e){}}
@@ -11572,7 +11573,7 @@ async function vLeague(){
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري الأسبوعي</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها هالأسبوع بتطلّعك بالترتيب. الدوري بيبلّش من جديد كل يوم اتنين. بيبيّن الاسم الأول بس.</p></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
   await leaguePush(true);
   let rows=[];try{const res=await DB.collection('league').get();const arr=Array.isArray(res)?res:(res&&(res.docs||res.items||res.results))||[];
-    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w===weekKey()&&r.x>0).sort((a,b)=>b.x-a.x)}
+    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w===weekKey()).sort((a,b)=>b.x-a.x)}
   catch(e){$('#lg').innerHTML='<p style="margin:0">ما قدرت أجيب الترتيب. '+(IS_OWNER?'تأكد إنك ضفت قاعدة <b>league</b> بقواعد Firestore.':'جرّب بعدين.')+'</p>';return}
   const me=rows.findIndex(r=>r.id===MY_ID);const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
   $('#lg').outerHTML=`<div class="card lg-list">${rows.length?rows.slice(0,50).map((r,i)=>`<div class="lg-row${r.id===MY_ID?' me':''}"><span class="lg-n">${medal(i)}</span><span class="lg-nm">${esc(r.n||'طالب')}${r.id===MY_ID?' (إنت)':''}</span><b class="lg-x">${r.x} XP</b></div>`).join(''):'<p class="muted" style="margin:0">لسا ما حدا جمع نقاط هالأسبوع. كن الأول!</p>'}
