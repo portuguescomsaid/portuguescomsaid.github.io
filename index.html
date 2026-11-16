@@ -10734,9 +10734,10 @@ function voiceOptions(){let h='';if(AUD.tts)h+=`<option value="claude">صوت Cl
   AUD.voices.slice().sort((a,b)=>rank(b)-rank(a)).forEach(v=>{h+=`<option value="${esc(v.voiceURI)}">${esc(v.name)} · ${isBR(v)?'برازيلي ✓':'برتغالي أوروبي ✗'}</option>`});return h}
 function fillVoiceSel(sel){sel.innerHTML=voiceOptions();sel.value=S.voice;if(sel.value!==S.voice)sel.value='auto';const w=$('#vwarn');if(w)w.hidden=!( 'speechSynthesis' in window)||hasBR()||useClaude()}
 function vSettings(){
+  const STAFF=IS_OWNER||IS_ADMIN;
   app.innerHTML=`<div class="stack"><div><a class="back" href="#path">→ المسار</a><h1 style="font-size:24px;margin-top:6px">الإعدادات</h1></div>
   <section class="card settings"><h2>الصوت</h2>
-   <label for="vsel">الصوت</label><select id="vsel" class="sel"></select>
+   ${STAFF?`<label for="vsel">الصوت (للإدارة)</label><select id="vsel" class="sel"></select>`:''}
    <label for="vrate">السرعة: <b id="vrv">${Math.round((S.rate||0.8)*100)}%</b></label><input type="range" id="vrate" min="0.5" max="1.1" step="0.05" value="${S.rate||0.8}">
    <div class="row"><button class="btn primary" id="vtest">جرّب الصوت</button><button class="btn" id="vtest2" data-slow="1">جرّب ببطء</button></div>
    <div class="tip" id="vwarn" hidden><b>جهازك ما فيه صوت برازيلي.</b> عشان هيك النطق ممكن يطلع أوروبي أو غلط. نزّل صوت برازيلي مجاني:<br>
@@ -10746,20 +10747,20 @@ function vSettings(){
   </section>
   <section class="card settings"><h2>التقدّم</h2>
    ${IS_OWNER?'<p class="muted" style="margin:0;font-size:14px">حسابك كصاحب التطبيق: كل الدروس مفتوحة، واللي بتخلّصه بيتلوّن أخضر.</p>':IS_ADMIN?'<p class="muted" style="margin:0;font-size:14px">حسابك مساعد (أدمن): بتقدر تشوف لوحة التحكم 📊.</p>':ROLE.unlockAll?'<p class="muted" style="margin:0;font-size:14px">صلاحية خاصة: كل الدروس مفتوحة لحسابك.</p>':ROLE.openTo>1?`<p class="muted" style="margin:0;font-size:14px">صلاحية خاصة: الدروس مفتوحة لحد ${LEVELS[ROLE.openTo-1].tag}.</p>`:''}
-   <div class="row"><button class="btn ghost" id="reset">امسح كل التقدّم</button></div>
+   ${STAFF?`<div class="row"><button class="btn ghost" id="reset">امسح كل التقدّم</button></div>`:''}
    <p class="muted" id="sync" style="margin:0;font-size:13px">${cloudOK?'التقدّم محفوظ بحسابك وبيظهر على كل أجهزتك.':'التقدّم محفوظ بهالمتصفح.'}</p>
    <p class="muted" style="margin:0;font-size:13px">ملاحظة: صاحب التطبيق (المعلم) بيشوف اسمك وإيميلك وملخص تقدّمك ووقت دراستك عشان يتابعك.</p></section>
-  <section class="card settings"><h2>نسخة احتياطية</h2>
+  ${STAFF?`<section class="card settings"><h2>نسخة احتياطية</h2>
    <p class="muted" style="margin:0;font-size:14px">نزّل ملف فيه كل تقدّمك، وارجعه وقت ما بدك.</p>
-   <div class="row"><button class="btn primary" id="bk-dl">⬇ نزّل نسخة</button><label class="btn" for="bk-in" style="cursor:pointer">⬆ استرجع من ملف</label><input type="file" id="bk-in" accept=".json,application/json" hidden></div></section>
+   <div class="row"><button class="btn primary" id="bk-dl">⬇ نزّل نسخة</button><label class="btn" for="bk-in" style="cursor:pointer">⬆ استرجع من ملف</label><input type="file" id="bk-in" accept=".json,application/json" hidden></div></section>`:''}
   <section class="card settings"><h2>الحساب</h2><div class="row"><button class="btn ghost" id="logout">تسجيل خروج</button></div></section></div>`;
-  bindBackup();
-  const sel=$('#vsel');fillVoiceSel(sel);sel.onchange=()=>{S.voice=sel.value;save();fillVoiceSel(sel)};
+  if(STAFF)bindBackup();
+  const sel=$('#vsel');if(sel){fillVoiceSel(sel);sel.onchange=()=>{S.voice=sel.value;save();fillVoiceSel(sel)}}
   $('#vrate').oninput=e=>{S.rate=+e.target.value;$('#vrv').textContent=Math.round(S.rate*100)+'%'};$('#vrate').onchange=()=>save();
   const T='Bom dia! Eu estou aprendendo português no Brasil. Está tudo bem?';
   $('#vtest').onclick=()=>say(T);$('#vtest2').onclick=e=>{e.stopPropagation();say(T,true)};
   if($('#sw-all'))$('#sw-all').onchange=e=>{S.unlockAll=e.target.checked;save()};
-  let armed=false;$('#reset').onclick=e=>{if(!armed){armed=true;e.target.textContent='اضغط كمان مرة للتأكيد';e.target.style.color='var(--bad)';setTimeout(()=>{armed=false;if(e.target.isConnected){e.target.textContent='امسح كل التقدّم';e.target.style.color=''}},4000);return}const keep={rate:S.rate,voice:S.voice};S=Object.assign(defState(),keep);save();toast('انمسح التقدّم');location.hash='#path'};
+  let armed=false;if($('#reset'))$('#reset').onclick=e=>{if(!armed){armed=true;e.target.textContent='اضغط كمان مرة للتأكيد';e.target.style.color='var(--bad)';setTimeout(()=>{armed=false;if(e.target.isConnected){e.target.textContent='امسح كل التقدّم';e.target.style.color=''}},4000);return}const keep={rate:S.rate,voice:S.voice};S=Object.assign(defState(),keep);save();toast('انمسح التقدّم');location.hash='#path'};
 }
 
 let chState={id:0,step:null};
