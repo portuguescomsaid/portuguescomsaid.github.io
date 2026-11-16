@@ -8490,7 +8490,7 @@ function vHome(){
     return `<details class="level-card" ${isNext||L.n===1&&!nx?'open':''}><summary>${head}</summary>${us.map(u=>`<section class="unit"><div class="unit-h"><span class="u-n">الوحدة ${u.n}</span><span class="pt" lang="pt-BR" dir="ltr">${esc(u.pt)}</span><span class="muted">${esc(u.ar)}</span></div><div class="nodes">${u.chs.map(node).join('')}${enode(u.n,'اختبار الوحدة '+u.n)}</div></section>`).join('')}<div class="nodes" style="margin-top:12px">${enode('f'+L.n,examName('f'+L.n))}</div></details>`};
   app.innerHTML=`<div class="stack">
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
-   ${IS_OWNER||location.protocol==='file:'?examCard():''}${loginNote()}
+   ${loginNote()}
    ${srsDue().length?`<a class="exam-cd" href="#review" style="background:var(--green-soft);border-color:var(--green)"><span class="cd-n">${srsDue().length}</span><span class="cd-t"><b>مراجعة اليوم</b><small>أغلاط سابقة لازم ترجعلها اليوم</small></span><span class="cd-go">راجع ←</span></a>`:''}
    <div class="stats"><div class="stat"><b>${S.xp}</b><span>نقاط XP</span></div><div class="stat"><b>${streakNow()}</b><span>أيام ورا بعض</span></div><div class="stat"><b>${nd}<small>/${CH.length}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${ne}<small>/${UNITS.length}</small></b><span>اختبارات وحدات</span></div></div>
    ${cont}
@@ -8590,7 +8590,7 @@ function vExam(k){
 function vNossa(){
   const parts=Object.keys(NC_PARTS);
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">دفتري: Nossa Casa</h1><p class="muted" style="margin:4px 0 0">كل اللي درسته من كتاب <em>Nossa Casa – Português para Refugiados e Migrantes</em> مع تصحيحاتك. راجع كل موضوع واختبر حالك.</p></div>
-  ${IS_OWNER||location.protocol==='file:'?examCard():''}${loginNote()}
+  ${loginNote()}
   <a class="node exam open" href="#nc-exam"><span class="num">★</span><span class="t"><b>امتحان المراجعة الشامل</b><small>قراءة بسمة · استماع · قواعد · مفردات · كتابة جمل كاملة</small></span><span class="st">${S.nc.exam!=null?S.nc.exam+'%':'ابدأ'}</span></a>
   ${parts.map(p=>{const ts=NC.filter(t=>t.part===p);return `<section class="level-card"><div class="unit-h"><span class="u-n">${p}</span><span>${esc(NC_PARTS[p])}</span></div><div class="nodes">${ts.map(t=>{const b=S.nc[t.id];return `<a class="node ${b>=70?'done':'open'}" href="#nc-${t.id}"><span class="num">${b>=70?'✓':'•'}</span><span class="t">${P(t.title)}<small>${bidi(t.sub)}</small></span><span class="st">${b!=null?b+'%':'راجع'}</span></a>`}).join('')}</div></section>`}).join('')}
   <section class="card"><h2 style="font-size:17px">ملاحظات الدقة</h2><ul class="notes">
