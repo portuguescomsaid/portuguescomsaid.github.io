@@ -443,6 +443,11 @@ nav.tabs{grid-template-columns:repeat(5,1fr)}
 .ltile:disabled{opacity:.25;box-shadow:none;cursor:default}
 .ltile.sp{min-width:64px;color:var(--muted)}
 .ltile-ctl{justify-content:center;gap:8px}
+.rbs{display:flex;flex-wrap:wrap;gap:4px}
+.rb{font-style:normal;font-size:11.5px;padding:2px 8px;border-radius:99px;font-weight:600}
+.rb-a{background:var(--sun-soft);color:var(--ink)}.rb-x{background:var(--bad-soft);color:var(--bad)}.rb-o{background:var(--green-soft);color:var(--green)}
+.perm label{font-size:14px;font-weight:600;margin-bottom:-6px}
+.perm textarea{width:100%;font:inherit;padding:10px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -515,7 +520,7 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
     const owner=!!u.email&&u.emailVerified&&OWNER_HASH.length===64&&(await sha(u.email.trim().toLowerCase()))===OWNER_HASH;
     try{await fs.doc('profiles/'+u.uid).set(pack({name,email:u.email||''}))}catch(e){}
     const db={
-      doc:p=>({get:async()=>{const s=await fs.doc(p).get();return s.exists?unpack(s):null},set:async d=>{await fs.doc(p).set(pack(d))}}),
+      doc:p=>{const raw=p.startsWith('roles/');return {get:async()=>{const s=await fs.doc(p).get();return s.exists?(raw?s.data():unpack(s)):null},set:async d=>{await fs.doc(p).set(raw?JSON.parse(JSON.stringify(d)):pack(d))}}},
       collection:p=>({get:async()=>{const q=await fs.collection(p).get();return q.docs.map(x=>({id:x.id,data:unpack(x)})).filter(x=>x.data)}})
     };
     const user={id:async()=>u.uid,isOwner:async()=>owner,canEdit:async()=>owner,me:async()=>({id:u.uid,name}),
@@ -7654,7 +7659,7 @@ const defState=()=>({my:[],xp:0,streak:{last:'',n:0},ch:{},ex:{},nc:{},best:{},s
 let S=defState();
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(defState(),JSON.parse(r))}catch(e){}
 function migrate(){if(S.ex&&S.ex.f&&!S.ex.f1){S.ex.f1=S.ex.f;delete S.ex.f}}migrate();
-let DB=null,STATS_REF=null,USER=null,IS_OWNER=false,MY_NAME='',dbRef=null,saving=false,again=false,saveT=null,cloudOK=false;
+let ROLE={},IS_ADMIN=false,MY_ID='',DB=null,STATS_REF=null,USER=null,IS_OWNER=false,MY_NAME='',dbRef=null,saving=false,again=false,saveT=null,cloudOK=false;
 function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(push,1200);hdr()}
 async function push(){if(!dbRef)return;if(saving){again=true;return}saving=true;try{await dbRef.set(JSON.parse(JSON.stringify(S)))}catch(e){}saving=false;if(again){again=false;push()}try{pushStats()}catch(e){}}
 async function waitClaude(){if(window.__authReady)await window.__authReady;return !!(window.claude&&window.claude.use)}
@@ -7667,7 +7672,11 @@ async function initCloud(){
     USER=user;DB=db;
     try{IS_OWNER=!!(await user.isOwner())}catch(e){}
     try{const me=await user.me();MY_NAME=((me&&me.name)||'').trim().split(/\s+/)[0]||''}catch(e){}
-    const ac=$('#admchip');if(ac)ac.hidden=!IS_OWNER;
+    MY_ID=id;
+    try{const r=await Promise.race([db.doc('roles/'+id).get(),sleep(6000).then(()=>null)]);let rd=r;if(r&&typeof r.data==='function')rd=r.data();else if(r&&r.data&&typeof r.data==='object')rd=r.data;ROLE=(rd&&typeof rd==='object')?rd:{}}catch(e){ROLE={}}
+    IS_ADMIN=!IS_OWNER&&ROLE.role==='admin';
+    if(ROLE.role==='blocked'&&!IS_OWNER){app.innerHTML=`<div class="card stack" style="margin-top:20px"><h2 style="margin:0">الحساب موقوف</h2><p class="muted" style="margin:0">تم إيقاف هذا الحساب مؤقتًا. للاستفسار تواصل مع صاحب التطبيق.</p></div>`;window.BLOCKED=true;return false}
+    const ac=$('#admchip');if(ac)ac.hidden=!(IS_OWNER||IS_ADMIN);
     dbRef=db.doc('data/users/'+id+'/progress2');
     STATS_REF=db.doc('stats/'+id);
     const snap=await Promise.race([dbRef.get(),sleep(10000).then(()=>'timeout')]);
@@ -7734,12 +7743,13 @@ const LEVELS=[
 const lvOf=u=>u.lv||1;
 const unitsOf=n=>UNITS.filter(u=>lvOf(u)===n);
 const lvReady=n=>unitsOf(n).length>0;
-const canSkip=()=>IS_OWNER;
-const lvOpen=n=>n===1||canSkip()||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
+const canSkip=()=>IS_OWNER||!!ROLE.unlockAll;
+const lvFree=n=>(ROLE.openTo||0)>=n;
+const lvOpen=n=>n===1||canSkip()||lvFree(n)||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
 const isFinal=k=>/^f\d$/.test(String(k));
 const PREVIEW=3;
-function chOpen(id){if(id<=PREVIEW)return true;const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip())return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
-const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||EXAMS[k].chs.every(chDone))};
+function chOpen(id){if(id<=PREVIEW)return true;const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L))return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
+const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||lvFree(n)||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||lvFree(lvOf(u))||EXAMS[k].chs.every(chDone))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+k;
 const STEPS=[['lesson','الدرس'],['words','الكلمات'],['sents','الجمل'],['drills','القواعد'],['game','لعبة'],['quiz','الاختبار']];
@@ -7926,6 +7936,7 @@ function gSpeed(el,words,done){
 /* ===== views ===== */
 const app=$('#app');
 function route(){
+  if(window.BLOCKED)return;
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
@@ -7995,7 +8006,7 @@ function vSettings(){
    <p class="muted" style="margin:0;font-size:14px">نصيحة: إذا الصوت «بياكل» الكلام، نزّل السرعة لـ 70% أو أقل. الجمل الطويلة بتنقرأ مقاطع مع وقفة بين كل مقطع.</p>
   </section>
   <section class="card settings"><h2>التقدّم</h2>
-   ${IS_OWNER?'<p class="muted" style="margin:0;font-size:14px">حسابك كصاحب التطبيق: كل الدروس مفتوحة، واللي بتخلّصه بيتلوّن أخضر.</p>':''}
+   ${IS_OWNER?'<p class="muted" style="margin:0;font-size:14px">حسابك كصاحب التطبيق: كل الدروس مفتوحة، واللي بتخلّصه بيتلوّن أخضر.</p>':IS_ADMIN?'<p class="muted" style="margin:0;font-size:14px">حسابك مساعد (أدمن): بتقدر تشوف لوحة التحكم 📊.</p>':ROLE.unlockAll?'<p class="muted" style="margin:0;font-size:14px">صلاحية خاصة: كل الدروس مفتوحة لحسابك.</p>':ROLE.openTo>1?`<p class="muted" style="margin:0;font-size:14px">صلاحية خاصة: الدروس مفتوحة لحد ${LEVELS[ROLE.openTo-1].tag}.</p>`:''}
    <div class="row"><button class="btn ghost" id="reset">امسح كل التقدّم</button></div>
    <p class="muted" id="sync" style="margin:0;font-size:13px">${cloudOK?'التقدّم محفوظ بحسابك وبيظهر على كل أجهزتك.':'التقدّم محفوظ بهالمتصفح.'}</p>
    <p class="muted" style="margin:0;font-size:13px">ملاحظة: صاحب التطبيق (المعلم) بيشوف اسمك وإيميلك وملخص تقدّمك ووقت دراستك عشان يتابعك.</p></section>
@@ -8193,11 +8204,15 @@ async function loadAllStats(){
   const out=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id)||(x.path&&x.path.split('/').pop());let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,d:d||{}}}).filter(r=>r.id&&r.d&&r.d.v);
   let ps={};try{ps=await USER.profiles(out.map(r=>r.id))||{}}catch(e){}
   out.forEach((r,i)=>{const p=ps[r.id]||{};r.name=p.name||('مستخدم '+(i+1));r.email=p.email||''});
+  await Promise.all(out.map(async r=>{r.role=await readDoc('roles/'+r.id)||{};r.note=(await readDoc('notes/'+r.id)||{}).t||''}));
   ADM_CACHE=out;return out;
 }
+async function readDoc(p){try{const s=await DB.doc(p).get();let v=s;if(s&&typeof s.data==='function')v=s.data();else if(s&&s.data&&typeof s.data==='object')v=s.data;return v&&typeof v==='object'?v:null}catch(e){return null}}
+const ROLE_NAMES={student:'طالب',admin:'مساعد (أدمن)',blocked:'موقوف'};
+function roleBadges(r){const o=r.role||{},b=[];if(o.role==='admin')b.push('<i class="rb rb-a">👑 مساعد</i>');if(o.role==='blocked')b.push('<i class="rb rb-x">⛔ موقوف</i>');if(o.unlockAll)b.push('<i class="rb rb-o">🔓 كل الدروس</i>');else if(o.openTo>1)b.push(`<i class="rb rb-o">🔓 لحد ${LEVELS[o.openTo-1].tag}</i>`);return b.join('')}
 function admGuard(){
   if(location.protocol==='file:'&&!DB)return 'test';
-  if(!IS_OWNER){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">لوحة التحكم لصاحب التطبيق بس</h2></div>`;return false}
+  if(!IS_OWNER&&!IS_ADMIN){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">لوحة التحكم لصاحب التطبيق بس</h2></div>`;return false}
   return true;
 }
 const DAY=864e5;
@@ -8216,7 +8231,7 @@ function admList(rows){
   const r=admRows(rows);
   return r.length?r.map(x=>{const d=x.d,on=d.seen&&Date.now()-d.seen<180000;
     return `<a class="adm-row" href="#admin-${encodeURIComponent(x.id)}"><span class="adm-av">${esc((x.name||'?').slice(0,1))}</span>
-    <span class="adm-main"><b>${esc(x.name)}${on?' <i class="adm-on">● متصل</i>':''}</b><small>${esc(x.email||'')}</small><small>${esc(d.at||'')} · آخر ظهور ${fmtAgo(d.seen)}</small>
+    <span class="adm-main"><b>${esc(x.name)}${on?' <i class="adm-on">● متصل</i>':''}</b>${roleBadges(x)?`<span class="rbs">${roleBadges(x)}</span>`:''}<small>${esc(x.email||'')}</small><small>${esc(d.at||'')} · آخر ظهور ${fmtAgo(d.seen)}</small>
     <span class="bar"><i style="width:${pct(d.done||0,d.total||92)}%"></i></span></span>
     <span class="adm-nums"><b>${d.done||0}/${d.total||92}</b><small>درس</small><b>${fmtDur(sumDays(d.days,7))}</b><small>آخر 7 أيام</small></span></a>`}).join(''):'<p class="muted" style="margin:0">ما في حدا بهالفلتر.</p>';
 }
@@ -8274,6 +8289,7 @@ async function vAdminUser(id){
   const last=d.last&&CH[d.last.id-1]?`${fmtAgo(d.last.ts)}: الدرس ${d.last.id} (${esc(CH[d.last.id-1].ar)})`:'—';
   app.innerHTML=`<div class="stack"><div><a class="back" href="#admin">→ لوحة التحكم</a><h1 style="font-size:24px;margin-top:6px">${esc(r.name)}</h1><p class="muted" style="margin:4px 0 0" dir="ltr">${esc(r.email||'')}</p><p class="muted" style="margin:2px 0 0">${esc(d.at||'')} · آخر ظهور ${fmtAgo(d.seen)} · ${esc(d.dev||'')}</p></div>
   <div class="stats"><div class="stat"><b>${d.done||0}<small>/${d.total||92}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${d.avg==null?'—':d.avg+'%'}</b><span>متوسط الاختبارات</span></div><div class="stat"><b>${fmtDur(d.time)}</b><span>مجموع الدراسة</span></div><div class="stat"><b>${fmtDur((d.days||{})[today()])}</b><span>اليوم</span></div><div class="stat"><b>${fmtDur(sumDays(d.days,7))}</b><span>آخر 7 أيام</span></div><div class="stat"><b>${d.streak||0}</b><span>أيام ورا بعض</span></div></div>
+  ${permPanel(r)}
   <section class="card"><h2 class="adm-h">التقدّم بالمستويات</h2><div class="secbars">${lvBars}</div></section>
   <section class="card"><h2 class="adm-h">وقت الدراسة آخر 14 يوم</h2><div class="adm-chart">${ds.map(k=>{const v=(d.days||{})[k]||0;return `<div class="adm-col" title="${k}: ${fmtDur(v)}"><i style="height:${Math.round(v/mx*100)}%"></i><small>${k.split('-')[2]}</small></div>`}).join('')}</div>
   <p class="muted" style="margin:8px 0 0;font-size:13px">آخر 30 يوم: ${fmtDur(sumDays(d.days,30))} · متوسط يوم الدراسة: ${fmtDur(avgDay)}</p></section>
@@ -8282,6 +8298,39 @@ async function vAdminUser(id){
    <tr><td>نقاط XP</td><td>${d.xp||0}</td></tr><tr><td>المراجعة الذكية</td><td>${d.srs||0} كلمة (مستحق اليوم ${d.due||0})</td></tr><tr><td>قصص خلّصها</td><td>${d.st||0}</td></tr><tr><td>الجهاز</td><td>${esc(d.dev||'—')}</td></tr></tbody></table></section>
   <section class="card"><h2 class="adm-h">الدروس</h2>${chRows?`<table class="adm-t"><thead><tr><th>#</th><th>الدرس</th><th>الخطوات</th><th>الاختبار</th></tr></thead><tbody>${chRows}</tbody></table>`:'<p class="muted" style="margin:0">لسا ما بلّش.</p>'}</section>
   ${exRows?`<section class="card"><h2 class="adm-h">الامتحانات</h2><table class="adm-t"><tbody>${exRows}</tbody></table></section>`:''}</div>`;
+  bindPerm(r);
+}
+function permPanel(r){
+  const o=r.role||{},self=r.id===MY_ID;
+  if(self)return `<section class="card"><h2 class="adm-h">الصلاحيات</h2><p class="muted" style="margin:0">هاد حسابك.${IS_OWNER?' إنت صاحب التطبيق وكل شي مفتوح إلك.':''}</p></section>`;
+  const lock=!IS_OWNER&&o.role==='admin';
+  const access=o.unlockAll?'all':(o.openTo>1?'lv'+o.openTo:'seq');
+  return `<section class="card stack perm"><h2 class="adm-h" style="margin:0">الصلاحيات</h2>
+   ${lock?'<p class="muted" style="margin:0">هاد الحساب مساعد. صاحب التطبيق بس بيقدر يعدّل صلاحياته.</p>':''}
+   <label>الدور</label><select id="pr-role" class="sel" ${lock?'disabled':''}>
+     <option value="student">طالب: يدرس بالترتيب العادي</option>
+     ${IS_OWNER?'<option value="admin">مساعد (أدمن): يشوف لوحة التحكم ويعدّل صلاحيات الطلاب</option>':''}
+     <option value="blocked">موقوف: ما بيقدر يفتح التطبيق</option></select>
+   <label>فتح الدروس</label><select id="pr-acc" class="sel" ${lock?'disabled':''}>
+     <option value="seq">بالترتيب (كل درس بعد ما ينجح باللي قبله)</option>
+     ${LEVELS.slice(1).filter(L=>lvReady(L.n)).map(L=>`<option value="lv${L.n}">مفتوح لحد ${L.tag} (${esc(L.name)})</option>`).join('')}
+     <option value="all">كل الدروس والامتحانات مفتوحة</option></select>
+   <label>ملاحظة خاصة (بتشوفها إنت والمساعدين بس)</label><textarea id="pr-note" class="sel" rows="2" ${lock?'disabled':''}>${esc(r.note||'')}</textarea>
+   ${lock?'':'<div class="row"><button class="btn primary" id="pr-save">حفظ الصلاحيات</button></div>'}
+   ${o.at?`<p class="muted" style="margin:0;font-size:13px">آخر تعديل: ${fmtAgo(o.at)}</p>`:''}</section>`;
+}
+function bindPerm(r){
+  const o=r.role||{};const rs=$('#pr-role'),ac=$('#pr-acc');if(!rs)return;
+  rs.value=o.role||'student';if(!rs.value)rs.value='student';ac.value=o.unlockAll?'all':(o.openTo>1?'lv'+o.openTo:'seq');
+  const sv=$('#pr-save');if(!sv)return;
+  sv.onclick=async()=>{
+    const v=ac.value,nr={role:rs.value,unlockAll:v==='all',openTo:v.startsWith('lv')?+v.slice(2):0,at:Date.now(),by:MY_ID};
+    if(!IS_OWNER&&nr.role==='admin')return toast('بس صاحب التطبيق بيقدر يعيّن مساعد.');
+    sv.disabled=true;sv.textContent='جاري الحفظ…';
+    try{if(!DB&&location.protocol==='file:'){r.role=nr;r.note=$('#pr-note').value}else{await DB.doc('roles/'+r.id).set(nr);await DB.doc('notes/'+r.id).set({t:$('#pr-note').value,at:Date.now()});r.role=nr;r.note=$('#pr-note').value}
+      toast('انحفظت الصلاحيات ✓. بتتطبّق لما يفتح التطبيق المرة الجاية.');vAdminUser(r.id)}
+    catch(e){toast('ما انحفظت. تأكد من قواعد الحماية بـFirebase.');sv.disabled=false;sv.textContent='حفظ الصلاحيات'}
+  };
 }
 
 /* ===== backup ===== */
