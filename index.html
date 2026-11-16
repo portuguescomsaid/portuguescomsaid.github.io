@@ -8270,10 +8270,11 @@ const LEVELS=[
 const lvOf=u=>u.lv||1;
 const unitsOf=n=>UNITS.filter(u=>lvOf(u)===n);
 const lvReady=n=>unitsOf(n).length>0;
-const lvOpen=n=>n===1||S.unlockAll||n<=(S.openTo||1)||exDone('f'+(n-1));
+const canSkip=()=>IS_OWNER&&S.unlockAll;
+const lvOpen=n=>n===1||canSkip()||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
 const isFinal=k=>/^f\d$/.test(String(k));
-function chOpen(id){const u=unitOf(id);if(!lvOpen(lvOf(u)))return false;if(S.unlockAll)return true;const i=u.chs.indexOf(id);return i===0||chDone(u.chs[i-1])}
-const exOpen=k=>{if(isFinal(k))return lvOpen(+String(k).slice(1));const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(S.unlockAll||EXAMS[k].chs.every(chDone))};
+function chOpen(id){const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip())return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
+const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||EXAMS[k].chs.every(chDone))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+k;
 const STEPS=[['lesson','الدرس'],['words','الكلمات'],['sents','الجمل'],['drills','القواعد'],['game','لعبة'],['quiz','الاختبار']];
@@ -8485,7 +8486,7 @@ function vHome(){
     const chs=us.flatMap(u=>u.chs),open=lvOpen(L.n),done=chs.filter(chDone).length;
     const nw=chs.reduce((a,i)=>a+CH[i-1].W.length,0),ns=chs.reduce((a,i)=>a+CH[i-1].S.length,0);
     const head=`<div class="level-h"><div><h2>${L.name}</h2><span class="muted">${esc(L.sub)} · ${chs.length} درس · ${nw} كلمة · ${ns} جملة</span></div><span class="tag">${L.tag}</span></div><div class="lv-prog"><i style="width:${done/chs.length*100}%"></i></div>`;
-    if(!open)return `<section class="level-card dim">${head}<p class="muted" style="margin:0">بينفتح لما تنجح بالامتحان النهائي لـ${LEVELS[L.n-2].name}، أو افتحه من <a href="#settings">الإعدادات</a>.</p></section>`;
+    if(!open)return `<section class="level-card dim">${head}<p class="muted" style="margin:0">بينفتح لما تنجح بالامتحان النهائي لـ${LEVELS[L.n-2].name}.</p></section>`;
     const isNext=nx&&((nx.t==='ch'&&chs.includes(nx.id))||(nx.t==='ex'&&(us.some(u=>u.n===nx.id)||nx.id==='f'+L.n)));
     return `<details class="level-card" ${isNext||L.n===1&&!nx?'open':''}><summary>${head}</summary>${us.map(u=>`<section class="unit"><div class="unit-h"><span class="u-n">الوحدة ${u.n}</span><span class="pt" lang="pt-BR" dir="ltr">${esc(u.pt)}</span><span class="muted">${esc(u.ar)}</span></div><div class="nodes">${u.chs.map(node).join('')}${enode(u.n,'اختبار الوحدة '+u.n)}</div></section>`).join('')}<div class="nodes" style="margin-top:12px">${enode('f'+L.n,examName('f'+L.n))}</div></details>`};
   app.innerHTML=`<div class="stack">
@@ -8513,7 +8514,7 @@ function vSettings(){
    <p class="muted" style="margin:0;font-size:14px">نصيحة: إذا الصوت «بياكل» الكلام، نزّل السرعة لـ 70% أو أقل. الجمل الطويلة بتنقرأ مقاطع مع وقفة بين كل مقطع.</p>
   </section>
   <section class="card settings"><h2>التقدّم</h2>
-   <label class="toggle" for="sw-all"><span>افتح كل الدروس (للمراجعة بدون ترتيب)</span><input type="checkbox" class="switch" id="sw-all" ${S.unlockAll?'checked':''}></label>
+   ${IS_OWNER?`<label class="toggle" for="sw-all"><span>افتح كل الدروس (لصاحب التطبيق بس)</span><input type="checkbox" class="switch" id="sw-all" ${S.unlockAll?'checked':''}></label>`:''}
    <div class="row"><button class="btn ghost" id="reset">امسح كل التقدّم</button></div>
    <p class="muted" id="sync" style="margin:0;font-size:13px">${cloudOK?'التقدّم محفوظ بحسابك وبيظهر على كل أجهزتك.':'التقدّم محفوظ بهالمتصفح.'}</p>
    <p class="muted" style="margin:0;font-size:13px">ملاحظة: صاحب التطبيق (المعلم) بيشوف ملخص تقدّمك ووقت دراستك عشان يتابعك.</p></section>
@@ -8526,14 +8527,14 @@ function vSettings(){
   $('#vrate').oninput=e=>{S.rate=+e.target.value;$('#vrv').textContent=Math.round(S.rate*100)+'%'};$('#vrate').onchange=()=>save();
   const T='Bom dia! Eu estou aprendendo português em Curitiba. Está tudo bem?';
   $('#vtest').onclick=()=>say(T);$('#vtest2').onclick=e=>{e.stopPropagation();say(T,true)};
-  $('#sw-all').onchange=e=>{S.unlockAll=e.target.checked;save()};
+  if($('#sw-all'))$('#sw-all').onchange=e=>{S.unlockAll=e.target.checked;save()};
   let armed=false;$('#reset').onclick=e=>{if(!armed){armed=true;e.target.textContent='اضغط كمان مرة للتأكيد';e.target.style.color='var(--bad)';setTimeout(()=>{armed=false;if(e.target.isConnected){e.target.textContent='امسح كل التقدّم';e.target.style.color=''}},4000);return}const keep={rate:S.rate,voice:S.voice};S=Object.assign(defState(),keep);save();toast('انمسح التقدّم');location.hash='#path'};
 }
 
 let chState={id:0,step:null};
 function vChapter(id){
   const c=CH[id-1];if(!c)return vHome();
-  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">خلّص اختبار الدرس اللي قبله بـ 70% أو أكثر. أو افتح كل الدروس من <a href="#settings">الإعدادات</a>.</p></div>`;return}
+  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">بينفتح لما تخلّص اللي قبله بالترتيب: كل درس لازم تنجح باختباره بـ 70% أو أكثر، وأول درس بكل وحدة بينفتح بعد ما تنجح باختبار الوحدة اللي قبلها.</p></div>`;return}
   if(chState.id!==id){chState={id,step:(STEPS.find(([k])=>!stepDone(id,k))||STEPS[0])[0]}}
   const st=chState.step;
   app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${c.u} · الدرس ${id}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
@@ -8570,7 +8571,7 @@ const sitem=s=>`<div class="sitem">${sayBtn(s.pt)}<div class="s-t">${P(s.pt)}${S
 function vExam(k){
   const E=EXAMS[k];if(!E)return vHome();
   const name=examName(k);
-  if(!exOpen(k)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">${name} مقفل</h2><p class="muted">بينفتح لما تخلّص اختبارات دروس الوحدة.</p></div>`;return}
+  if(!exOpen(k)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">${name} مقفل</h2><p class="muted">${isFinal(k)?'بينفتح لما تنجح بكل اختبارات وحدات المستوى.':'بينفتح لما تنجح باختبارات كل دروس الوحدة.'}</p></div>`;return}
   const prev=S.ex[exKey(k)];const n=quizExam(k);const cnt=s=>n.filter(q=>q.sec===s).length;
   const u=isFinal(k)?null:UNITS.find(x=>x.n===k);
   let next={label:'عالمسار ←',href:'#path'};
@@ -8969,7 +8970,7 @@ function placeResult(res){
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="result card"><div class="ring" style="--p:${lv*20};--c:var(--green)"><b>${L.tag}</b></div><h2>ننصحك تبدأ من ${esc(L.name)}</h2>
    <div class="secbars">${res.map((p,i)=>`<div class="secbar"><span>${LEVELS[i].tag}</span><span class="tr"><i style="width:${Math.round(p*100)}%;background:${p>=.67?'var(--ok)':'var(--bad)'}"></i></span><span>${Math.round(p*100)}%</span></div>`).join('')}</div>
    <p class="muted" style="margin:0">النتيجة تقريبية. إذا حسّيت الدروس سهلة، كمّل، وإذا صعبة ارجع مستوى.</p>
-   <div class="row" style="justify-content:center">${lv>1?`<button class="btn primary" id="open">افتح المستويات لحد ${L.tag}</button>`:''}<a class="btn" href="#path">للمسار</a></div></div></div>`;
+   <div class="row" style="justify-content:center">${lv>1&&IS_OWNER?`<button class="btn primary" id="open">افتح المستويات لحد ${L.tag}</button>`:''}<a class="btn" href="#path">للمسار</a></div></div></div>`;
   const o=$('#open');if(o)o.onclick=()=>{S.openTo=Math.max(S.openTo||1,lv);save();toast('انفتحت المستويات لحد '+L.tag);location.hash='#path'};
 }
 
