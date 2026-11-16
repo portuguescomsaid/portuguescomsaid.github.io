@@ -537,6 +537,8 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .knew{display:grid;gap:4px;justify-items:center;background:#fff;border-radius:18px;padding:12px;margin:10px 0}.kn-st{font-size:64px;animation:pop .8s}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}.confetti i{position:absolute;top:-30px;width:10px;height:14px;border-radius:3px;font-style:normal;font-size:22px;animation:cfall linear forwards}
 @keyframes cfall{to{transform:translateY(110vh) rotate(540deg)}}
+
+.opt.pt{display:flex;align-items:center;justify-content:space-between;gap:10px}.osay{flex:none;font-size:18px;width:38px;height:38px;display:grid;place-items:center;border-radius:99px;background:var(--green-soft);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -10219,8 +10221,13 @@ const kLearned=key=>!!((S.kidW||{})[key]);
 const kDone=k=>kStars(k.id)>=2&&(!k.F.length||kStars(k.id+'_f')>=2);
 const kOpen=k=>k.ord<=KPREV||canSkip()||kDone(k)||(()=>{const p=KIDS.find(x=>x.ord===k.ord-1);return !p||kDone(p)})();
 const kPct=k=>{const all=k.L.concat(k.F);return all.length?Math.round(all.filter(x=>kLearned(x.key)).length/all.length*100):0};
-const KCHEER=['Muito bem!','Isso!','Parabéns!','Que legal!','Show!','Mandou bem!'];
-const KCHEER_AR={'Muito bem!':'برافو!','Isso!':'هيك!','Parabéns!':'مبروك!','Que legal!':'شو حلو!','Show!':'رهيب!','Mandou bem!':'عملتها صح!'};
+const KCHEER=['Ótimo!','Isso!','Perfeito!','Muito bem!','Parabéns!','Mandou bem!'];
+const KCHEER_AR={'Ótimo!':'أوتشيمو! ممتاز!','Isso!':'إيسو! هيك!','Perfeito!':'بيرفيتو! مزبوط!','Muito bem!':'موينتو بين! برافو!','Parabéns!':'باراباينس! مبروك!','Mandou bem!':'ماندو بين! عملتها صح!'};
+/* صوت تصفيق (بدون ملفات): نبضات ضجيج قصيرة */
+let KAC=null;
+function clap(){try{KAC=KAC||new (window.AudioContext||window.webkitAudioContext)();if(KAC.state==='suspended')KAC.resume();const ctx=KAC,t0=ctx.currentTime;
+  const len=Math.floor(ctx.sampleRate*0.06),buf=ctx.createBuffer(1,len,ctx.sampleRate),d=buf.getChannelData(0);for(let j=0;j<len;j++)d[j]=(Math.random()*2-1)*Math.pow(1-j/len,3);
+  for(let n=0;n<9;n++){const t=t0+n*0.075+Math.random()*0.03;for(let v=0;v<2;v++){const s=ctx.createBufferSource();s.buffer=buf;const f=ctx.createBiquadFilter();f.type='bandpass';f.frequency.value=1100+Math.random()*900;f.Q.value=0.8;const g=ctx.createGain();g.gain.value=0.9-n*0.06;s.connect(f);f.connect(g);g.connect(ctx.destination);s.start(t+v*0.012)}}}catch(e){}}
 function confetti(n=60){const box=document.createElement('div');box.className='confetti';const em=['🎉','⭐','🎈','✨','💛','🌈'];
   for(let j=0;j<n;j++){const s=document.createElement('i');s.textContent=Math.random()<.35?em[j%em.length]:'';s.style.left=Math.random()*100+'vw';s.style.background=s.textContent?'transparent':`hsl(${Math.random()*360},90%,60%)`;s.style.animationDelay=(Math.random()*.6)+'s';s.style.animationDuration=(1.6+Math.random()*1.4)+'s';box.appendChild(s)}
   document.body.appendChild(box);setTimeout(()=>box.remove(),3600)}
@@ -10287,10 +10294,10 @@ function vKidsGame(id){
     }
     hydrateKidPics(app);
     $$('.kopt').forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.n];$$('.kopt').forEach(x=>x.disabled=true);
-      if(o===t){ok++;streak++;b.classList.add('good','bounce');S.kidW=S.kidW||{};S.kidW[t.key]=1;const ch=KCHEER[Math.floor(Math.random()*KCHEER.length)];say(mode==='w'?t.pt:ch);
-        const fb=document.createElement('div');fb.className='kcheer';fb.textContent=(streak>=3?'🔥 '+streak+' ورا بعض! ':'')+KCHEER_AR[ch];b.appendChild(fb);if(streak>=3&&streak%3===0)confetti(25)}
+      if(o===t){ok++;streak++;b.classList.add('good','bounce');S.kidW=S.kidW||{};S.kidW[t.key]=1;const ch=KCHEER[Math.floor(Math.random()*KCHEER.length)];clap();setTimeout(()=>say(ch),450);
+        const fb=document.createElement('div');fb.className='kcheer';fb.textContent='👏 '+(streak>=3?'🔥'+streak+' ':'')+KCHEER_AR[ch];b.appendChild(fb);if(streak>=3&&streak%3===0)confetti(25)}
       else{streak=0;b.classList.add('bad','shake');$$('.kopt')[opts.indexOf(t)].classList.add('good');say(t.pt)}
-      setTimeout(()=>{i++;draw()},o===t?1200:1900)});
+      setTimeout(()=>{i++;draw()},o===t?1700:1900)});
   };
   draw();
 }
@@ -10518,7 +10525,8 @@ const accentsOnly=(y,a)=>norm(y)===norm(a)&&strip(y)!==strip(a);
 
 /* ===== quiz runner ===== */
 const SEC={r:'القراءة',l:'الاستماع',g:'القواعد',v:'المفردات',w:'الكتابة'};
-function optHtml(x,k){const pt=isPt(x);return `<button class="opt${pt?' pt':''}" data-k="${k}"${pt?' lang="pt-BR" dir="ltr"':''}>${pt?esc(x):bidi(x)}</button>`}
+function optHtml(x,k){const pt=isPt(x);return `<button class="opt${pt?' pt':''}" data-k="${k}"${pt?' lang="pt-BR" dir="ltr"':''}>${pt?esc(x):bidi(x)}${pt?`<span class="osay" data-os="${esc(x)}" role="button" aria-label="استمع">🔊</span>`:''}</button>`}
+document.addEventListener('click',e=>{const s=e.target.closest('.osay');if(!s)return;e.preventDefault();e.stopPropagation();say(s.dataset.os)},true);
 function runQuiz(el,qs,o){
   let i=0,score=0;const log=[];
   const show=()=>{
@@ -10529,11 +10537,12 @@ function runQuiz(el,qs,o){
     h+=`<p class="qlab">${bidi(q.lab)}</p>`;
     if(q.hint&&q.t==='mcq')h+=`<p class="qhint">${bidi(q.hint)}</p>`;
     if(q.sayLat&&q.t==='mcq')h+=`<div class="row" style="justify-content:center">${sayBtn(q.sayLat)}</div>`;
+    if(!q.pt&&!q.listen&&!q.sayLat&&!q.passage&&q.t!=='fill'){const lat=(String(q.lab||'').match(/[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'\- ]*[A-Za-zÀ-ÿ]/g)||[]).filter(s=>s.length>2).join(' ');if(lat)h+=`<div class="row" style="justify-content:center">${sayBtn(lat)}</div>`}
     if(q.pic)h+=`<div class="qpic" aria-hidden="true">${q.pic}</div>`;
     if(q.pt)h+=`<div class="qword"><span class="qw-t">${P(q.pt)}${SYL(q.pt)}${q.pron?`<span class="pron">${esc(q.pron)}</span>`:''}</span>${sayBtn(q.say||q.pt)}</div>`;
     if(q.ar&&q.t!=='tf')h+=`<div class="qword ar-big">${bidi(q.ar)}</div>`;
     if(q.listen)h+=`<div class="listen-wrap"><button class="listen-big" data-say="${esc(q.say)}" aria-label="استمع">${SPK}</button><button class="linkbtn" data-say="${esc(q.say)}" data-slow="1">اسمع ببطء</button></div>`;
-    if(q.t==='fill')h+=`<div class="fill-s" lang="pt-BR" dir="ltr">${esc(q.sent).replace('___','<span class="blank">______</span>')}</div>${q.hint?`<p class="qhint">${bidi(q.hint)}</p>`:''}<div class="opts">${q.o.map(optHtml).join('')}</div>`;
+    if(q.t==='fill')h+=`<div class="fill-s" lang="pt-BR" dir="ltr">${esc(q.sent).replace('___','<span class="blank">______</span>')}</div><div class="row" style="justify-content:center">${sayBtn(q.sent.replace('___','…').replace(/\s*\([^)]*\)/g,''))}</div>${q.hint?`<p class="qhint">${bidi(q.hint)}</p>`:''}<div class="opts">${q.o.map(optHtml).join('')}</div>`;
     if(q.t==='mcq')h+=`<div class="opts">${q.o.map(optHtml).join('')}</div>`;
     if(q.t==='tf')h+=`<div class="tf-st">${bidi(q.stmt)}</div><div class="tf-btns"><button class="opt yes" data-v="1">صح ✓</button><button class="opt no" data-v="0">خطأ ✗</button></div>`;
     if(q.t==='type')h+=`<input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" lang="pt-BR" dir="ltr" placeholder="اكتب هون…" aria-label="جوابك">${q.noTiles?'<p class="tin-hint">اكتب الجواب بنفسك من لوحة المفاتيح.</p>':`<p class="tin-hint">${tileWords(q.ans)?'اضغط على الكلمات بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.':'اضغط على الحروف بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.'}</p><div class="tiles" id="tiles">${makeTiles(q.ans).map((t,i)=>`<button type="button" class="ltile${t===' '?' sp':''}" data-ti="${i}" data-tv="${esc(t)}">${t===' '?'␣':esc(t)}</button>`).join('')}</div><div class="row tile-ctl"><button type="button" class="btn ghost" id="tundo">⌫ تراجع</button><button type="button" class="btn ghost" id="tclr">مسح الكل</button></div>`}<button class="btn primary" id="chk">تحقّق</button>`;
@@ -10551,7 +10560,7 @@ function runQuiz(el,qs,o){
       else if(q.t==='tf')m=(credit===1?'صح!':'غلط.')+(q.right?` المعنى الصحيح: ${A(q.right,true)}`:'');
       else{const ar=!isPt(right);m=credit===1?'صح!':'الجواب الصحيح:'+A(right,ar);if(q.reveal)m+=A(q.reveal)}
       fb.innerHTML=m;nx.hidden=false;try{nx.focus({preventScroll:true})}catch(e){}
-      if(audioOK()){if(q.t==='fill')say(q.full);else if(q.t==='scr')say(right);else if(q.t==='mcq'&&isPt(right)&&!q.listen)say(right)}
+      if(audioOK()){if(q.t==='fill')say(q.full);else if(q.t==='scr'||q.t==='type')say(right);else if(q.t==='mcq'&&isPt(right)&&!q.listen)say(right)}
     };
     if(q.t==='mcq'||q.t==='fill')$$('.opt',el).forEach(b=>b.onclick=()=>{const k=+b.dataset.k;$$('.opt',el).forEach(x=>x.disabled=true);$$('.opt',el)[q.a].classList.add('right');if(k!==q.a)b.classList.add('wrong');finishQ(k===q.a?1:0,q.o[k],q.o[q.a])});
     if(q.t==='tf')$$('.opt',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v==='1';$$('.opt',el).forEach(x=>x.disabled=true);const ok=v===q.truth;b.classList.add(ok?'right':'wrong');if(!ok)$$('.opt',el).find(x=>(x.dataset.v==='1')===q.truth).classList.add('right');finishQ(ok?1:0,v?'صح':'خطأ',q.truth?'صح':'خطأ')});
@@ -11146,8 +11155,11 @@ function buildMaps(){CH.forEach(c=>{c.W.forEach(w=>WMAP.set(w.key,w));c.S.forEac
 function srsRecord(q,credit){if(!q||!q.key)return;S.srs=S.srs||{};const it=S.srs[q.key];
   if(credit<1)S.srs[q.key]={b:0,due:dayNum()+1};
   else if(it){const b=it.b+1;if(b>=BOXES.length)delete S.srs[q.key];else S.srs[q.key]={b,due:dayNum()+BOXES[b]}}}
-const srsDue=()=>Object.entries(S.srs||{}).filter(([k,v])=>v.due<=dayNum()&&(WMAP.has(k)||SMAP.has(k)||DMAP.has(k)));
-const srsTotal=()=>Object.keys(S.srs||{}).length;
+const keyCh=k=>{const x=WMAP.get(k)||SMAP.get(k)||DMAP.get(k);return x?x.ch:0};
+/* المراجعة بس من أغلاط فصول أخذ فيها أقل من 100٪ */
+const srsOK=k=>{const c=keyCh(k);if(!c)return false;const s=S.ch[c];return !!(s&&s.quiz!=null&&s.quiz<100)};
+const srsDue=()=>Object.entries(S.srs||{}).filter(([k,v])=>v.due<=dayNum()&&srsOK(k));
+const srsTotal=()=>Object.keys(S.srs||{}).filter(srsOK).length;
 function reviewQs(){const due=shuffle(srsDue()).slice(0,15);const W=allWords(),Sx=allSents();
   return due.map(([k])=>{
     if(WMAP.has(k)){const w=WMAP.get(k);const r=Math.random();const q=r<.3?qPt2Ar(w,W):r<.55?qAr2Pt(w,W):r<.8?qListen(w,W):Q.type(w.ar,w.pt);q.key=k;return q}
@@ -11156,7 +11168,7 @@ function reviewQs(){const due=shuffle(srsDue()).slice(0,15);const W=allWords(),S
 }
 function vReview(){
   const n=srsDue().length,tot=srsTotal();
-  if(!n){app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">مراجعة اليوم</h1><p style="margin:0">ما في شي للمراجعة اليوم ✓</p><p class="muted" style="margin:0">${tot?`عندك ${tot} عنصر بالمراجعة، رح يرجعوا بمواعيدهم.`:'كل غلطة بتغلطها بالاختبارات بتنضاف هون تلقائيًا، وبترجعلك بعد يوم، 3 أيام، أسبوع، أسبوعين، شهر.'}</p></div></div>`;return}
+  if(!n){app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">مراجعة اليوم</h1><p style="margin:0">ما في شي للمراجعة اليوم ✓</p><p class="muted" style="margin:0">${tot?`عندك ${tot} عنصر بالمراجعة، رح يرجعوا بمواعيدهم.`:'المراجعة بتطلع بس لما تاخد أقل من 100٪ باختبار فصل: أغلاطك فيه بتنضاف هون، وبترجعلك بعد يوم، 3 أيام، أسبوع، أسبوعين، شهر.'}</p></div></div>`;return}
   const start=()=>{app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#practice">→ التدريب</a></div><div id="rb"></div>`;
     runQuiz($('#rb'),reviewQs(),{title:'مراجعة اليوم',retry:vReview,pass:0,onDone:()=>{save();const left=srsDue().length;return `<p style="margin:0">${left?`باقي ${left} للمراجعة اليوم.`:'خلّصت مراجعة اليوم ✓'}</p>`},next:{label:'الرجوع إلى التدريب',href:'#practice'}})};
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">مراجعة اليوم</h1><p style="margin:0">عندك <b>${n}</b> عنصر لازم يرجعوا اليوم (من أغلاطك السابقة). الجواب الصح بيأجّل العنصر لفترة أطول، والغلط بيرجّعه لبكرة.</p><div class="row"><button class="btn primary" id="go">ابدأ المراجعة</button></div></div></div>`;$('#go').onclick=start;
