@@ -18,7 +18,7 @@
 <title>Português com Said</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Lexend:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Layout: one centered column; the path of levels is the spine, chapters open as 5-step lessons; tab bar sits at the bottom on phones */
@@ -26,7 +26,7 @@
   --green:#0A6B4B; --on-green:#FFFFFF; --green-soft:#E0EFE6;
   --sun:#E8AE00; --sun-soft:#FBF1CF; --blue:#24408E; --blue-soft:#E3E8F6;
   --ok:#0F8A54; --ok-soft:#DCF2E5; --bad:#BF3434; --bad-soft:#FAE3E1;
-  --f-pt:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-pt:"Lexend","Segoe UI",system-ui,sans-serif;
   --f-ar:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
   --r:14px;
   color-scheme:light;
@@ -55,7 +55,7 @@ a{color:inherit}
 header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
 .brand{display:flex;align-items:baseline;gap:8px;text-decoration:none}
-.brand .pt{font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--green)}
+.brand .pt{font-family:"Bricolage Grotesque",var(--f-pt);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--green)}
 .brand small{color:var(--muted);font-size:13px}
 .flag{display:inline-block;width:10px;height:10px;background:var(--sun);transform:rotate(45deg);border-radius:2px;margin-inline-start:2px}
 .chips{display:flex;gap:6px;align-items:center}
@@ -484,6 +484,8 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .b-n{position:absolute;top:10px;left:12px;font-size:12px;color:var(--muted);font-weight:700}
 .b-ic{font-size:30px}.bcard b{font-size:16px}.bcard small{color:var(--muted);font-size:13px}
 .b-st{position:absolute;bottom:10px;left:12px;font-size:12px;font-weight:700;color:var(--ok)}
+
+.dlg-btns{display:flex;flex-direction:column;gap:6px;flex:none}.spk.slow{font-size:18px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -660,7 +662,7 @@ function sylHTML(text){
     const sy=sylWord(tok);if(sy.length<2)return esc(tok);
     const st=stressIdx(sy);return sy.map((s,k)=>k===st?`<b>${esc(s)}</b>`:esc(s)).join('·')}).join('');
 }
-const SYL=t=>`<span class="syl" dir="ltr" lang="pt-BR">${sylHTML(t)}</span>`;
+const SYL=t=>String(t).trim().length<3?'':`<span class="syl" dir="ltr" lang="pt-BR">${sylHTML(t)}</span>`;
 
 /* ===== pictures (emoji) ===== */
 const nrm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
@@ -736,12 +738,12 @@ Brasil|برازيو|البرازيل`)+
 H('٨. l بآخر المقطع ← «و»')+X(`Brasil|برازيو|البرازيل
 mil|ميو|ألف
 alto|آوتو|طويل
-almoço|آوموسو|غدا`)+
+almoço|آوموسو|غداء`)+
 H('٩. h بالبداية ما بتنلفظ')+X(`hoje|أوجي|اليوم
 hora|أورا|ساعة
 hospital|أوسبيتاو|مستشفى`)+
 H('١٠. j، و g قبل e / i ← «ج» خفيفة')+X(`gente|جينتشي|ناس
-jantar|جانتار|عشا
+jantar|جانتار|عشاء
 geladeira|جيلاديرا|ثلاجة`)+
 H('١١. v مش f')+Pp('حرف <em>v</em> بنكتبه «ڤ» عشان ما يختلط مع f.')+X(`você|ڤوسيه|إنت
 uva|أوڤا|عنب
@@ -1532,7 +1534,7 @@ ___ ele é?|كيف شكله؟|Como|Quem|Onde`});
 C({id:13,u:4,pt:'Comida brasileira',ar:'الأكل البرازيلي',
 lesson:H('البرازيل والأكل (Aula 13)')+Pp('فكرة نص الكتاب: <em>O Brasil é cheio de comidas deliciosas. Os brasileiros gostam de comidas de várias partes do mundo.</em>')+Pp('يعني: البرازيل مليانة أكلات طيبة، والبرازيليين بيحبوا أكل من كل العالم.')+
 H('أكلات برازيلية لازم تعرفها')+TB(`arroz e feijão|رز وفاصوليا: أكل كل يوم
-prato feito|PF: صحن غدا جاهز (رز، فاصوليا، لحمة، سلطة، بطاطا)
+prato feito|PF: صحن غداء جاهز (رز، فاصوليا، لحمة، سلطة، بطاطا)
 churrasco|مشاوي برازيلية
 farofa|طحين منيهوت محمّص بيتاكل مع الأكل
 coxinha|سناك مقلي محشي دجاج مفروم
@@ -1733,9 +1735,9 @@ Uma água ___, por favor.|مي مثلجة لو سمحت.|gelada|quente|morna`});
 
 C({id:16,u:4,pt:'Refeições e verbos',ar:'الوجبات وأفعالها',
 lesson:H('الوجبات الرئيسية')+Pp('من الكتاب: <em>No Brasil, há três tipos de refeições principais: o café da manhã, o almoço e a janta.</em>')+X(`café da manhã|كافيه دا مانيا|فطور
-almoço|آوموسو|غدا
-jantar|جانتار|عشا
-janta|جانتا|عشا (بالحكي)
+almoço|آوموسو|غداء
+jantar|جانتار|عشاء
+janta|جانتا|عشاء (بالحكي)
 lanche|لانشي|سناك
 café da tarde|كافيه دا تاردجي|قهوة العصر
 café colonial|كافيه كولونياو|سفرة عصرونية كبيرة`)+
@@ -1771,9 +1773,9 @@ H('بالحكي الطبيعي')+X(`Já almoçou?|جا آوموسو؟|تغديت
 Vai jantar?|ڤاي جانتار؟|رح تتعشى؟
 Bora almoçar?|بورا آوموسار؟|يلا نتغدى؟`),
 w:`café da manhã|كافيه دا مانيا|فطور
-almoço|آوموسو|غدا
-jantar|جانتار|عشا / يتعشى
-janta|جانتا|عشا (حكي)
+almoço|آوموسو|غداء
+jantar|جانتار|عشاء / يتعشى
+janta|جانتا|عشاء (حكي)
 lanche|لانشي|سناك
 refeição|هيفيساو|وجبة
 tomar|تومار|ياخد / يشرب
@@ -1794,7 +1796,7 @@ Amanhã eu vou almoçar tarde.|أمانيا إيو ڤو آوموسار تارد�
 Vou jantar.|ڤو جانتار.|رح أتعشى.
 Já almoçou?|جا آوموسو؟|تغديت؟
 Bora almoçar?|بورا آوموسار؟|يلا نتغدى؟
-As minhas refeições são café da manhã, almoço e jantar.|آس مينياس هيفيسويس ساو كافيه دا مانيا، آوموسو إي جانتار.|وجباتي الفطور والغدا والعشا.
+As minhas refeições são café da manhã, almoço e jantar.|آس مينياس هيفيسويس ساو كافيه دا مانيا، آوموسو إي جانتار.|وجباتي الفطور والغداء والعشاء.
 No café da manhã, eu gosto de comer pão, queijo e ovos.|نو كافيه دا مانيا، إيو غوستو دجي كومير باو، كيجو إي أوڤوس.|عالفطور بحب آكل خبز وجبنة وبيض. (مثال)`,
 d:`Eu ___ café da manhã todos os dias.|بفطر كل يوم.|tomo|toma|tomei
 Ontem eu ___ café da manhã.|امبارح فطرت.|tomei|tomo|vou tomar
@@ -2532,7 +2534,7 @@ H('فعل pagar وفعل transferir')+X(`Eu paguei o boleto pelo aplicativo.|إ�
 Transferi o dinheiro ontem.|ترانسفيري أو دجينييرو أونتين.|حوّلت المال أمس.
 O boleto vence amanhã.|أو بوليتو ڤينسي أمانيا.|الفاتورة تستحق غدًا.`),
 w:`banco|بانكو|بنك
-conta|كونتا|حساب
+conta|كونتا|حساب (بالبنك) / فاتورة
 agência|أجينسيا|فرع
 saldo|ساودو|رصيد
 saque|ساكي|سحب
@@ -6922,7 +6924,7 @@ limpo|ليمپو|نظيف
 limpa|ليمپا|نظيفة
 alimento|أليمنتو|غذاء
 leite|ليتشي|حليب
-batatas fritas|باتاتاس فريتاس|بطاطا مقلية`,s:`No almoço, gosto de arroz, frango e salada.|نو أوموسو غوستو دجي أهوش فرانغو إي سالادا|بالغدا بحب الرز والدجاج والسلطة
+batatas fritas|باتاتاس فريتاس|بطاطا مقلية`,s:`No almoço, gosto de arroz, frango e salada.|نو أوموسو غوستو دجي أهوش فرانغو إي سالادا|بالغداء بحب الرز والدجاج والسلطة
 Não conheço nenhum prato típico brasileiro na Palestina.|ناو كونيسو نينيوم پراتو تشيپيكو برازيلييرو نا پالستشينا|ما بعرف طبق برازيلي تقليدي بفلسطين
 Eu gosto de maqluba, musakhan e maftoul.|إيو غوستو دجي مقلوبة مسخن إي مفتول|بحب المقلوبة والمسخن والمفتول
 O Brasil é cheio de frutas e verduras!|أو برازيو إيه شيو دجي فروتاس إي ڤيردوراس|البرازيل مليانة فواكه وخضرة
@@ -7022,10 +7024,10 @@ Vou tomar café da manhã.|ڤو تومار كافيه دا مانيا|رح أف�
 Eu tomo café da manhã, almoço e janto todos os dias.|إيو تومو كافيه دا مانيا أوموسو إي جانتو تودوس أوس دجياس|أنا بفطر وبتغدى وبتعشى كل يوم
 Às vezes, também faço um lanche à tarde.|آز ڤيزيس تامبيم فاسو أوم لانشي آ تارجي|أحياناً باكل سناك العصر
 No café da manhã, gosto de comer pão, queijo e ovos.|نو كافيه دا مانيا غوستو دجي كومير پاو كيجو إي أوڤوس|بالفطور بحب آكل خبز وجبنة وبيض
-Na janta, gosto de comer sanduíche ou sopa.|نا جانتا غوستو دجي كومير ساندويتشي أو سوپا|بالعشا بحب ساندويش أو شوربة
+Na janta, gosto de comer sanduíche ou sopa.|نا جانتا غوستو دجي كومير ساندويتشي أو سوپا|بالعشاء بحب ساندويش أو شوربة
 Quais são suas refeições no dia a dia?|كوايس ساو سواس هيفيساويس نو دجيا آ دجيا؟|شو وجباتك اليومية؟
-O que você gosta de comer no café da manhã, no almoço e na janta?|أو كي ڤوسيه غوستا دجي كومير نو كافيه دا مانيا نو أوموسو إي نا جانتا؟|شو بتحب تاكل بالفطور والغدا والعشا؟
-No Brasil, há três tipos de refeições principais: o café da manhã, o almoço e a janta.|نو برازيو آ تريس تشيپوس دجي هيفيساويس پرينسيپايس أو كافيه دا مانيا أو أوموسو إي آ جانتا|بالبرازيل في ثلاث وجبات رئيسية: الفطور والغدا والعشا`},
+O que você gosta de comer no café da manhã, no almoço e na janta?|أو كي ڤوسيه غوستا دجي كومير نو كافيه دا مانيا نو أوموسو إي نا جانتا؟|شو بتحب تاكل بالفطور والغداء والعشا؟
+No Brasil, há três tipos de refeições principais: o café da manhã, o almoço e a janta.|نو برازيو آ تريس تشيپوس دجي هيفيساويس پرينسيپايس أو كافيه دا مانيا أو أوموسو إي آ جانتا|بالبرازيل في ثلاث وجبات رئيسية: الفطور والغداء والعشاء`},
 17:{w:`isopor|إيزوپور|صندوق فلين عازل
 Pix|پيكس|نظام تحويل فوري بالبرازيل
 shopping|شوپينغ|مول
@@ -7761,7 +7763,7 @@ emprestar|إيمبريستار|يعير
 esperar alguém|إيسبيرار آوغين|يستنى حدا`,s:`Eu te ligo mais tarde.|إيو تشي ليغو مايس تاردجي.|بتصل فيك بعدين.
 Você me empresta a caneta?|ڤوسي مي إيمبريستا آ كانيتا؟|بتعيرني القلم؟
 Eu a encontrei no mercado.|إيو آ إينكونتريي نو ميركادو.|لقيتها بالسوق.
-Ele nos convidou para o jantar.|إيلي نوس كونڤيدو بارا أو جانتار.|عزمنا عالعشا.
+Ele nos convidou para o jantar.|إيلي نوس كونڤيدو بارا أو جانتار.|عزمنا عالعشاء.
 Vou te esperar na porta.|ڤو تشي إيسبيرار نا بورتا.|رح أستناك عالباب.
 Posso lhe fazer uma pergunta?|بوسو ليي فازير أوما بيرغونتا؟|بقدر أسألك سؤال؟`},
 38:{w:`vou + verbo|ڤو + فعل|رح + فعل
@@ -9172,32 +9174,32 @@ carro · todo|كاهو · تودو|o بالآخر = و
 hoje · hora|أوجي · أورا|h ما بتنلفظ
 você · uva|ڤوسي · أوڤا|v = ڤ
 está · estou|إيستا · إيستو|s عادية مش ش`,tip:'الحروف العربية تقريب للتعلم. دايمًا اسمع الصوت وقلّده.'},
-{id:'alfabeto',ic:'🔤',t:'الحروف (الأبجدية)',s:'أسماء الحروف للتهجئة',intro:'بتحتاجها لما حدا يطلب منك تهجّي اسمك أو إيميلك: «Como se escreve?».',r:`A|آ|a
-B|بيه|b
-C|سيه|c
-D|دجيه|d
-E|إيه|e
-F|إيفي|f
-G|جيه|g
-H|أغا|h
-I|إي|i
-J|جوتا|j
-K|كا|k
-L|إيلي|l
-M|إيمي|m
-N|إيني|n
-O|أو|o
-P|بيه|p
-Q|كيه|q
-R|إيهي|r
-S|إيسي|s
-T|تيه|t
-U|أو|u
-V|ڤيه|v
-W|دابليو|w
-X|شيس|x
-Y|إيبسيلون|y
-Z|زيه|z`,tip:'«Como se escreve o seu nome?» = كيف بينكتب اسمك؟ وبتجاوب بأسماء الحروف.'},
+{id:'alfabeto',ic:'🔤',t:'الحروف (الأبجدية)',s:'أسماء الحروف للتهجئة',intro:'بتحتاجها لما حدا يطلب منك تهجّي اسمك أو إيميلك: «Como se escreve?».',r:`A|آ|الحرف الصغير: a — مثال: amigo
+B|بيه|الحرف الصغير: b — مثال: bola
+C|سيه|الحرف الصغير: c — مثال: casa
+D|دجيه|الحرف الصغير: d — مثال: dia
+E|إيه|الحرف الصغير: e — مثال: escola
+F|إيفي|الحرف الصغير: f — مثال: faca
+G|جيه|الحرف الصغير: g — مثال: gato
+H|أغا|الحرف الصغير: h — مثال: hoje
+I|إي|الحرف الصغير: i — مثال: ilha
+J|جوتا|الحرف الصغير: j — مثال: janela
+K|كا|الحرف الصغير: k — مثال: kiwi
+L|إيلي|الحرف الصغير: l — مثال: livro
+M|إيمي|الحرف الصغير: m — مثال: mãe
+N|إيني|الحرف الصغير: n — مثال: nome
+O|أو|الحرف الصغير: o — مثال: ovo
+P|بيه|الحرف الصغير: p — مثال: pão
+Q|كيه|الحرف الصغير: q — مثال: queijo
+R|إيهي|الحرف الصغير: r — مثال: rua
+S|إيسي|الحرف الصغير: s — مثال: sol
+T|تيه|الحرف الصغير: t — مثال: tudo
+U|أو|الحرف الصغير: u — مثال: uva
+V|ڤيه|الحرف الصغير: v — مثال: você
+W|دابليو|الحرف الصغير: w — مثال: wi-fi
+X|شيس|الحرف الصغير: x — مثال: xícara
+Y|إيبسيلون|الحرف الصغير: y — مثال: yoga
+Z|زيه|الحرف الصغير: z — مثال: zero`,tip:'«Como se escreve o seu nome?» = كيف بينكتب اسمك؟ وبتجاوب بأسماء الحروف.'},
 {id:'cumprimentos',ic:'👋',t:'التحيات والوداع',s:'من الصبح للمسا',intro:'التحية مهمة كتير بالبرازيل. حتى بالمحل أو الباص، الناس بتسلّم.',r:`Oi!|أوي!|هاي!
 Olá!|أولا!|مرحبا!
 Bom dia!|بون دجيا!|صباح الخير!
@@ -9776,18 +9778,47 @@ function speechParts(t){
   return t.split('\n').map(s=>s.replace(/\s+/g,' ').trim()).filter(s=>/[A-Za-zÀ-ÿ0-9]/.test(s));
 }
 let speakId=0;
-async function say(text,slow){
+async function say(text,slow,vo){
   const parts=speechParts(text);if(!parts.length)return;
   const id=++speakId;const base=S.rate||0.8;
-  if(useClaude()){try{const r=Math.max(0.7,Math.min(1.3,(slow?0.75:base+0.15)));await AUD.tts.speak(parts.map(p=>({text:p,language:'pt-BR',rate:r})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
+  if(useClaude()){try{const r=Math.max(0.7,Math.min(1.3,(slow?0.75:base+0.15)));await AUD.tts.speak(parts.map(p=>Object.assign({text:p,language:'pt-BR',rate:r},vo&&vo.cv?{voice:vo.cv}:{})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
   if('speechSynthesis' in window){try{speechSynthesis.cancel();await sleep(80);if(id!==speakId)return;const v=deviceVoice();
-      parts.forEach(p=>{const u=new SpeechSynthesisUtterance(p);u.lang=v?v.lang:'pt-BR';if(v)u.voice=v;u.rate=slow?Math.max(0.45,base*0.72):base;u.pitch=1;speechSynthesis.speak(u)});
+      const vv=(vo&&vo.dv)||v;parts.forEach(p=>{const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'pt-BR';if(vv)u.voice=vv;u.rate=slow?Math.max(0.45,base*0.72):base;u.pitch=vo?vo.pitch:1;speechSynthesis.speak(u)});
       if(AUD.voices.length&&!hasBR()&&!say.warned){say.warned=true;toast('جهازك ما فيه صوت برازيلي، فالنطق ممكن يطلع أوروبي. شوف إعدادات الصوت.')}
       return}catch(e){}}
   toast('الصوت مش متاح هون. افتح الصفحة بمتصفح Chrome أو Safari.');
 }
+/* ===== أصوات الحوار: صوت مختلف لكل شخص ===== */
+const VOSP={};
+const VF=/(luciana|francisca|thalita|fernanda|joana|catarina|helena|maria|flo\b|grandma|av[óo]\b|sandy|shelley|vit[oó]ria|let[ií]cia|raquel|camila|female|feminin|google portugu[eê]s do brasil)/i;
+const VM=/(felipe|ant[oô]nio|daniel|eddy|grandpa|av[ôo]\b|reed|rocko|ricardo|duarte|cristiano|\bmale|masculin)/i;
+const FEM_SP=/^(nour|noor|layla|laila|huda|sara|mariam|maryam|amira|fatima|reem|salma|hind|dalia|yasmin|ines|isabel|carmen|raquel|beatriz|rachel|hanan|lina|rana|aya|mona|nadia|ruth|alice|luz|ester|professora|vendedora|medica|enfermeira|mae|avo|tia|senhora|dona|recepcionista)$/;
+const MALE_A=/^(luca|joshua|nicola|mustafa|hamza|osama|usama|taha|yahya|zakaria|issa|musa|moussa)$/;
+function spGender(n){n=String(n||'').trim().split(/\s+/)[0].normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  if(FEM_SP.test(n))return 'f';if(/^(rh|atendente|gerente|cliente|paciente|estudante|colega|a|b)$/.test(n))return 0;if(/a$/.test(n)&&!MALE_A.test(n))return 'f';return 'm'}
+const hsh=s=>{let h=7;for(const ch of String(s))h=(h*31+ch.charCodeAt(0))>>>0;return h};
+const VCACHE={};
+function dlgVoices(key,sp){sp=sp||['A','B'];const ck=key+'|'+AUD.voices.length+'|'+(useClaude()?1:0);if(VCACHE[ck])return VCACHE[ck];
+  const g=sp.map(spGender);if(!g[0]&&!g[1]){g[0]='m';g[1]='f'}else if(!g[0])g[0]=g[1]==='f'?'m':'f';else if(!g[1])g[1]=g[0]==='f'?'m':'f';
+  const h=hsh(key);let pool=AUD.voices.filter(isBR);if(!pool.length)pool=AUD.voices.slice();pool.sort((a,b)=>rank(b)-rank(a));
+  const F=pool.filter(v=>VF.test(v.name)&&!VM.test(v.name)),M=pool.filter(v=>VM.test(v.name)&&!VF.test(v.name)),U=pool.filter(v=>!F.includes(v)&&!M.includes(v));
+  const used=[];const out=g.map((gg,k)=>{let c=(gg==='f'?F:M).filter(v=>!used.includes(v));if(!c.length)c=U.concat(gg==='f'?M:F).filter(v=>!used.includes(v));
+    const dv=c.length?c[(h+k*13)%c.length]:(pool[0]||null);used.push(dv);
+    const CF=['airy','glassy'],CM=['buttery','rounded'];const cv=(gg==='f'?CF:CM)[(h>>(k+1))%2];
+    return {dv,cv,g:gg,pitch:1}});
+  if(g[0]===g[1]&&out[0].cv===out[1].cv)out[1].cv=(g[1]==='f'?(out[0].cv==='airy'?'glassy':'airy'):(out[0].cv==='buttery'?'rounded':'buttery'));
+  if(!out[0].dv||out[0].dv===out[1].dv){out[0].pitch=g[0]==='f'?1.2:0.85;out[1].pitch=g[1]==='f'?(g[0]==='f'?1.4:1.2):(g[0]==='m'?0.7:0.85)}
+  return VCACHE[ck]=out}
+function voOf(s){const [key,k]=String(s).split('#');return dlgVoices(key,VOSP[key])[+k||0]}
+const dlgBtns=(pt,key,k)=>`<span class="dlg-btns"><button class="spk" data-say="${esc(pt)}" data-vo="${key}#${k}" aria-label="استمع">${SPK}</button><button class="spk slow" data-say="${esc(pt)}" data-vo="${key}#${k}" data-slow="1" aria-label="اسمع ببطء" title="ببطء">🐢</button></span>`;
+function dlgPool(c,passage){const P0=c.DQ.map(([q,ok,...w],i)=>Object.assign(Q.mc(q,ok,w,{passage}),{id:'q'+i}));const L=c.DL,ex=[];
+  L.forEach((x,i)=>{const others=shuffle(L.filter((y,j)=>j!==i&&y.ar!==x.ar).map(y=>y.ar)).slice(0,3);if(others.length>=2)ex.push(Object.assign(Q.mc('شو معنى هالجملة من الحوار؟',x.ar,others,{pt:x.pt,pron:x.pron}),{id:'m'+i}));
+    if(i<L.length-1&&L[i+1].s!==x.s){const w=shuffle(L.filter((y,j)=>j!==i+1&&j!==i&&y.pt!==L[i+1].pt).map(y=>y.pt)).slice(0,2);if(w.length>=2)ex.push(Object.assign(Q.mc('بالحوار، شو كان الرد على هالجملة؟',L[i+1].pt,w,{pt:x.pt}),{id:'r'+i}))}
+    ex.push(Object.assign(Q.mc('مين قال هالجملة بالحوار؟',c.SP[x.s],[c.SP[1-x.s]],{pt:x.pt}),{id:'w'+i}))});
+  const byType=t=>shuffle(ex.filter(q=>q.id[0]===t));const m=byType('m'),r=byType('r'),w=byType('w');const mix=[];while(m.length||r.length||w.length){[m,r,m,w].forEach(a=>{if(a.length)mix.push(a.shift())})}
+  return P0.concat(mix)}
 function stopAudio(){speakId++;try{AUD.tts&&AUD.tts.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-say]');if(b){e.preventDefault();say(b.dataset.say,b.dataset.slow==='1');return}const em=e.target.closest('.lesson em, .card em');if(em){say(em.textContent)}});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-say]');if(b){e.preventDefault();say(b.dataset.say,b.dataset.slow==='1',b.dataset.vo?voOf(b.dataset.vo):null);return}const em=e.target.closest('.lesson em, .card em');if(em){say(em.textContent)}});
 let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200)}
 
 /* ===== progress rules ===== */
@@ -9936,7 +9967,7 @@ $$('[data-ac]',el).forEach(b=>b.onclick=()=>{const s=tin.selectionStart??tin.val
       ${extra}
       <div class="row" style="justify-content:center"><button class="btn ${pass?'':'primary'}" id="retry">جرّب مرة ثانية</button>${pass&&o.next?`<a class="btn primary" href="${o.next.href}" id="gonext">${esc(o.next.label)}</a>`:''}</div>
       ${wrong.length?`<div class="review"><h3>راجع أغلاطك (${wrong.length})</h3>${wrong.map(l=>`<div><span class="muted">${bidi(l.q.lab)}</span><br>${qtext(l.q)}<br><b>الصح:</b> ${rtext(l)}${l.q.reveal?' · '+P(l.q.reveal):''}${l.q.t==='type'||l.q.t==='scr'?`<br><span class="muted">إنت كتبت: ${P(l.your)}</span>`:''}</div>`).join('')}</div>`:''}</div>`;
-    $('#retry',el).onclick=()=>o.retry();
+    $('#retry',el).onclick=()=>o.retry(log.filter(l=>l.credit<1).map(l=>l.q));
     const g=$('#gonext',el);if(g&&o.next&&o.next.click)g.onclick=e=>{e.preventDefault();o.next.click()};
     window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+scrollY-120)});
   };
@@ -10191,14 +10222,17 @@ function vGames(){
 
 /* ===== حوار الفصل ===== */
 function vDialog(c,body,done){
-  const st={L:c.DL.map(x=>({pt:x.pt,who:x.s?'B':'A'}))};
+  VOSP['c'+c.id]=c.SP;const st={key:'c'+c.id,sp:c.SP,L:c.DL.map(x=>({pt:x.pt,who:x.s?'B':'A'}))};
   const show=()=>{body.innerHTML=`<div class="card stack"><h2 style="font-size:19px;margin:0">حوار الدرس</h2><p class="muted" style="margin:0">اسمع الحوار كامل أول، بعدين اقرأ كل سطر مع النطق والمعنى، وقلّده بصوت عالي.</p>
    <div class="row"><button class="btn primary" id="playall">▶ اسمع الحوار كامل</button><button class="btn" id="stopall">⏹ وقّف</button></div></div>
-   <div class="dlg show-ar" style="margin-top:12px">${c.DL.map(x=>`<div class="dl ${x.s?'b':'a'}"><span class="who">${esc(c.SP[x.s])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(x.pt)}</span>${sayBtn(x.pt)}</div><span class="pron">${esc(x.pron)}</span><div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
+   <div class="dlg show-ar" style="margin-top:12px">${c.DL.map(x=>`<div class="dl ${x.s?'b':'a'}"><span class="who">${esc(c.SP[x.s])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(x.pt)}</span>${dlgBtns(x.pt,'c'+c.id,x.s)}</div><span class="pron">${esc(x.pron)}</span><div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
    <div class="row" style="margin-top:14px"><button class="btn primary" id="dq">اختبر فهمك (${c.DQ.length} أسئلة) ←</button></div>`;
-    $('#playall',body).onclick=()=>playStory(st);$('#stopall',body).onclick=stopAudio;$('#dq',body).onclick=quiz};
+    $('#playall',body).onclick=()=>playStory(st);$('#stopall',body).onclick=stopAudio;$('#dq',body).onclick=()=>quiz()};
   const passage=c.DL.map(x=>c.SP[x.s]+': '+x.pt).join(' ');
-  const quiz=()=>runQuiz(body,c.DQ.map(([q,ok,...w])=>Q.mc(q,ok,w,{passage})),{title:'فهم الحوار',retry:quiz,onDone:(p,pass)=>{if(pass)done(false)},next:{label:'التالي: الكلمات ←',href:'#ch-'+c.id,click:()=>done(true)}});
+  const pool=dlgPool(c,passage);let seen=new Set();
+  const quiz=wrongs=>{let qs;if(!Array.isArray(wrongs)){qs=pool.slice(0,c.DQ.length);qs.forEach(q=>seen.add(q.id))}else{let fresh=pool.filter(q=>!seen.has(q.id)&&!wrongs.some(w=>w.id===q.id));if(fresh.length<3){seen=new Set(wrongs.map(w=>w.id));fresh=shuffle(pool.filter(q=>!seen.has(q.id)))}fresh=fresh.slice(0,3);fresh.forEach(q=>seen.add(q.id));qs=shuffle(wrongs.map(w=>pool.find(p=>p.id===w.id)||w).concat(fresh))}
+    qs=qs.map(q=>Object.assign({},q,q.o?{o:q.o.slice()}:{}));qs.forEach(q=>{if(q.t==='mcq'){const ok=q.o[q.a];q.o=shuffle(q.o);q.a=q.o.indexOf(ok)}});
+    return runQuiz(body,qs,{title:'فهم الحوار',retry:quiz,onDone:(p,pass)=>{if(pass)done(false)},next:{label:'التالي: الكلمات ←',href:'#ch-'+c.id,click:()=>done(true)}})};
   show();
 }
 
@@ -10539,9 +10573,10 @@ function chatRoom(sc,lv){
 /* ===== القصص ===== */
 const VOICES=['buttery','airy'];
 async function playStory(st){
-  if(AUD.tts&&useClaude()){try{await AUD.tts.speak(st.L.map(x=>({text:x.pt,language:'pt-BR',voice:VOICES[x.who==='A'?0:1],rate:Math.max(0.75,(S.rate||0.8)+0.1)})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
+  const key=st.key||('st'+(st.id||st.pt||'')),sp=st.sp||['A','B'];VOSP[key]=sp;const vos=dlgVoices(key,sp);
+  if(AUD.tts&&useClaude()){try{await AUD.tts.speak(st.L.map(x=>({text:x.pt,language:'pt-BR',voice:vos[x.who==='A'?0:1].cv,rate:Math.max(0.75,(S.rate||0.8)+0.1)})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
   if('speechSynthesis' in window){speechSynthesis.cancel();await sleep(80);const v=deviceVoice();
-    st.L.forEach(x=>speechParts(x.pt).forEach(p=>{const u=new SpeechSynthesisUtterance(p);u.lang=v?v.lang:'pt-BR';if(v)u.voice=v;u.rate=S.rate||0.8;u.pitch=x.who==='A'?1.15:0.85;speechSynthesis.speak(u)}));return}
+    st.L.forEach(x=>{const vo=vos[x.who==='A'?0:1],vv=vo.dv||v;speechParts(x.pt).forEach(p=>{const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'pt-BR';if(vv)u.voice=vv;u.rate=S.rate||0.8;u.pitch=vo.pitch;speechSynthesis.speak(u)})});return}
   toast('الصوت مش متاح هون.');
 }
 function vStories(){
@@ -10549,10 +10584,10 @@ function vStories(){
   ${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<section class="level-card"><div class="unit-h"><span class="u-n">${L.tag}</span><span>${esc(L.name)}</span></div><div class="nodes">${STORIES.filter(s=>lvOf(UNITS.find(u=>u.n===s.u))===L.n).map(s=>{const b=(S.st||{})[s.id];return `<a class="node ${b>=70?'done':'open'}" href="#story-${s.id}"><span class="num">${b>=70?'✓':'▶'}</span><span class="t">${P(s.pt)}<small>${esc(s.ar)} · الوحدة ${s.u}</small></span><span class="st">${b!=null?b+'%':'اسمع'}</span></a>`}).join('')}</div></section>`).join('')}</div>`;
 }
 function vStory(id){
-  const st=STORIES.find(s=>s.id===id);if(!st)return vStories();
+  const st=STORIES.find(s=>s.id===id);if(!st)return vStories();VOSP['st'+st.id]=st.sp;st.key='st'+st.id;
   const show=()=>{app.innerHTML=`<div class="stack"><a class="back" href="#stories">→ القصص</a><div class="ch-head"><span class="eyebrow">الوحدة ${st.u}</span><h1 class="pt" lang="pt-BR" dir="ltr" style="font-size:26px">${esc(st.pt)}</h1><span class="muted">${esc(st.ar)}</span></div>
    <div class="row"><button class="btn primary" id="playall">▶ اسمع الحوار كامل</button><button class="btn" id="stopall">⏹ وقّف</button><label class="toggle" style="gap:6px"><input type="checkbox" class="switch" id="tr"><span>اعرض الترجمة</span></label></div>
-   <div class="dlg" id="dlg">${st.L.map(x=>`<div class="dl ${x.who==='A'?'a':'b'}"><span class="who">${esc(st.sp[x.who==='A'?0:1])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(x.pt)}</span>${sayBtn(x.pt)}</div>${SYL(x.pt)}<div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
+   <div class="dlg" id="dlg">${st.L.map(x=>`<div class="dl ${x.who==='A'?'a':'b'}"><span class="who">${esc(st.sp[x.who==='A'?0:1])}</span><div class="dl-b"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1">${esc(x.pt)}</span>${dlgBtns(x.pt,'st'+st.id,x.who==='A'?0:1)}</div>${SYL(x.pt)}<div class="dl-ar">${bidi(x.ar)}</div></div></div>`).join('')}</div>
    <div class="card stack"><h2 style="font-size:18px">أسئلة الفهم</h2><div class="row"><button class="btn primary" id="sq">ابدأ</button></div></div></div>`;
     $('#playall').onclick=()=>playStory(st);$('#stopall').onclick=stopAudio;$('#tr').onchange=e=>$('#dlg').classList.toggle('show-ar',e.target.checked);
     $('#sq').onclick=quiz};
