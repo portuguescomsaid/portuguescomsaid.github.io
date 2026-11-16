@@ -539,6 +539,14 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 @keyframes cfall{to{transform:translateY(110vh) rotate(540deg)}}
 
 .opt.pt{display:flex;align-items:center;justify-content:space-between;gap:10px}.osay{flex:none;font-size:18px;width:38px;height:38px;display:grid;place-items:center;border-radius:99px;background:var(--green-soft);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+
+.favb{all:unset;cursor:pointer;font-size:22px;line-height:1;color:#c9a227;padding:2px 6px;flex:none}.favb.on{color:#E8AE00}
+.wcard{position:relative}.wcard>.favb{position:absolute;top:6px;inset-inline-start:6px;z-index:2}
+.goal-card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}.goal-card.done{border-color:var(--ok);background:var(--ok-soft)}
+.ring.sm{width:56px;height:56px;flex:none}.ring.sm b{font-size:18px}.gc-ed{margin-inline-start:auto;color:var(--muted)}
+.goal-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}.goal-o{display:grid;justify-items:center;gap:2px;padding:14px 8px;border-radius:16px;border:2px solid var(--line);background:var(--card);cursor:pointer;font:inherit;color:inherit}.goal-o span{font-size:28px}.goal-o.on{border-color:var(--green);background:var(--green-soft)}
+.lg-list{display:grid;gap:6px}.lg-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:var(--paper)}.lg-row.me{background:var(--green-soft);outline:2px solid var(--green)}.lg-n{width:32px;text-align:center;font-weight:800;font-size:18px}.lg-nm{flex:1}.lg-x{color:var(--green)}
+.ring.sm b{width:44px;height:44px;font-size:16px}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -10679,7 +10687,7 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
-  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='inbox')vInbox();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
+  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='inbox')vInbox();else if(h==='pron')vPron();else if(h==='mywords')vMyWords();else if(h==='goal')vGoal();else if(h==='league')vLeague();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
@@ -10691,7 +10699,7 @@ function route(){
 window.addEventListener('hashchange',()=>{if(!navBack)navDepth++;navBack=false;route()});
 const TOP=['path','words','sentences','practice','basics','kids',''];
 let navDepth=0,navBack=false;
-function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h)||h==='inbox')return '#admin';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
+function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h)||h==='inbox')return '#admin';if(['pron','mywords','league'].includes(h))return '#practice';if(h==='goal')return '#path';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
 function goBack(){
   const h=(location.hash||'#path').slice(1);
   const m=h.match(/^ch-(\d+)$/);
@@ -10723,6 +10731,7 @@ function vHome(){
   app.innerHTML=`<div class="stack">
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
    ${loginNote()}
+   ${goalCard()}
    ${srsDue().length?`<a class="exam-cd" href="#review" style="background:var(--green-soft);border-color:var(--green)"><span class="cd-n">${srsDue().length}</span><span class="cd-t"><b>مراجعة اليوم</b><small>أغلاط سابقة لازم ترجعلها اليوم</small></span><span class="cd-go">راجع ←</span></a>`:''}
    <div class="stats"><div class="stat"><b>${S.xp}</b><span>نقاط XP</span></div><div class="stat"><b>${streakNow()}</b><span>أيام ورا بعض</span></div><div class="stat"><b>${nd}<small>/${CH.length}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${ne}<small>/${UNITS.length}</small></b><span>اختبارات وحدات</span></div></div>
    ${cont}
@@ -10798,8 +10807,8 @@ function vChapter(id){
     intro();}
 }
 const uIcon=id=>UNIT_ICON[(unitOf(id)||{}).n]||'';
-const wcard=w=>`<div class="wcard">${PIC(w.pt,1,uIcon(w.ch))}<span class="w-t">${P(w.pt)}${SYL(w.pt)}<span class="pron">${esc(w.pron)}</span></span>${sayBtn(w.pt)}<span class="mean">${bidi(w.ar)}</span></div>`;
-const sitem=s=>`<div class="sitem">${sayBtn(s.pt)}<div class="s-t">${P(s.pt)}${SYL(s.pt)}<span class="pron">${esc(s.pron||'')}</span><span class="ar">${bidi(s.ar)}</span></div><div class="s-side">${PIC(s.pt,3,uIcon(s.ch))}<button class="slow" data-say="${esc(s.pt)}" data-slow="1">ببطء</button></div></div>`;
+const wcard=w=>`<div class="wcard">${favBtn(w)}${PIC(w.pt,1,uIcon(w.ch))}<span class="w-t">${P(w.pt)}${SYL(w.pt)}<span class="pron">${esc(w.pron)}</span></span>${sayBtn(w.pt)}<span class="mean">${bidi(w.ar)}</span></div>`;
+const sitem=s=>`<div class="sitem">${sayBtn(s.pt)}<div class="s-t">${P(s.pt)}${SYL(s.pt)}<span class="pron">${esc(s.pron||'')}</span><span class="ar">${bidi(s.ar)}</span></div><div class="s-side">${favBtn(s)}${PIC(s.pt,3,uIcon(s.ch))}<button class="slow" data-say="${esc(s.pt)}" data-slow="1">ببطء</button></div></div>`;
 
 function vExam(k){
   const E=EXAMS[k];if(!E)return vHome();
@@ -10832,7 +10841,7 @@ function vWords(){
    <div class="row"><button class="btn primary" id="fc">بطاقات المراجعة</button><label class="toggle" for="hm" style="gap:8px"><input type="checkbox" class="switch" id="hm" ${wHide?'checked':''}><span>خبّي المعنى</span></label></div>
    <div id="wl"></div></div>`;
   const list=()=>CH.filter(c=>!wU||chLv(c)===wU).map(c=>({c,ws:c.W.filter(w=>match(wQ,w.pt,w.ar,w.pron))})).filter(x=>x.ws.length);
-  const draw=()=>{const L=list();$('#wl').innerHTML=L.length?L.map(({c,ws})=>`<div class="ch-label">${c.id} · ${esc(c.ar)}</div><div class="wgrid${wHide?' hide-mean':''}">${ws.map(wcard).join('')}</div>`).join(''):'<p class="muted">ما في نتايج.</p>';
+  const draw=()=>{const L=list();$('#wl').innerHTML=L.length?L.map(({c,ws})=>`<div class="ch-label">${CN(c.id)} · ${esc(c.ar)}</div><div class="wgrid${wHide?' hide-mean':''}">${ws.map(wcard).join('')}</div>`).join(''):'<p class="muted">ما في نتايج.</p>';
     $$('.hide-mean .mean').forEach(m=>m.onclick=()=>m.classList.toggle('peek'))};
   draw();
   $('#ws').oninput=e=>{wQ=e.target.value;draw()};
@@ -11438,6 +11447,10 @@ function vPractice(){
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">التدريب</h1><p class="muted" style="margin:4px 0 0">كل شي بيقوّيك برا الدروس.</p></div>
    <div class="ggrid">
    ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك بمواعيد ذكية لحد ما تثبت.',n||'', 'var(--sun-soft)')}
+   ${card('#league','🏆','الدوري الأسبوعي','نافس الباقيين بنقاط هالأسبوع.','', 'var(--sun-soft)')}
+   ${card('#pron','🎤','قيّم نطقك','قول الجملة والتطبيق بيقلك وين غلطت.','', 'var(--green-soft)')}
+   ${card('#mywords','⭐','دفتر كلماتي','الكلمات اللي حفظتها، مع مراجعة خاصة.',Object.keys(S.fav||{}).length||'', 'var(--blue-soft)')}
+   ${card('#goal','🎯','هدفي اليومي',''+(S.goal||10)+' دقايق باليوم، وتذكير على التقويم.','', 'var(--green-soft)')}
    ${card('#speak','🎤','تمرين الحكي','قول الجمل بصوتك، وشوف شو انفهم.','','var(--green-soft)')}
    ${card('#chat','🤖','تكلّم مع الذكاء الاصطناعي','احكي بصوتك أو اكتب، مع تصحيح فوري.','','var(--blue-soft)')}
    ${card('#stories','🎧','قصص مسموعة','حوار بصوتين لكل وحدة مع أسئلة.','','var(--green-soft)')}
@@ -11451,6 +11464,116 @@ function vPractice(){
 buildMaps();
 route();
 initCloud().then(startSession);
+
+/* ===== ميزات جديدة: هدف يومي وتذكير، دوري أسبوعي، تقييم النطق، دفتر كلماتي، وضع ليلي ===== */
+
+/* ---------- 1) تقييم النطق: تعرّف على الصوت بالمتصفح (أو تسجيل + ذكاء اصطناعي) بنفس واجهة DICT ---------- */
+function makeWebDict(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const H={p:[],f:[],s:[]};let rec=null,on=false;
+  const emit=(k,e)=>H[k].forEach(f=>{try{f(e)}catch(_){}});
+  if(SR){return {kind:'web',onPartial:f=>H.p.push(f),onFinal:f=>H.f.push(f),onState:f=>H.s.push(f),
+    start(){return new Promise((res,rej)=>{try{rec=new SR();rec.lang='pt-BR';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
+      rec.onstart=()=>{on=true;emit('s',{state:'listening'});res()};
+      rec.onresult=ev=>{let fin='',part='';for(let i=ev.resultIndex;i<ev.results.length;i++){const r=ev.results[i];if(r.isFinal)fin+=r[0].transcript;else part+=r[0].transcript}if(part)emit('p',{text:part});if(fin)emit('f',{text:fin})};
+      rec.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){rej({code:'not_granted'})}};
+      rec.onend=()=>{on=false;emit('s',{state:'idle',reason:'ended'})};rec.start()}catch(e){rej(e)}})},
+    stop(){try{rec&&rec.stop()}catch(e){}return Promise.resolve()}}}
+  if(typeof IS_PWA!=='undefined'&&IS_PWA&&navigator.mediaDevices&&window.MediaRecorder){let mr=null,chunks=[],stream=null;
+    return {kind:'ai',onPartial:f=>H.p.push(f),onFinal:f=>H.f.push(f),onState:f=>H.s.push(f),
+      async start(){try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){throw {code:'not_granted'}}
+        const mt=['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||'';
+        chunks=[];mr=new MediaRecorder(stream,mt?{mimeType:mt}:{});mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+        mr.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());emit('p',{text:'⏳ عم أسمع التسجيل…'});
+          try{const s=await claude.use('sample');const t=await s.transcribe(new Blob(chunks,{type:mr.mimeType||mt||'audio/mp4'}));emit('f',{text:t||''})}catch(e){toast('ما قدرت أقيّم التسجيل هلأ.')}
+          emit('s',{state:'idle',reason:'ended'})};
+        mr.start();emit('s',{state:'listening'})},
+      stop(){try{mr&&mr.state==='recording'&&mr.stop()}catch(e){}return Promise.resolve()}}}
+  return null;
+}
+(function(){setTimeout(()=>{if(typeof DICT!=='undefined'&&!DICT){const d=makeWebDict();if(d){DICT=d;DICT.onPartial(e=>dictHandler&&dictHandler('partial',e));DICT.onFinal(e=>dictHandler&&dictHandler('final',e));DICT.onState(e=>dictHandler&&dictHandler('state',e))}}},2500)})();
+function ensureDict(){if(typeof DICT!=='undefined'&&!DICT){const d=makeWebDict();if(d){DICT=d;DICT.onPartial(e=>dictHandler&&dictHandler('partial',e));DICT.onFinal(e=>dictHandler&&dictHandler('final',e));DICT.onState(e=>dictHandler&&dictHandler('state',e))}}}
+function vPron(){
+  ensureDict();
+  const pool=CH.filter(c=>chOpen(c.id)).flatMap(c=>c.S.filter(s=>!s.x&&s.pt.split(' ').length<=8));
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🎤 قيّم نطقك</h1><p class="muted" style="margin:4px 0 0">اسمع الجملة، اضغط المايك وقولها. التطبيق بيسمعك وبيلوّن كل كلمة: <b style="color:var(--ok)">أخضر</b> انفهمت، <b style="color:var(--bad)">أحمر</b> لازم تتحسّن. اضغط على الكلمة الحمرا بتسمع نطقها.</p></div>
+   ${DICT?'':'<p class="tip" style="margin:0">التسجيل مش متاح على هالمتصفح. جرّب Chrome أو Safari، واسمح للمايك.</p>'}
+   <div id="sp"></div></div>`;
+  if(!pool.length){$('#sp').innerHTML='<p class="muted">افتح أول درس عشان تبلّش.</p>';return}
+  speakPractice($('#sp'),pick(pool,10),'قيّم نطقك','#practice');
+}
+
+/* ---------- 2) دفتر كلماتي ⭐ ---------- */
+function favs(){return S.fav||(S.fav={})}
+function isFav(k){return !!favs()[k]}
+function favBtn(it){return `<button class="favb${isFav(it.key)?' on':''}" data-fav="${esc(it.key)}" aria-label="احفظ بدفتري" title="احفظ بدفتري">${isFav(it.key)?'★':'☆'}</button>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-fav]');if(!b)return;e.preventDefault();e.stopPropagation();
+  const k=b.dataset.fav;if(isFav(k)){delete favs()[k];toast('انشالت من دفتري')}else{favs()[k]=Date.now();toast('انحفظت بدفتري ⭐')}save();
+  $$(`[data-fav="${CSS.escape(k)}"]`).forEach(x=>{x.classList.toggle('on',isFav(k));x.textContent=isFav(k)?'★':'☆'})},true);
+function favItems(){if(!WMAP.size)buildMaps();return Object.keys(favs()).sort((a,b)=>favs()[b]-favs()[a]).map(k=>WMAP.get(k)||SMAP.get(k)).filter(Boolean)}
+function vMyWords(){
+  const L=favItems();
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">⭐ دفتر كلماتي</h1><p class="muted" style="margin:4px 0 0">أي كلمة أو جملة بتضغط على ☆ جنبها بتنحفظ هون، وبتقدر تراجعها بتمرين خاص.</p></div>
+   ${L.length?`<div class="row"><button class="btn primary" id="fq">🔁 راجع دفتري (${Math.min(L.length,15)} سؤال)</button></div>
+   <div class="card"><div class="slist">${L.map(it=>`<div class="sitem"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span class="pt" lang="pt-BR" dir="ltr" style="flex:1;font-weight:700">${esc(it.pt)}</span>${sayBtn(it.pt)}${favBtn(it)}</div><span class="pron">${esc(it.pron||'')}</span><div class="muted">${bidi(it.ar)}</div></div>`).join('')}</div></div>`
+   :`<div class="card"><p style="margin:0">دفترك فاضي. بالكلمات والجمل اضغط على <b>☆</b> جنب أي كلمة صعبة عليك، وبتنضاف هون.</p></div>`}</div>`;
+  const fq=$('#fq');if(fq)fq.onclick=()=>{const W=allWords(),Sx=allSents();const qs=shuffle(L).slice(0,15).map((x,n)=>{const isS=x.key.startsWith('s|');const q=isS?(n%2?qS2Ar(x,Sx):qDict(x)):(n%3===0?qPt2Ar(x,W):n%3===1?qAr2Pt(x,W):qListen(x,W));q.key=x.key;return q});
+    app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#mywords">→ دفتر كلماتي</a></div><div id="fqb"></div>`;
+    runQuiz($('#fqb'),qs,{title:'مراجعة دفتري',retry:vMyWords,pass:0,next:{label:'رجوع لدفتري',href:'#mywords'}})};
+}
+
+/* ---------- 3) هدف يومي وتذكير ---------- */
+function goalMin(){return S.goal||10}
+function todaySec(){return ((S.days||{})[today()]||0)}
+function goalCard(){const m=Math.floor(todaySec()/60),g=goalMin(),p=Math.min(100,Math.round(m/g*100));
+  return `<a class="goal-card${p>=100?' done':''}" href="#goal"><span class="ring sm" style="--p:${p};--c:${p>=100?'var(--ok)':'var(--sun)'}"><b>${p>=100?'✓':m}</b></span><span><b>${p>=100?'حقّقت هدف اليوم! 🎉':'هدف اليوم: '+g+' دقايق'}</b><br><span class="muted">${p>=100?m+' دقيقة درست اليوم':'درست '+m+' من '+g+' دقايق'}</span></span><span class="gc-ed">⚙</span></a>`}
+setInterval(()=>{try{if(!S.goalDone||S.goalDone!==today()){if(todaySec()>=goalMin()*60){S.goalDone=today();save();toast('🎉 حقّقت هدفك اليومي! برافو');if(typeof confetti==='function')confetti(70)}}}catch(e){}},20000);
+function icsReminder(time){const [h,m]=time.split(':').map(Number);const d=new Date();d.setHours(h,m,0,0);if(d<new Date())d.setDate(d.getDate()+1);
+  const p=n=>String(n).padStart(2,'0');const dt=`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}T${p(h)}${p(m)}00`;
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Portugues com Said//PT','BEGIN:VEVENT','UID:pcs-daily-'+Date.now()+'@portuguescomsaid','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z','DTSTART:'+dt,'DURATION:PT'+goalMin()+'M','RRULE:FREQ=DAILY',
+    'SUMMARY:🇧🇷 وقت البرتغالي ('+goalMin()+' دقايق)','DESCRIPTION:افتح التطبيق: https://portuguescomsaid.github.io','URL:https://portuguescomsaid.github.io','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:وقت البرتغالي!','TRIGGER:PT0M','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='portugues-tذكير.ics'.replace('tذكير','reminder');document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500)}
+function vGoal(){
+  const g=goalMin(),days=lastDays(7).reverse(),mx=Math.max(g*60,...days.map(k=>(S.days||{})[k]||0));
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🎯 هدفي اليومي</h1><p class="muted" style="margin:4px 0 0">قديش بدك تدرس كل يوم؟ الدراسة القليلة كل يوم أحسن من كتير مرة بالأسبوع.</p></div>
+   <div class="goal-opts">${[[5,'خفيف','☕'],[10,'عادي','📘'],[15,'جدّي','💪'],[20,'مكثّف','🔥'],[30,'بطل','🏆']].map(([m,l,ic])=>`<button class="goal-o${g===m?' on':''}" data-g="${m}"><span>${ic}</span><b>${m} دقايق</b><small>${l}</small></button>`).join('')}</div>
+   <section class="card"><h2 class="adm-h">آخر 7 أيام</h2><div class="adm-chart">${days.map(k=>{const v=Math.round(((S.days||{})[k]||0)/60);return `<div class="adm-col"><em>${v||''}</em><i style="height:${Math.round(((S.days||{})[k]||0)/mx*100)}%;background:${v>=g?'var(--ok)':'var(--sun)'}"></i><small>${k.split('-')[2]}</small></div>`}).join('')}</div><p class="muted" style="margin:6px 0 0;font-size:13px">الأخضر: يوم حقّقت فيه الهدف.</p></section>
+   <section class="card stack"><h2 class="adm-h">⏰ تذكير يومي</h2><p class="muted" style="margin:0">اختار الساعة، وبينضاف تذكير يومي على تقويم جوالك (بيشتغل حتى لو التطبيق مسكّر).</p>
+    <div class="row"><input type="time" id="rt" class="sel" value="${S.remind||'19:00'}" style="max-width:150px"><button class="btn primary" id="rset">➕ أضف التذكير للتقويم</button></div>
+    <p class="muted" style="margin:0;font-size:13px">بالآيفون: بيفتح ملف التقويم ← اضغط «إضافة الكل». بالأندرويد: افتح الملف بتطبيق التقويم.</p></section></div>`;
+  $$('[data-g]').forEach(b=>b.onclick=()=>{S.goal=+b.dataset.g;S.goalDone='';save();vGoal();toast('هدفك صار '+S.goal+' دقايق باليوم')});
+  $('#rset').onclick=()=>{S.remind=$('#rt').value||'19:00';save();icsReminder(S.remind)};
+}
+
+/* ---------- 4) الدوري الأسبوعي 🏆 (الاسم الأول بس) ---------- */
+function weekKey(){const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+(function(){const _add=addXP;addXP=function(n){const wk=weekKey();if(!S.wk||S.wk.k!==wk)S.wk={k:wk,x:0};S.wk.x+=Math.max(0,Math.round(n));_add(n);leaguePush()}})();
+var _lgT=0;
+async function leaguePush(force){if(!DB||!MY_ID)return;if(!force&&Date.now()-_lgT<60000)return;_lgT=Date.now();
+  try{const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;let nm=(MY_NAME||'').trim().split(/\s+/)[0]||'';if(!nm){try{const me=await USER.me();nm=((me&&me.name)||'').trim().split(/\s+/)[0]}catch(e){}}
+    await DB.doc('league/'+MY_ID).set({n:(nm||'طالب').slice(0,18),w:wk,x,t:Date.now()})}catch(e){}}
+async function vLeague(){
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري الأسبوعي</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها هالأسبوع بتطلّعك بالترتيب. الدوري بيبلّش من جديد كل يوم اتنين. بيبيّن الاسم الأول بس.</p></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
+  await leaguePush(true);
+  let rows=[];try{const res=await DB.collection('league').get();const arr=Array.isArray(res)?res:(res&&(res.docs||res.items||res.results))||[];
+    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w===weekKey()&&r.x>0).sort((a,b)=>b.x-a.x)}
+  catch(e){$('#lg').innerHTML='<p style="margin:0">ما قدرت أجيب الترتيب. '+(IS_OWNER?'تأكد إنك ضفت قاعدة <b>league</b> بقواعد Firestore.':'جرّب بعدين.')+'</p>';return}
+  const me=rows.findIndex(r=>r.id===MY_ID);const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+  $('#lg').outerHTML=`<div class="card lg-list">${rows.length?rows.slice(0,50).map((r,i)=>`<div class="lg-row${r.id===MY_ID?' me':''}"><span class="lg-n">${medal(i)}</span><span class="lg-nm">${esc(r.n||'طالب')}${r.id===MY_ID?' (إنت)':''}</span><b class="lg-x">${r.x} XP</b></div>`).join(''):'<p class="muted" style="margin:0">لسا ما حدا جمع نقاط هالأسبوع. كن الأول!</p>'}
+   ${me>=50?`<div class="lg-row me"><span class="lg-n">${me+1}</span><span class="lg-nm">إنت</span><b class="lg-x">${rows[me].x} XP</b></div>`:''}</div>`;
+}
+
+/* ---------- 5) الوضع الليلي ---------- */
+function applyTheme(){const t=S.theme||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}
+setTimeout(applyTheme,0);setInterval(applyTheme,5000);
+
+/* ---------- الإعدادات: التقدّم بيختفي عن المستخدمين + الوضع الليلي + الهدف ---------- */
+if(typeof vSettings==='function'){const _vS2=vSettings;vSettings=function(){_vS2.apply(this,arguments);const STAFF=IS_OWNER||IS_ADMIN;
+  if(!STAFF){$$('section.settings h2',app).forEach(h=>{if(h.textContent.trim()==='التقدّم')h.closest('section').remove()})}
+  const first=$('section.settings',app);if(first)first.insertAdjacentHTML('afterend',`<section class="card settings"><h2>🌙 المظهر</h2><div class="pager" id="thm">${[['auto','تلقائي'],['light','☀️ فاتح'],['dark','🌙 ليلي']].map(([k,l])=>`<button class="pill${(S.theme||'auto')===k?' on':''}" data-t="${k}">${l}</button>`).join('')}</div></section>
+    <section class="card settings"><h2>🎯 الهدف اليومي والتذكير</h2><p class="muted" style="margin:0">هدفك هلأ: <b>${goalMin()} دقايق</b> باليوم.</p><div class="row"><a class="btn" href="#goal">غيّر الهدف أو أضف تذكير</a></div></section>`);
+  $$('#thm [data-t]').forEach(b=>b.onclick=()=>{S.theme=b.dataset.t;save();applyTheme();$$('#thm [data-t]').forEach(x=>x.classList.toggle('on',x===b))});
+}}
 </script>
 </body>
 </html>
