@@ -486,6 +486,14 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .b-st{position:absolute;bottom:10px;left:12px;font-size:12px;font-weight:700;color:var(--ok)}
 
 .dlg-btns{display:flex;flex-direction:column;gap:6px;flex:none}.spk.slow{font-size:18px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+
+.kgroup{display:grid;gap:10px}.kg-h{font-size:19px;margin:6px 0 0;color:var(--ink)}
+.kc-n{font-size:12px;opacity:.75}
+.kn-e{font-size:28px}
+.kfr{display:grid;gap:10px}
+.kf-row{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--kb);border-radius:16px;padding:10px 12px}
+.kf-e{font-size:34px;flex:none;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.kf-t{flex:1;display:grid;gap:2px;min-width:0}.kf-t b{font-family:var(--f-pt);font-size:18px;color:var(--kf);direction:ltr;text-align:left}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -9561,10 +9569,18 @@ const PAIRS=[
  {g:'النبرة',tip:'نفس الحروف، بس مكان الضغط بيغيّر المعنى.',p:[['país','pais','بلد','أهل'],['sábia','sabia','حكيمة','كان يعرف']]}
 ];
 
-/* ===== قسم الأطفال ===== */
-// كل عنصر: البرتغالي|النطق|العربي|عنوان صورة ويكيبيديا (إنجليزي)|إيموجي احتياطي
+/* ===== محتوى قسم الأطفال =====
+   items: البرتغالي|النطق|العربي|عنوان صورة ويكيبيديا (أو - بدون صورة)|إيموجي
+   fr:    جمل:  البرتغالي|النطق|العربي|إيموجي                                  */
+const KGROUPS=[
+ {id:'first',ar:'أول الكلمات',ic:'🌱'},
+ {id:'me',ar:'أنا وعيلتي',ic:'💛'},
+ {id:'home',ar:'البيت والمدرسة',ic:'🏡'},
+ {id:'world',ar:'العالم حوالينا',ic:'🌍'},
+ {id:'day',ar:'كل يوم',ic:'☀️'},
+];
 const KIDS=[
- {id:'cores',pt:'As cores',ar:'الألوان',ic:'🎨',bg:'#FFE3E3',fg:'#C92A2A',color:true,items:`vermelho|ڤيرميليو|أحمر|#E03131|🔴
+ {id:'cores',g:'first',pt:'As cores',ar:'الألوان',ic:'🎨',bg:'#FFE3E3',fg:'#C92A2A',color:true,items:`vermelho|ڤيرميليو|أحمر|#E03131|🔴
 azul|أزوو|أزرق|#1C7ED6|🔵
 amarelo|أماريلو|أصفر|#FCC419|🟡
 verde|ڤيردجي|أخضر|#2F9E44|🟢
@@ -9573,68 +9589,16 @@ roxo|هوشو|بنفسجي|#7048E8|🟣
 rosa|هوزا|زهري|#F06595|🩷
 preto|بريتو|أسود|#212529|⚫
 branco|برانكو|أبيض|#F8F9FA|⚪
-marrom|ماهون|بني|#8B5A2B|🟤`},
- {id:'animais',pt:'Os animais',ar:'الحيوانات',ic:'🐶',bg:'#FFF3BF',fg:'#E67700',items:`cachorro|كاشوهو|كلب|Dog|🐶
-gato|غاتو|قطة|Cat|🐱
-pássaro|باسارو|عصفور|Bird|🐦
-peixe|بيشي|سمكة|Fish|🐟
-cavalo|كاڤالو|حصان|Horse|🐴
-vaca|ڤاكا|بقرة|Cattle|🐄
-galinha|غالينيا|دجاجة|Chicken|🐔
-coelho|كويليو|أرنب|Rabbit|🐰
-leão|لياو|أسد|Lion|🦁
-elefante|إليفانتشي|فيل|Elephant|🐘
-macaco|ماكاكو|قرد|Monkey|🐒
-tartaruga|تارتاروغا|سلحفاة|Turtle|🐢`},
- {id:'comida',pt:'Frutas e comida',ar:'الفواكه والأكل',ic:'🍎',bg:'#D3F9D8',fg:'#2B8A3E',items:`maçã|ماسا|تفاحة|Apple|🍎
-banana|بانانا|موزة|Banana|🍌
-laranja|لارانجا|برتقالة|Orange (fruit)|🍊
-uva|أوڤا|عنب|Grape|🍇
-morango|مورانغو|فراولة|Strawberry|🍓
-melancia|ميلانسيا|بطيخ|Watermelon|🍉
-pão|باو|خبز|Bread|🍞
-leite|ليتشي|حليب|Milk|🥛
-água|آغوا|ماء|Drinking water|💧
-ovo|أوڤو|بيضة|Egg as food|🥚
-arroz|أهوز|رز|Rice|🍚
-queijo|كيجو|جبنة|Cheese|🧀`},
- {id:'casa',pt:'A casa',ar:'البيت',ic:'🏠',bg:'#D0EBFF',fg:'#1864AB',items:`casa|كازا|بيت|House|🏠
-cama|كاما|سرير|Bed|🛏️
-mesa|ميزا|طاولة|Table (furniture)|🪑
-cadeira|كاديرا|كرسي|Chair|🪑
-porta|بورتا|باب|Door|🚪
-janela|جانيلا|شباك|Window|🪟
-cozinha|كوزينيا|مطبخ|Kitchen|🍳
-banheiro|بانييرو|حمّام|Bathroom|🛁
-sofá|سوفا|كنباية|Couch|🛋️
-televisão|تيليڤيزاو|تلفزيون|Television|📺`},
- {id:'escola',pt:'A escola',ar:'المدرسة',ic:'🎒',bg:'#E5DBFF',fg:'#5F3DC4',items:`escola|إسكولا|مدرسة|School|🏫
-livro|ليڤرو|كتاب|Book|📕
-lápis|لابيس|قلم رصاص|Pencil|✏️
-caderno|كاديرنو|دفتر|Notebook|📓
-mochila|موشيلا|شنطة|Backpack|🎒
-professora|بروفيسورا|معلمة|Teacher|👩‍🏫
-bola|بولا|طابة|Ball|⚽
-tesoura|تيزورا|مقص|Scissors|✂️
-lousa|لوزا|لوح|Blackboard|🧑‍🏫
-amigo|أميغو|صاحب|Friendship|🧒`},
- {id:'corpo',pt:'O corpo',ar:'الجسم',ic:'✋',bg:'#FFE8CC',fg:'#D9480F',items:`mão|ماو|إيد|Hand|✋
-pé|بيه|إجر|Foot|🦶
-olho|أوليو|عين|Human eye|👁️
-nariz|ناريز|أنف|Human nose|👃
-boca|بوكا|تمّ|Mouth|👄
-orelha|أوريليا|أذن|Ear|👂
-cabelo|كابيلو|شعر|Hair|💇
-dente|دينتشي|سن|Tooth|🦷`},
- {id:'familia',pt:'A família',ar:'العيلة',ic:'👨‍👩‍👧',bg:'#FCE4EC',fg:'#A61E4D',items:`mamãe|ماماين|ماما|Mother|👩
-papai|باباي|بابا|Father|👨
-irmão|إيرماو|أخ|Brother|👦
-irmã|إيرما|أخت|Sister|👧
-bebê|بيبيه|بيبي|Infant|👶
-vovó|ڤوڤو|ستّي|Grandparent|👵
-vovô|ڤوڤو|جدّي|Grandparent|👴
-família|فاميليا|عيلة|Family|👨‍👩‍👧‍👦`},
- {id:'numeros',pt:'Os números',ar:'الأرقام',ic:'🔢',bg:'#E3FAFC',fg:'#0B7285',num:true,items:`um|أون|واحد|1|1️⃣
+marrom|ماهون|بني|#8B5A2B|🟤
+cinza|سينزا|رمادي|#868E96|🩶
+azul-claro|أزوو كلارو|أزرق فاتح|#74C0FC|🩵
+dourado|دورادو|دهبي|#D4A017|🌟`,fr:`Qual é a sua cor favorita?|كواو إيه آ سوا كور فاڤوريتا؟|شو لونك المفضّل؟|🎨
+Minha cor favorita é azul.|مينيا كور فاڤوريتا إيه أزوو.|لوني المفضّل أزرق.|🔵
+O céu é azul.|أو سيو إيه أزوو.|السما زرقا.|🌤️
+A banana é amarela.|آ بانانا إيه أماريلا.|الموزة صفرا.|🍌
+A grama é verde.|آ غراما إيه ڤيردجي.|العشب أخضر.|🌱
+O morango é vermelho.|أو مورانغو إيه ڤيرميليو.|الفراولة حمرا.|🍓`},
+ {id:'numeros',g:'first',pt:'Os números',ar:'الأرقام',ic:'🔢',bg:'#E3FAFC',fg:'#0B7285',num:true,items:`um|أون|واحد|1|1️⃣
 dois|دويس|اتنين|2|2️⃣
 três|تريس|تلاتة|3|3️⃣
 quatro|كواترو|أربعة|4|4️⃣
@@ -9643,24 +9607,399 @@ seis|سييس|ستة|6|6️⃣
 sete|سيتشي|سبعة|7|7️⃣
 oito|أويتو|تمانية|8|8️⃣
 nove|نوڤي|تسعة|9|9️⃣
-dez|ديز|عشرة|10|🔟`},
- {id:'frases',pt:'Frases do dia a dia',ar:'جمل كل يوم',ic:'💬',bg:'#FFF9DB',fg:'#E67700',phrase:true,items:`Bom dia!|بون دجيا!|صباح الخير!|-|☀️
+dez|ديز|عشرة|10|🔟
+onze|أونزي|إحدعش|11|1️⃣1️⃣
+doze|دوزي|اتنعش|12|1️⃣2️⃣
+treze|تريزي|تلتطعش|13|1️⃣3️⃣
+catorze|كاتورزي|أربعطعش|14|1️⃣4️⃣
+quinze|كينزي|خمسطعش|15|1️⃣5️⃣
+dezesseis|ديزيسييس|ستطعش|16|1️⃣6️⃣
+dezessete|ديزيسيتشي|سبعطعش|17|1️⃣7️⃣
+dezoito|ديزويتو|تمنطعش|18|1️⃣8️⃣
+dezenove|ديزينوڤي|تسعطعش|19|1️⃣9️⃣
+vinte|ڤينتشي|عشرين|20|2️⃣0️⃣`,fr:`Vamos contar até dez!|ڤاموس كونتار أتيه ديز!|يلا نعدّ لعشرة!|🔢
+Quantos anos você tem?|كوانتوس آنوس ڤوسي تين؟|قديش عمرك؟|🎂
+Eu tenho seis anos.|إيو تينيو سييس آنوس.|عمري ست سنين.|6️⃣
+Eu tenho dois olhos.|إيو تينيو دويس أوليوس.|عندي عينين.|👀
+Tenho cinco dedos em cada mão.|تينيو سينكو ديدوس إين كادا ماو.|عندي خمس أصابع بكل إيد.|🖐️
+Quantos são?|كوانتوس ساو؟|قديش عددهم؟|❓`},
+ {id:'formas',g:'first',pt:'As formas',ar:'الأشكال',ic:'🔺',bg:'#EDF2FF',fg:'#364FC7',emo:true,items:`círculo|سيركولو|دايرة|-|⚪
+quadrado|كوادرادو|مربّع|-|🟥
+triângulo|تريانغولو|مثلّث|-|🔺
+retângulo|هيتانغولو|مستطيل|-|🟩
+estrela|إيستريلا|نجمة|-|⭐
+coração|كوراساو|قلب|-|❤️
+losango|لوزانغو|معيّن|-|🔷
+oval|أوڤاو|بيضاوي|-|🥚`,fr:`A bola é um círculo.|آ بولا إيه أون سيركولو.|الطابة دايرة.|⚽
+Desenhe um coração.|ديزينيي أون كوراساو.|ارسم قلب.|❤️
+Quantos lados tem o triângulo?|كوانتوس لادوس تين أو تريانغولو؟|كم ضلع إله المثلث؟|🔺
+A janela é um quadrado.|آ جانيلا إيه أون كوادرادو.|الشباك مربّع.|🪟`},
+ {id:'opostos',g:'first',pt:'Os opostos',ar:'الأضداد',ic:'↔️',bg:'#FFF0F6',fg:'#A61E4D',emo:true,showAr:true,items:`grande|غراندجي|كبير|-|🐘
+pequeno|بيكينو|صغير|-|🐭
+quente|كينتشي|سخن|-|🔥
+frio|فريو|بارد|-|🧊
+rápido|هابيدو|سريع|-|🐆
+devagar|ديڤاغار|بطيء|-|🐢
+cheio|شيو|مليان|-|🥛
+vazio|ڤازيو|فاضي|-|🫙
+aberto|أبيرتو|مفتوح|-|🔓
+fechado|فيشادو|مسكّر|-|🔒
+limpo|ليمبو|نضيف|-|✨
+sujo|سوجو|وسخ|-|🟫
+alto|آوتو|طويل|-|🦒
+baixo|بايشو|قصير|-|🐁`,fr:`O elefante é grande e o rato é pequeno.|أو إيليفانتشي إيه غراندجي إي أو هاتو إيه بيكينو.|الفيل كبير والفار صغير.|🐘
+O sorvete é frio.|أو سورڤيتشي إيه فريو.|البوظة باردة.|🍦
+A sopa está quente!|آ سوبا إيستا كينتشي!|الشوربة سخنة!|🍲
+A tartaruga anda devagar.|آ تارتاروغا أندا ديڤاغار.|السلحفاة بتمشي بطيء.|🐢
+A porta está aberta.|آ بورتا إيستا أبيرتا.|الباب مفتوح.|🚪`},
+
+ {id:'familia',g:'me',pt:'A família',ar:'العيلة',ic:'👨‍👩‍👧',bg:'#FCE4EC',fg:'#A61E4D',items:`mamãe|ماماين|ماما|Mother|👩
+papai|باباي|بابا|Father|👨
+irmão|إيرماو|أخ|Brother|👦
+irmã|إيرما|أخت|Sister|👧
+bebê|بيبيه|بيبي|Infant|👶
+vovó|ڤوڤو|ستّي|Grandparent|👵
+vovô|ڤوڤو|جدّي|Grandparent|👴
+tio|تشيو|عمّو / خالو|Uncle|👨
+tia|تشيا|عمّتو / خالتو|Aunt|👩
+primo|بريمو|ابن عمي / ابن خالي|Cousin|🧒
+filho|فيليو|ابن|Son|👦
+filha|فيليا|بنت|Daughter|👧
+família|فاميليا|عيلة|Family|👨‍👩‍👧‍👦`,fr:`Eu amo a mamãe.|إيو آمو آ ماماين.|بحب ماما.|❤️
+Este é o meu irmão.|إيستشي إيه أو ميو إيرماو.|هاد أخوي.|👦
+Papai, me ajuda?|باباي، مي أجودا؟|بابا، بتساعدني؟|🤝
+Eu tenho duas irmãs.|إيو تينيو دواس إيرماس.|عندي أختين.|👧
+A vovó faz bolo gostoso.|آ ڤوڤو فاز بولو غوستوزو.|ستّي بتعمل كعكة طيبة.|🎂
+Boa noite, mamãe!|بوا نويتشي، ماماين!|تصبحي على خير يا ماما!|🌙
+Onde está o papai?|أوندجي إيستا أو باباي؟|وين بابا؟|❓`},
+ {id:'corpo',g:'me',pt:'O corpo',ar:'الجسم',ic:'✋',bg:'#FFE8CC',fg:'#D9480F',items:`cabeça|كابيسا|راس|Head|🙂
+mão|ماو|إيد|Hand|✋
+pé|بيه|إجر|Foot|🦶
+braço|براسو|دراع|Arm|💪
+perna|بيرنا|ساق|Human leg|🦵
+dedo|ديدو|إصبع|Finger|☝️
+olho|أوليو|عين|Human eye|👁️
+nariz|ناريز|أنف|Human nose|👃
+boca|بوكا|تمّ|Mouth|👄
+orelha|أوريليا|أذن|Ear|👂
+cabelo|كابيلو|شعر|Hair|💇
+dente|دينتشي|سن|Tooth|🦷
+língua|لينغوا|لسان|Tongue|👅
+joelho|جوليو|ركبة|Knee|🦵
+barriga|باهيغا|بطن|Abdomen|🫄`,fr:`Estou com dor de barriga.|إيستو كون دور دجي باهيغا.|بطني بيوجعني.|🤕
+Minha cabeça dói.|مينيا كابيسا دوي.|راسي بيوجعني.|🤒
+Lave o rosto.|لاڤي أو هوستو.|اغسل وجهك.|🧼
+Machuquei o joelho.|ماشوكيي أو جوليو.|انجرحت ركبتي.|🩹
+Bata palmas!|باتا باوماس!|صقّف!|👏
+Feche os olhos.|فيشي أوس أوليوس.|غمّض عيونك.|😌
+Levante a mão.|ليڤانتشي آ ماو.|ارفع إيدك.|🙋`},
+ {id:'sentimentos',g:'me',pt:'Os sentimentos',ar:'المشاعر',ic:'😊',bg:'#FFF9DB',fg:'#E67700',emo:true,items:`feliz|فيليز|مبسوط|-|😊
+triste|تريستشي|زعلان|-|😢
+bravo|براڤو|معصّب|-|😠
+com medo|كون ميدو|خايف|-|😨
+cansado|كانسادو|تعبان|-|😴
+com fome|كون فومي|جوعان|-|😋
+com sede|كون سيدجي|عطشان|-|🥤
+surpreso|سوربريزو|متفاجئ|-|😮
+doente|دوينتشي|مريض|-|🤒
+animado|أنيمادو|متحمّس|-|🤩
+com vergonha|كون ڤيرغونيا|مستحي|-|😳
+calmo|كاومو|هادي|-|😌`,fr:`Estou feliz!|إيستو فيليز!|أنا مبسوط!|😊
+Por que você está triste?|بور كي ڤوسي إيستا تريستشي؟|ليش زعلان؟|😢
+Estou com medo do escuro.|إيستو كون ميدو دو إيسكورو.|بخاف من العتمة.|🌑
+Eu te amo!|إيو تشي آمو!|بحبك!|❤️
+Desculpa, não foi de propósito.|دجيسكولبا، ناو فوي دجي بروبوزيتو.|آسف، ما كان قصدي.|🙏
+Você está bem?|ڤوسي إيستا بين؟|إنت منيح؟|🤗
+Não estou me sentindo bem.|ناو إيستو مي سينتشيندو بين.|مش حاسس حالي منيح.|🤒`},
+ {id:'roupas',g:'me',pt:'As roupas',ar:'الملابس',ic:'👕',bg:'#E7F5FF',fg:'#1971C2',items:`camiseta|كاميزيتا|تيشيرت|T-shirt|👕
+calça|كاوسا|بنطلون|Trousers|👖
+vestido|ڤيستشيدو|فستان|Dress|👗
+saia|سايا|تنورة|Skirt|👗
+sapato|ساباتو|كندرة|Shoe|👞
+tênis|تينيس|بوط رياضة|Sneakers|👟
+meia|ميا|جراب|Sock|🧦
+boné|بونيه|كاب|Baseball cap|🧢
+chapéu|شابيو|برنيطة|Hat|👒
+casaco|كازاكو|جاكيت|Coat|🧥
+pijama|بيجاما|بيجامة|Pajamas|🛌
+óculos|أوكولوس|نضّارة|Glasses|👓`,fr:`Coloque o casaco, está frio.|كولوكي أو كازاكو، إيستا فريو.|البس الجاكيت، الجو برد.|🥶
+Cadê meu sapato?|كاديه ميو ساباتو؟|وين كندرتي؟|👞
+Vista o pijama.|ڤيستا أو بيجاما.|البس البيجامة.|🛌
+Amarre o tênis.|أماهي أو تينيس.|اربط بوطك.|👟
+Que vestido bonito!|كي ڤيستشيدو بونيتو!|شو هالفستان الحلو!|👗
+Tire o sapato.|تشيري أو ساباتو.|اشلح الكندرة.|👞`},
+
+ {id:'casa',g:'home',pt:'A casa',ar:'البيت',ic:'🏠',bg:'#D0EBFF',fg:'#1864AB',items:`casa|كازا|بيت|House|🏠
+quarto|كوارتو|غرفة نوم|Bedroom|🛏️
+cama|كاما|سرير|Bed|🛏️
+mesa|ميزا|طاولة|Table (furniture)|🪑
+cadeira|كاديرا|كرسي|Chair|🪑
+porta|بورتا|باب|Door|🚪
+janela|جانيلا|شبّاك|Window|🪟
+cozinha|كوزينيا|مطبخ|Kitchen|🍳
+banheiro|بانييرو|حمّام|Bathroom|🛁
+sofá|سوفا|كنباية|Couch|🛋️
+televisão|تيليڤيزاو|تلفزيون|Television|📺
+geladeira|جيلاديرا|براد|Refrigerator|🧊
+chuveiro|شوڤيرو|دوش|Shower|🚿
+travesseiro|تراڤيسيرو|مخدّة|Pillow|🛏️
+escova de dentes|إيسكوڤا دجي دينتشيس|فرشاية سنان|Toothbrush|🪥
+sabonete|سابونيتشي|صابونة|Soap|🧼
+toalha|تواليا|منشفة|Towel|🧺
+prato|براتو|صحن|Plate (dishware)|🍽️
+colher|كولييه|معلقة|Spoon|🥄
+garfo|غارفو|شوكة|Fork|🍴`,fr:`Hora de dormir!|أورا دجي دورمير!|وقت النوم!|🛌
+Escove os dentes.|إيسكوڤي أوس دينتشيس.|فرشي سنانك.|🪥
+Lave as mãos.|لاڤي آس ماوس.|اغسل إيديك.|🧼
+Feche a porta, por favor.|فيشي آ بورتا، بور فاڤور.|سكّر الباب لو سمحت.|🚪
+Vamos tomar banho.|ڤاموس تومار بانيو.|يلا نتحمّم.|🛁
+Arrume o quarto!|أهومي أو كوارتو!|رتّب غرفتك!|🧹
+Apague a luz.|أباغي آ لوز.|طفّي الضو.|💡`},
+ {id:'comida',g:'home',pt:'Frutas e comida',ar:'الفواكه والأكل',ic:'🍎',bg:'#D3F9D8',fg:'#2B8A3E',items:`maçã|ماسا|تفاحة|Apple|🍎
+banana|بانانا|موزة|Banana|🍌
+laranja|لارانجا|برتقالة|Orange (fruit)|🍊
+uva|أوڤا|عنب|Grape|🍇
+morango|مورانغو|فراولة|Strawberry|🍓
+melancia|ميلانسيا|بطيخ|Watermelon|🍉
+abacaxi|أباكاشي|أناناس|Pineapple|🍍
+manga|مانغا|مانجا|Mango|🥭
+cenoura|سينورا|جزرة|Carrot|🥕
+tomate|توماتشي|بندورة|Tomato|🍅
+batata|باتاتا|بطاطا|Potato|🥔
+pão|باو|خبز|Bread|🍞
+leite|ليتشي|حليب|Milk|🥛
+água|آغوا|مي|Drinking water|💧
+suco|سوكو|عصير|Juice|🧃
+ovo|أوڤو|بيضة|Egg as food|🥚
+arroz|أهوز|رز|Rice|🍚
+frango|فرانغو|جاج|Chicken as food|🍗
+queijo|كيجو|جبنة|Cheese|🧀
+sopa|سوبا|شوربة|Soup|🍲
+bolo|بولو|كعكة|Cake|🎂
+biscoito|بيسكويتو|بسكوت|Biscuit|🍪
+chocolate|شوكولاتشي|شوكولاتة|Chocolate|🍫
+sorvete|سورڤيتشي|بوظة|Ice cream|🍦`,fr:`Estou com fome.|إيستو كون فومي.|أنا جوعان.|🍽️
+Estou com sede.|إيستو كون سيدجي.|أنا عطشان.|💧
+Quero suco, por favor.|كيرو سوكو، بور فاڤور.|بدي عصير لو سمحت.|🧃
+Hum, que gostoso!|أمم، كي غوستوزو!|إمم، شو طيّب!|😋
+Eu gosto de banana.|إيو غوستو دجي بانانا.|بحب الموز.|🍌
+Não quero mais.|ناو كيرو مايس.|ما بدي كمان.|🙅
+Posso comer chocolate?|بوسو كومير شوكولاتشي؟|بقدر آكل شوكولاتة؟|🍫`},
+ {id:'escola',g:'home',pt:'A escola',ar:'المدرسة',ic:'🎒',bg:'#E5DBFF',fg:'#5F3DC4',items:`escola|إيسكولا|مدرسة|School|🏫
+sala de aula|سالا دجي آولا|صف|Classroom|🏫
+professora|بروفيسورا|معلّمة|Teacher|👩‍🏫
+aluno|ألونو|طالب|Student|🧑‍🎓
+amigo|أميغو|صاحب|Friendship|🧒
+livro|ليڤرو|كتاب|Book|📕
+caderno|كاديرنو|دفتر|Notebook|📓
+lápis|لابيس|قلم رصاص|Pencil|✏️
+caneta|كانيتا|قلم حبر|Pen|🖊️
+borracha|بوهاشا|محّاية|Eraser|✏️
+régua|هيغوا|مسطرة|Ruler|📏
+tesoura|تيزورا|مقص|Scissors|✂️
+cola|كولا|غرا|Adhesive|🧴
+giz de cera|جيز دجي سيرا|ألوان شمع|Crayon|🖍️
+mochila|موشيلا|شنطة|Backpack|🎒
+lousa|لوزا|لوح|Blackboard|🧑‍🏫`,fr:`Bom dia, professora!|بون دجيا، بروفيسورا!|صباح الخير يا معلّمة!|👩‍🏫
+Posso ir ao banheiro?|بوسو إير آو بانييرو؟|بقدر أروح عالحمّام؟|🚻
+Eu não entendi.|إيو ناو إينتينجي.|ما فهمت.|🤔
+Pode repetir, por favor?|بودجي هيبيتشير، بور فاڤور؟|ممكن تعيدي لو سمحتي؟|🔁
+Me empresta o lápis?|مي إيمبريستا أو لابيس؟|بتعيرني القلم؟|✏️
+Terminei!|تيرمينيي!|خلّصت!|✅
+Vamos para o recreio!|ڤاموس بارا أو هيكريو!|يلا عالفرصة!|🛝
+Esqueci meu caderno.|إيسكيسي ميو كاديرنو.|نسيت دفتري.|📓`},
+ {id:'brinquedos',g:'home',pt:'Brinquedos e brincadeiras',ar:'الألعاب واللعب',ic:'🧸',bg:'#FFF4E6',fg:'#D9480F',items:`bola|بولا|طابة|Ball|⚽
+boneca|بونيكا|لعبة (دمية)|Doll|🪆
+urso de pelúcia|أورسو دجي بيلوسيا|دبدوب|Teddy bear|🧸
+quebra-cabeça|كيبرا كابيسا|بازل|Jigsaw puzzle|🧩
+balão|بالاو|بالون|Balloon|🎈
+pipa|بيبا|طيارة ورق|Kite|🪁
+escorregador|إيسكوهيغادور|زحليقة|Playground slide|🛝
+balanço|بالانسو|مرجوحة|Swing (seat)|🎠
+parquinho|باركينيو|ملعب أطفال|Playground|🛝
+tambor|تامبور|طبلة|Drum|🥁
+videogame|ڤيدجيو غيمي|ألعاب فيديو|Video game|🎮
+blocos de montar|بلوكوس دجي مونتار|مكعبات تركيب|Lego|🧱`,fr:`Vamos brincar?|ڤاموس برينكار؟|يلا نلعب؟|🧸
+Posso brincar também?|بوسو برينكار تامبين؟|بقدر ألعب معكم؟|🙋
+É a minha vez!|إيه آ مينيا ڤيز!|دوري!|☝️
+Vamos brincar de esconde-esconde!|ڤاموس برينكار دجي إيسكوندجي إيسكوندجي!|يلا نلعب غمّيضة!|🙈
+Ganhei!|غانيي!|ربحت!|🏆
+Me empresta a bola?|مي إيمبريستا آ بولا؟|بتعيرني الطابة؟|⚽
+Vamos dividir.|ڤاموس دجيڤيدجير.|يلا نتقاسم.|🤝`},
+
+ {id:'animais',g:'world',pt:'Os animais',ar:'الحيوانات',ic:'🐶',bg:'#FFF3BF',fg:'#E67700',items:`cachorro|كاشوهو|كلب|Dog|🐶
+gato|غاتو|قطة|Cat|🐱
+pássaro|باسارو|عصفور|Bird|🐦
+peixe|بيشي|سمكة|Fish|🐟
+cavalo|كاڤالو|حصان|Horse|🐴
+vaca|ڤاكا|بقرة|Cattle|🐄
+ovelha|أوڤيليا|خروف|Sheep|🐑
+galinha|غالينيا|جاجة|Chicken|🐔
+pato|باتو|بطّة|Duck|🦆
+coelho|كويليو|أرنب|Rabbit|🐰
+leão|لياو|أسد|Lion|🦁
+tigre|تشيغري|نمر|Tiger|🐯
+elefante|إيليفانتشي|فيل|Elephant|🐘
+girafa|جيرافا|زرافة|Giraffe|🦒
+zebra|زيبرا|حمار وحشي|Zebra|🦓
+urso|أورسو|دب|Bear|🐻
+macaco|ماكاكو|قرد|Monkey|🐒
+tartaruga|تارتاروغا|سلحفاة|Turtle|🐢
+sapo|سابو|ضفدع|Frog|🐸
+cobra|كوبرا|حيّة|Snake|🐍
+papagaio|باباغايو|ببغاء|Parrot|🦜
+borboleta|بوربوليتا|فراشة|Butterfly|🦋
+abelha|أبيليا|نحلة|Honey bee|🐝
+formiga|فورميغا|نملة|Ant|🐜`,fr:`O cachorro faz au-au.|أو كاشوهو فاز آو آو.|الكلب بيعمل هاو هاو.|🐶
+O gato faz miau.|أو غاتو فاز مياو.|القطة بتعمل مياو.|🐱
+Eu tenho um gato.|إيو تينيو أون غاتو.|عندي قطة.|🐈
+O elefante é muito grande.|أو إيليفانتشي إيه موينتو غراندجي.|الفيل كبير كتير.|🐘
+O coelho come cenoura.|أو كويليو كومي سينورا.|الأرنب بياكل جزر.|🥕
+O peixe mora na água.|أو بيشي مورا نا آغوا.|السمكة بتعيش بالمي.|🐟
+O pássaro voa.|أو باسارو ڤوا.|العصفور بيطير.|🐦`},
+ {id:'natureza',g:'world',pt:'Natureza e tempo',ar:'الطبيعة والطقس',ic:'🌳',bg:'#EBFBEE',fg:'#2B8A3E',items:`sol|سوو|شمس|Sun|☀️
+lua|لوا|قمر|Moon|🌙
+estrela|إيستريلا|نجمة|Star|⭐
+nuvem|نوڤين|غيمة|Cloud|☁️
+chuva|شوڤا|شتا|Rain|🌧️
+neve|نيڤي|تلج|Snow|❄️
+arco-íris|آركو إيريس|قوس قزح|Rainbow|🌈
+árvore|آرڤوري|شجرة|Tree|🌳
+flor|فلور|وردة|Flower|🌸
+folha|فوليا|ورقة شجر|Leaf|🍃
+mar|مار|بحر|Sea|🌊
+praia|برايا|شط البحر|Beach|🏖️
+rio|هيو|نهر|River|🏞️
+montanha|مونتانيا|جبل|Mountain|⛰️
+pedra|بيدرا|حجر|Rock (geology)|🪨`,fr:`Hoje está calor.|أوجي إيستا كالور.|اليوم حر.|🥵
+Hoje está frio.|أوجي إيستا فريو.|اليوم برد.|🥶
+Está chovendo!|إيستا شوڤيندو!|عم تشتّي!|🌧️
+Olha o arco-íris!|أوليا أو آركو إيريس!|شوف قوس قزح!|🌈
+Vamos à praia!|ڤاموس آ برايا!|يلا عالبحر!|🏖️
+A lua está bonita.|آ لوا إيستا بونيتا.|القمر حلو.|🌙
+Não pise nas flores.|ناو بيزي ناس فلوريس.|لا تدعس عالورد.|🌸`},
+ {id:'transporte',g:'world',pt:'Os transportes',ar:'المواصلات',ic:'🚗',bg:'#F1F3F5',fg:'#495057',items:`carro|كاهو|سيارة|Car|🚗
+ônibus|أونيبوس|باص|Bus|🚌
+bicicleta|بيسيكليتا|بسكليت|Bicycle|🚲
+moto|موتو|موتور|Motorcycle|🏍️
+caminhão|كامينياو|شاحنة|Truck|🚚
+trem|تريم|قطار|Train|🚆
+metrô|ميترو|مترو|Rapid transit|🚇
+avião|أڤياو|طيارة|Airplane|✈️
+helicóptero|إيليكوبتيرو|هليكوبتر|Helicopter|🚁
+barco|باركو|قارب|Boat|⛵
+navio|ناڤيو|سفينة|Ship|🚢
+foguete|فوغيتشي|صاروخ|Rocket|🚀
+ambulância|أمبولانسيا|إسعاف|Ambulance|🚑
+táxi|تاكسي|تكسي|Taxicab|🚕`,fr:`Vamos de ônibus.|ڤاموس دجي أونيبوس.|رح نروح بالباص.|🚌
+Coloque o cinto!|كولوكي أو سينتو!|حط الحزام!|🚗
+O avião voa alto.|أو أڤياو ڤوا آوتو.|الطيارة بتطير عالي.|✈️
+Eu sei andar de bicicleta.|إيو سيي أندار دجي بيسيكليتا.|بعرف أسوق بسكليت.|🚲
+Cuidado com o carro!|كويدادو كون أو كاهو!|انتبه من السيارة!|⚠️
+Olha o sinal vermelho!|أوليا أو سيناو ڤيرميليو!|شوف الإشارة حمرا!|🚦`},
+ {id:'lugares',g:'world',pt:'Lugares da cidade',ar:'أماكن بالمدينة',ic:'🏙️',bg:'#F3F0FF',fg:'#6741D9',items:`parque|باركي|حديقة|Urban park|🌳
+mercado|ميركادو|سوبرماركت|Supermarket|🛒
+padaria|باداريا|مخبز|Bakery|🥖
+hospital|أوسبيتاو|مستشفى|Hospital|🏥
+farmácia|فارماسيا|صيدلية|Pharmacy (shop)|💊
+mesquita|ميسكيتا|جامع|Mosque|🕌
+biblioteca|بيبليوتيكا|مكتبة|Library|📚
+zoológico|زوولوجيكو|حديقة حيوانات|Zoo|🦁
+piscina|بيسينا|مسبح|Swimming pool|🏊
+shopping|شوبينغ|مول|Shopping mall|🏬
+rua|هوا|شارع|Street|🛣️
+restaurante|هيستاورانتشي|مطعم|Restaurant|🍽️`,fr:`Vamos ao parque?|ڤاموس آو باركي؟|نروح عالحديقة؟|🌳
+Onde fica o banheiro?|أوندجي فيكا أو بانييرو؟|وين الحمّام؟|🚻
+Não solte a minha mão.|ناو سولتشي آ مينيا ماو.|لا تترك إيدي.|🤝
+Eu me perdi.|إيو مي بيرجي.|أنا ضعت.|😟
+Eu quero ir ao zoológico!|إيو كيرو إير آو زوولوجيكو!|بدي أروح على حديقة الحيوانات!|🦁
+Me ajuda, por favor!|مي أجودا، بور فاڤور!|ساعدني لو سمحت!|🆘`},
+ {id:'profissoes',g:'world',pt:'As profissões',ar:'المهن',ic:'👩‍⚕️',bg:'#E6FCF5',fg:'#087F5B',items:`médico|ميدجيكو|دكتور|Physician|👨‍⚕️
+enfermeira|إينفيرميرا|ممرّضة|Nurse|👩‍⚕️
+dentista|دينتشيستا|دكتور سنان|Dentist|🦷
+bombeiro|بومبيرو|إطفائي|Firefighter|👨‍🚒
+policial|بوليسياو|شرطي|Police officer|👮
+cozinheiro|كوزينييرو|طبّاخ|Chef|👨‍🍳
+agricultor|أغريكولتور|مزارع|Farmer|👨‍🌾
+motorista|موتوريستا|سوّاق|-|🚕
+carteiro|كارتيرو|ساعي البريد|Mail carrier|📮
+astronauta|أسترونوتا|رائد فضاء|Astronaut|👩‍🚀
+pintor|بينتور|رسّام|-|🎨
+professor|بروفيسور|أستاذ|-|👨‍🏫`,fr:`O que você quer ser quando crescer?|أو كي ڤوسي كير سير كواندو كريسير؟|شو بدك تصير لما تكبر؟|🤔
+Eu quero ser médico.|إيو كيرو سير ميدجيكو.|بدي أصير دكتور.|👨‍⚕️
+O bombeiro apaga o fogo.|أو بومبيرو أباغا أو فوغو.|الإطفائي بيطفي النار.|🔥
+Vamos ao dentista.|ڤاموس آو دينتشيستا.|رايحين عند دكتور السنان.|🦷
+O agricultor planta na terra.|أو أغريكولتور بلانتا نا تيها.|المزارع بيزرع بالأرض.|🌱`},
+
+ {id:'acoes',g:'day',pt:'O que eu faço',ar:'شو بعمل؟ (أفعال)',ic:'🏃',bg:'#FFF5F5',fg:'#E03131',emo:true,items:`correr|كوهير|يركض|-|🏃
+pular|بولار|ينطّ|-|🤸
+andar|أندار|يمشي|-|🚶
+comer|كومير|ياكل|-|🍽️
+beber|بيبير|يشرب|-|🥤
+dormir|دورمير|ينام|-|😴
+brincar|برينكار|يلعب|-|🧸
+ler|لير|يقرأ|-|📖
+escrever|إيسكريڤير|يكتب|-|✍️
+desenhar|ديزينيار|يرسم|-|🎨
+cantar|كانتار|يغنّي|-|🎤
+dançar|دانسار|يرقص|-|💃
+nadar|نادار|يسبح|-|🏊
+sentar|سينتار|يقعد|-|🪑
+chorar|شورار|يبكي|-|😭
+rir|هير|يضحك|-|😂`,fr:`Corre!|كوهي!|اركض!|🏃
+Senta aqui.|سينتا أكي.|اقعد هون.|🪑
+Vamos desenhar!|ڤاموس ديزينيار!|يلا نرسم!|🎨
+Eu gosto de nadar.|إيو غوستو دجي نادار.|بحب السباحة.|🏊
+Não pode correr aqui.|ناو بودجي كوهير أكي.|ممنوع تركض هون.|🚫
+O bebê está dormindo.|أو بيبيه إيستا دورميندو.|البيبي نايم.|👶
+Vamos cantar juntos!|ڤاموس كانتار جونتوس!|يلا نغنّي مع بعض!|🎤`},
+ {id:'tempo',g:'day',pt:'Dias e horas',ar:'الأيام والوقت',ic:'📅',bg:'#E7F5FF',fg:'#1864AB',emo:true,showAr:true,items:`segunda-feira|سيغوندا فيرا|الاتنين|-|1️⃣
+terça-feira|تيرسا فيرا|التلاتا|-|2️⃣
+quarta-feira|كوارتا فيرا|الأربعا|-|3️⃣
+quinta-feira|كينتا فيرا|الخميس|-|4️⃣
+sexta-feira|سيشتا فيرا|الجمعة|-|5️⃣
+sábado|سابادو|السبت|-|6️⃣
+domingo|دومينغو|الأحد|-|7️⃣
+hoje|أوجي|اليوم|-|📍
+amanhã|أمانيا|بكرة|-|➡️
+ontem|أونتين|مبارح|-|⬅️
+manhã|مانيا|الصبح|-|🌅
+tarde|تاردجي|بعد الضهر|-|🌤️
+noite|نويتشي|الليل|-|🌙`,fr:`Que dia é hoje?|كي دجيا إيه أوجي؟|شو اليوم؟|📅
+Hoje é sábado!|أوجي إيه سابادو!|اليوم السبت!|🎉
+Amanhã tem escola.|أمانيا تين إيسكولا.|بكرة في مدرسة.|🎒
+Boa tarde!|بوا تاردجي!|نهارك سعيد!|🌤️
+Que horas são?|كي أوراس ساو؟|قديش الساعة؟|⏰
+Feliz aniversário!|فيليز أنيڤيرساريو!|عيد ميلاد سعيد!|🎂`},
+ {id:'frases',g:'day',pt:'Frases do dia a dia',ar:'جمل كل يوم',ic:'💬',bg:'#FFF9DB',fg:'#E67700',phrase:true,items:`Bom dia!|بون دجيا!|صباح الخير!|-|☀️
 Boa noite!|بوا نويتشي!|تصبح على خير!|-|🌙
+Oi! Tudo bem?|أوي! تودو بين؟|هاي! كيفك؟|-|👋
 Obrigado!|أوبريغادو!|شكرًا!|-|🙏
 Por favor.|بور فاڤور.|لو سمحت.|-|🤲
 Desculpa.|دجيسكولبا.|آسف.|-|😔
+Com licença.|كون ليسينسا.|عن إذنك.|-|🚶
+Sim.|سين.|آه / نعم.|-|👍
+Não.|ناو.|لا.|-|👎
+Eu não sei.|إيو ناو سيي.|ما بعرف.|-|🤷
+Me ajuda?|مي أجودا؟|بتساعدني؟|-|🤝
 Eu quero água.|إيو كيرو آغوا.|بدي مي.|-|💧
 Estou com fome.|إيستو كون فومي.|أنا جوعان.|-|🍽️
-Posso ir ao banheiro?|بوسو إير آو بانييرو؟|بقدر أروح عالحمام؟|-|🚻
+Posso ir ao banheiro?|بوسو إير آو بانييرو؟|بقدر أروح عالحمّام؟|-|🚻
 Vamos brincar?|ڤاموس برينكار؟|يلا نلعب؟|-|🧸
 Qual é o seu nome?|كواو إيه أو سيو نومي؟|شو اسمك؟|-|❓
 Meu nome é Ali.|ميو نومي إيه علي.|اسمي علي.|-|🙋
 Eu tenho sete anos.|إيو تينيو سيتشي آنوس.|عمري سبع سنين.|-|🎂
+Eu sou do Brasil.|إيو سو دو برازيو.|أنا من البرازيل.|-|🇧🇷
+Eu falo árabe e português.|إيو فالو آرابي إي بورتوغيس.|بحكي عربي وبرتغالي.|-|🗣️
+Quer ser meu amigo?|كير سير ميو أميغو؟|بتحب تصير صاحبي؟|-|🤗
+Parabéns!|باراباينس!|مبروك!|-|🎉
 Eu gosto de você.|إيو غوستو دجي ڤوسي.|بحبك (صاحبي).|-|💛
 Tchau! Até amanhã!|تشاو! أتيه أمانيا!|باي! لبكرة!|-|👋`},
 ];
-KIDS.forEach(k=>{k.L=lines(k.items).map(([pt,pron,ar,img,em])=>({pt,pron,ar,img,em,key:'k|'+pt}))});
+KIDS.forEach(k=>{k.L=lines(k.items).map(([pt,pron,ar,img,em])=>({pt,pron,ar,img:(img||'').trim(),em,key:'k|'+pt}));k.F=k.fr?lines(k.fr).map(([pt,pron,ar,em])=>({pt,pron,ar,em,img:'-',key:'kf|'+pt})):[]});
 
+/* ===== قسم الأطفال ===== */
+// كل عنصر: البرتغالي|النطق|العربي|عنوان صورة ويكيبيديا (إنجليزي)|إيموجي احتياطي
 /* --- صور ويكيبيديا (مع تخزين مؤقت) --- */
 const KIMG=(()=>{try{return JSON.parse(localStorage.getItem('kimg')||'{}')}catch(e){return {}}})();
 async function wikiImg(title){
@@ -9671,8 +10010,8 @@ async function wikiImg(title){
 }
 function kidPic(k,it,big){
   if(k.color)return `<span class="kpic kcol" style="background:${it.img}"></span>`;
-  if(k.num)return `<span class="kpic knum">${'⭐'.repeat(+it.img)}<b>${it.img}</b></span>`;
-  if(k.phrase||!it.img||it.img==='-')return `<span class="kpic kemo">${it.em}</span>`;
+  if(k.num)return `<span class="kpic knum">${+it.img<=10?'⭐'.repeat(+it.img):'<span class="kn-e">'+it.em+'</span>'}<b>${it.img}</b></span>`;
+  if(k.phrase||k.emo||!it.img||it.img==='-')return `<span class="kpic kemo">${it.em}</span>`;
   return `<span class="kpic kimg" data-wiki="${esc(it.img)}"><span class="kemo">${it.em}</span></span>`;
 }
 function hydrateKidPics(root){
@@ -9681,32 +10020,39 @@ function hydrateKidPics(root){
 const kStars=id=>((S.kids||{})[id]||0);
 
 function vKids(){
+  const card=k=>`<a class="kcat" href="#kids-${k.id}" style="--kb:${k.bg};--kf:${k.fg}"><span class="kc-ic">${k.ic}</span><b lang="pt-BR" dir="ltr">${esc(k.pt)}</b><span>${esc(k.ar)}</span><span class="kc-n">${k.L.length} كلمة${k.F.length?' · '+k.F.length+' جملة':''}</span><span class="kc-st">${'★'.repeat(kStars(k.id))}${'☆'.repeat(3-kStars(k.id))}</span></a>`;
+  const tw=KIDS.reduce((a,k)=>a+k.L.length,0),tf=KIDS.reduce((a,k)=>a+k.F.length,0);
   app.innerHTML=`<div class="stack kids">
-   <div class="kids-hero"><span class="kh-ic">🧸</span><div><h1>${P('Português para crianças')}</h1><p>برتغالي للأطفال: اضغط على الصورة واسمع الكلمة، وبعدين العب!</p></div></div>
-   <div class="kgrid">${KIDS.map(k=>`<a class="kcat" href="#kids-${k.id}" style="--kb:${k.bg};--kf:${k.fg}"><span class="kc-ic">${k.ic}</span><b lang="pt-BR" dir="ltr">${esc(k.pt)}</b><span>${esc(k.ar)}</span><span class="kc-st">${'★'.repeat(kStars(k.id))}${'☆'.repeat(3-kStars(k.id))}</span></a>`).join('')}</div>
+   <div class="kids-hero"><span class="kh-ic">🧸</span><div><h1>${P('Português para crianças')}</h1><p>برتغالي للأطفال: اضغط على الصورة واسمع الكلمة، وبعدين العب! (${tw} كلمة و${tf} جملة)</p></div></div>
+   ${KGROUPS.map(g=>`<section class="kgroup"><h2 class="kg-h">${g.ic} ${esc(g.ar)}</h2><div class="kgrid">${KIDS.filter(k=>k.g===g.id).map(card).join('')}</div></section>`).join('')}
    <p class="muted kcredit">الصور من ويكيبيديا (Wikimedia Commons) برخص حرة.</p></div>`;
 }
 function vKidsCat(id){
   const k=KIDS.find(x=>x.id===id);if(!k)return vKids();
+  const fs=kStars(id+'_f');
   app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}">
    <div class="kcat-h"><span class="kc-ic">${k.ic}</span><div><h1 lang="pt-BR" dir="ltr">${esc(k.pt)}</h1><span>${esc(k.ar)}</span></div></div>
-   <div class="row" style="justify-content:center"><a class="btn kbtn" href="#kidsgame-${k.id}">🎮 العب واربح نجوم</a></div>
+   <div class="row" style="justify-content:center"><a class="btn kbtn" href="#kidsgame-${k.id}">🎮 لعبة الكلمات</a>${k.F.length?`<a class="btn kbtn" href="#kidsgame-${k.id}_f">💬 لعبة الجمل</a>`:''}</div>
+   <h2 class="kg-h">🖼️ الكلمات</h2>
    <div class="kcards">${k.L.map(it=>`<button class="kcard" data-say="${esc(it.pt)}">${kidPic(k,it)}<b lang="pt-BR" dir="ltr">${esc(it.pt)}</b><span class="kpron">${esc(it.pron)}</span><span class="kar">${esc(it.ar)}</span><span class="kspk">🔊</span></button>`).join('')}</div>
-   <div class="row" style="justify-content:center"><a class="btn kbtn" href="#kidsgame-${k.id}">🎮 العب واربح نجوم</a></div></div>`;
+   ${k.F.length?`<h2 class="kg-h">💬 جمل نقولها <span class="kc-st">${'★'.repeat(fs)}${'☆'.repeat(3-fs)}</span></h2>
+   <div class="kfr">${k.F.map(f=>`<div class="kf-row"><span class="kf-e">${f.em}</span><div class="kf-t"><b lang="pt-BR" dir="ltr">${esc(f.pt)}</b><span class="kpron">${esc(f.pron)}</span><span class="kar">${esc(f.ar)}</span></div><span class="dlg-btns"><button class="spk" data-say="${esc(f.pt)}" aria-label="استمع">${SPK}</button><button class="spk slow" data-say="${esc(f.pt)}" data-slow="1" aria-label="ببطء">🐢</button></span></div>`).join('')}</div>`:''}
+   <div class="row" style="justify-content:center"><a class="btn kbtn" href="#kidsgame-${k.id}">🎮 لعبة الكلمات</a>${k.F.length?`<a class="btn kbtn" href="#kidsgame-${k.id}_f">💬 لعبة الجمل</a>`:''}<a class="btn" href="#kids">🧸 الأقسام</a></div></div>`;
   hydrateKidPics(app);
 }
 function vKidsGame(id){
-  const k=KIDS.find(x=>x.id===id);if(!k)return vKids();
+  const fm=/_f$/.test(id),base=id.replace(/_f$/,'');const k0=KIDS.find(x=>x.id===base);if(!k0)return vKids();
+  const k=fm?Object.assign({},k0,{phrase:true,color:false,num:false,L:k0.F}):k0;
   const rounds=shuffle(k.L).slice(0,Math.min(8,k.L.length));let i=0,ok=0;
   const draw=()=>{
     if(i>=rounds.length){const st=ok>=rounds.length?3:ok>=rounds.length*.7?2:ok>=rounds.length*.4?1:0;S.kids=S.kids||{};if(st>kStars(id)){S.kids[id]=st;save()}else touch();
       app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}"><div class="kdone"><div class="kd-st">${'⭐'.repeat(st)||'💪'}</div><h1>${st===3?'برافو! ممتاز!':st?'شاطر!':'كمان مرة!'}</h1><p>${ok} من ${rounds.length} صح</p>
-       <div class="row" style="justify-content:center"><button class="btn kbtn" id="kag">🔁 العب كمان</button><a class="btn" href="#kids-${id}">📖 تعلّم الكلمات</a><a class="btn" href="#kids">🧸 الأقسام</a></div></div></div>`;
+       <div class="row" style="justify-content:center"><button class="btn kbtn" id="kag">🔁 العب كمان</button><a class="btn" href="#kids-${base}">📖 تعلّم ${fm?'الجمل':'الكلمات'}</a><a class="btn" href="#kids">🧸 الأقسام</a></div></div></div>`;
       $('#kag').onclick=()=>vKidsGame(id);say(st?'Muito bem!':'Vamos tentar de novo!');return}
     const t=rounds[i],opts=shuffle([t,...shuffle(k.L.filter(x=>x!==t)).slice(0,3)]);
     app.innerHTML=`<div class="stack kids" style="--kb:${k.bg};--kf:${k.fg}"><div class="kq-top"><span>${i+1} / ${rounds.length}</span><span>${'⭐'.repeat(ok)}</span></div>
      <button class="kq-say" id="kqs">🔊 <b lang="pt-BR" dir="ltr">${esc(t.pt)}</b></button><p class="kq-h">اسمع واختار الصورة الصحيحة</p>
-     <div class="kopts">${opts.map((o,n)=>`<button class="kopt" data-n="${n}">${kidPic(k,o)}${k.phrase?`<span class="kar">${esc(o.ar)}</span>`:''}</button>`).join('')}</div></div>`;
+     <div class="kopts">${opts.map((o,n)=>`<button class="kopt" data-n="${n}">${kidPic(k,o)}${k.phrase||k.showAr?`<span class="kar">${esc(o.ar)}</span>`:''}</button>`).join('')}</div></div>`;
     hydrateKidPics(app);
     const play=()=>say(t.pt);$('#kqs').onclick=play;setTimeout(play,350);
     $$('.kopt').forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.n];$$('.kopt').forEach(x=>x.disabled=true);
@@ -10032,7 +10378,7 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
-  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
+  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
