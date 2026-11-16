@@ -494,6 +494,9 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .kf-row{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--kb);border-radius:16px;padding:10px 12px}
 .kf-e{font-size:34px;flex:none;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .kf-t{flex:1;display:grid;gap:2px;min-width:0}.kf-t b{font-family:var(--f-pt);font-size:18px;color:var(--kf);direction:ltr;text-align:left}
+
+.kcat{position:relative}.kc-ord{position:absolute;top:8px;inset-inline-start:10px;background:var(--kf);color:#fff;border-radius:999px;min-width:26px;height:26px;display:grid;place-items:center;font:800 14px/1 var(--f-pt)}
+.mic-big.on{background:var(--bad);color:#fff;border-color:var(--bad)}.pl-lv{border-top:1px dashed var(--line);padding-top:8px;width:100%}.pl-lv h3{margin:0 0 6px;font-size:17px}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -560,6 +563,28 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
     $i('lg-forgot').onclick=async e=>{e.preventDefault();const em=$i('lg-email').value.trim();if(!em)return msg('اكتب إيميلك فوق وبعدين اضغط «نسيت كلمة السر».');try{await auth.sendPasswordResetEmail(em);msg('بعتنالك رابط على الإيميل لتغيير كلمة السر.')}catch(e){msg(err(e))}};
     return o;
   }
+
+  /* ===== الذكاء الاصطناعي: Gemini عبر Firebase AI Logic ===== */
+  const AI_SITEKEY='';
+  let aiP=null;
+  function aiInit(){if(aiP)return aiP;aiP=(async()=>{const B='https://www.gstatic.com/firebasejs/13.3.0/';
+    const [appM,aiM,acM]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-ai.js'),import(B+'firebase-app-check.js')]);
+    const app=appM.initializeApp(FB_CONFIG,'ai');
+    if(AI_SITEKEY.length>20&&!AI_SITEKEY.startsWith('/*'))acM.initializeAppCheck(app,{provider:new acM.ReCaptchaV3Provider(AI_SITEKEY),isTokenAutoRefreshEnabled:true});
+    return {aiM,ai:aiM.getAI(app,{backend:new aiM.GoogleAIBackend()})}})();aiP.catch(()=>{aiP=null});return aiP}
+  const MODELS=['gemini-3.5-flash','gemini-3-flash','gemini-flash-latest','gemini-3.1-flash-lite','gemini-2.5-flash'];
+  const mapErr=e=>{const m=String((e&&(e.message||e.code))||e);if(/429|quota|exhausted|rate/i.test(m))return {code:'rate_limited',message:m};if(/app.?check|403|permission|PERMISSION_DENIED|API has not been used|disabled|api-not-enabled|unauthenticated|401/i.test(m))return {code:'setup',message:m};return {code:'error',message:m}};
+  async function gen(req,json){const {aiM,ai}=await aiInit();let list=MODELS.slice();try{const sv=localStorage.getItem('aimodel');if(sv)list=[sv,...MODELS.filter(x=>x!==sv)]}catch(e){}
+    let last;for(const m of list){try{const model=aiM.getGenerativeModel(ai,{model:m,generationConfig:json?{responseMimeType:'application/json',temperature:0.8}:{temperature:0.4}});
+      const r=await model.generateContent(req);try{localStorage.setItem('aimodel',m)}catch(e){}return r.response.text()}
+      catch(e){last=e;if(/not.?found|404|not supported|unsupported|is not available|invalid model|no longer available|deprecat/i.test(String(e&&e.message||e)))continue;throw mapErr(e)}}
+    throw mapErr(last)}
+  const toContents=msgs=>{const c=[];msgs.forEach(m=>{const role=m.role==='assistant'?'model':'user';const text=typeof m.content==='string'?m.content:JSON.stringify(m.content);const l=c[c.length-1];if(l&&l.role===role)l.parts.push({text});else c.push({role,parts:[{text}]})});if(c.length&&c[0].role!=='user')c.unshift({role:'user',parts:[{text:'.'}]});return c};
+  const sample=async(msgs)=>({text:await gen({contents:toContents(msgs)},false)});
+  sample.json=async(msgs)=>{const t=await gen({contents:toContents(msgs)},true);const a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(t.slice(a,b+1))};
+  sample.transcribe=async(blob)=>{const data=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(',')[1]);fr.onerror=rej;fr.readAsDataURL(blob)});
+    const t=await gen([{inlineData:{mimeType:(blob.type||'audio/mp4').split(';')[0],data}},{text:'Transcribe this short audio exactly as spoken. The speaker is an Arabic-speaking learner speaking Brazilian Portuguese (sometimes mixed with Arabic). Write Portuguese words in Portuguese spelling and Arabic words in Arabic script. Return ONLY the transcription, nothing else. If nothing is audible, return an empty string.'}],false);return t.trim().replace(/^["“]|["”]$/g,'')};
+  sample.ready=()=>aiInit().then(()=>true,()=>false);
   let ready=false;
   async function afterLogin(u){
     if(ready)return;ready=true;
@@ -572,7 +597,7 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
     };
     const user={id:async()=>u.uid,isOwner:async()=>owner,canEdit:async()=>owner,me:async()=>({id:u.uid,name}),
       profiles:async ids=>{const out={};await Promise.all(ids.map(async id=>{try{const s=await fs.doc('profiles/'+id).get();const v=s.exists?unpack(s):null;out[id]={id,name:(v&&v.name)||'',email:(v&&v.email)||''}}catch(e){out[id]={id,name:''}}}));return out}};
-    window.claude={use:async n=>n==='db'?db:n==='user'?user:null};
+    window.claude={use:async n=>n==='db'?db:n==='user'?user:n==='sample'?sample:null};
     const o=document.getElementById('login');if(o)o.remove();
     resolveReady(true);
   }
@@ -9398,20 +9423,206 @@ Tá bom.|تا بون.|ماشي.`},
 BT.forEach(t=>{t.R=lines(t.r).map(([pt,pron,ar])=>({pt,pron,ar,key:'b|'+pt}))});
 function vBasics(){
   const done=S.bs||{};
-  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الأساسيات</h1><p class="muted" style="margin:4px 0 0">${BT.length} باب مرتّب من الأسهل للأصعب. كل باب فيه شرح، وأمثلة بصوت، وتمرين قصير.</p></div>
-   <div class="bgrid">${BT.map((t,i)=>`<a class="bcard${done[t.id]>=70?' done':''}" href="#basic-${t.id}"><span class="b-n">${i+1}</span><span class="b-ic">${t.ic}</span><b>${esc(t.t)}</b><small>${esc(t.s)}</small>${done[t.id]!=null?`<span class="b-st">${done[t.id]}%</span>`:''}</a>`).join('')}</div></div>`;
+  const card=(t,i)=>`<a class="bcard${done[t.id]>=70?' done':''}" href="#basic-${t.id}"><span class="b-n">${i+1}</span><span class="b-ic">${t.ic}</span><b>${esc(t.t)}</b><small>${esc(t.s)}</small>${done[t.id]!=null?`<span class="b-st">${done[t.id]}%</span>`:''}</a>`;
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الأساسيات</h1><p class="muted" style="margin:4px 0 0">${BT.length} باب للبداية، و${BG.length} باب للقواعد الأساسية. كل باب فيه شرح، وأمثلة بصوت، وتمرين.</p></div>
+   <div class="row"><a class="pill on" href="#basics">🧱 الأساسيات</a><a class="pill" href="#bgram">📐 القواعد الأساسية</a></div>
+   <div class="bgrid">${BT.map(card).join('')}</div>
+   <h2 id="bgram" style="font-size:22px;margin:18px 0 0">📐 القواعد الأساسية</h2><p class="muted" style="margin:0">أهم قواعد البرتغالي البرازيلي بالترتيب، كل قاعدة بشرح بسيط وتمارين.</p>
+   <div class="bgrid">${BG.map(card).join('')}</div></div>`;
+  const a=$('a[href="#bgram"]');if(a)a.onclick=e=>{e.preventDefault();$('#bgram').scrollIntoView({behavior:'smooth'})};
 }
 function vBasic(id){
-  const i=BT.findIndex(x=>x.id===id),t=BT[i];if(!t)return vBasics();
-  const nx=BT[i+1];
-  const show=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><span class="eyebrow">الأساسيات · الباب ${i+1} من ${BT.length}</span><h1 style="font-size:24px">${t.ic} ${esc(t.t)}</h1><span class="muted">${esc(t.s)}</span></div>
+  const LST=BG.some(x=>x.id===id)?BG:BT;const i=LST.findIndex(x=>x.id===id),t=LST[i];if(!t)return vBasics();
+  const nx=LST[i+1]||(LST===BT?BG[0]:null);const gram=LST===BG;
+  const show=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><span class="eyebrow">${gram?'القواعد الأساسية':'الأساسيات'} · الباب ${i+1} من ${LST.length}</span><h1 style="font-size:24px">${t.ic} ${esc(t.t)}</h1><span class="muted">${esc(t.s)}</span></div>
    <div class="card lesson">${Pp(t.intro)}${X(t.r)}${t.tip?TIP(t.tip):''}</div>
-   <div class="row"><button class="btn primary" id="bq">تمرين: ${Math.min(8,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
+   <div class="row"><button class="btn primary" id="bq">تمرين: ${gram?t.D.length+2:Math.min(8,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
     $('#bq').onclick=quiz};
-  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=shuffle(pool).slice(0,Math.min(8,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
+  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=gram?shuffle(t.D.map(drillQ).concat(shuffle(pool).slice(0,2).map((w,n)=>n?qListen(w,pool):qPt2Ar(w,pool)))):shuffle(pool).slice(0,Math.min(8,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
     runQuiz($('#qb'),qs,{title:t.t,retry:quiz,onDone:p=>{S.bs=S.bs||{};if(S.bs[id]==null||p>S.bs[id]){S.bs[id]=p;save()}},next:nx?{label:'التالي: '+nx.t+' ←',href:'#basic-'+nx.id}:{label:'الرجوع إلى الأساسيات',href:'#basics'}})};
   show();
 }
+
+/* ===== الأساسيات: القواعد الأساسية ===== */
+// كل باب: شرح القاعدة + أمثلة بصوت (r) + تمارين (d: 'جملة ___|تلميح|الصح|غلط|غلط')
+const BG=[
+{id:'g-genero',ic:'⚥',t:'مذكر ومؤنث: o و a',s:'كل اسم إله جنس',intro:'كل اسم بالبرتغالي يا <b>مذكر</b> يا <b>مؤنث</b>.<br>• المذكر غالبًا بيخلص بـ <em>-o</em> وقبله <em>o</em> (الـ).<br>• المؤنث غالبًا بيخلص بـ <em>-a</em> وقبله <em>a</em> (الـ).<br>• في كلمات شاذة لازم تحفظها: <em>o dia</em> (اليوم) مذكر، و<em>a mão</em> (الإيد) مؤنث.',r:`o menino|أو مينينو|الولد
+a menina|آ مينينا|البنت
+o livro|أو ليڤرو|الكتاب
+a casa|آ كازا|البيت
+o carro|أو كاهو|السيارة
+a mesa|آ ميزا|الطاولة
+o dia|أو دجيا|اليوم (مذكر رغم -a)
+a mão|آ ماو|الإيد (مؤنث رغم -ão)
+o problema|أو بروبليما|المشكلة (مذكر)
+a cidade|آ سيدادجي|المدينة (-dade دايمًا مؤنث)`,tip:'كلمات بتخلص بـ <em>-dade</em> و<em>-ção</em> دايمًا مؤنثة: <em>a cidade، a informação</em>.',d:`___ menino é alto.|الولد|O|A|Os
+___ casa é grande.|البيت|A|O|As
+___ dia está bonito.|اليوم (شاذة)|O|A|Um
+___ mão está fria.|الإيد (شاذة)|A|O|Os
+___ cidade é linda.|المدينة|A|O|Um
+___ problema é sério.|المشكلة (شاذة)|O|A|As`},
+{id:'g-plural',ic:'➕',t:'um/uma والجمع',s:'واحد، وأكتر من واحد',intro:'• <em>um</em> = واحد / ـًا للمذكر، و<em>uma</em> للمؤنث: <em>um carro، uma casa</em>.<br>• الجمع: بنزيد <em>-s</em>: <em>carro → carros</em>.<br>• وأداة التعريف بتصير: <em>os</em> للمذكر و<em>as</em> للمؤنث.<br>• كلمات بتخلص بـ <em>-ão</em> غالبًا بتصير <em>-ões</em>، و<em>-l</em> بتصير <em>-is</em>.',r:`um carro · dois carros|أون كاهو · دويس كاهوس|سيارة · سيارتين
+uma casa · as casas|أوما كازا · آس كازاس|بيت · البيوت
+o livro · os livros|أو ليڤرو · أوس ليڤروس|الكتاب · الكتب
+a flor · as flores|آ فلور · آس فلوريس|الوردة · الورود (-r ← -res)
+o avião · os aviões|أو أڤياو · أوس أڤيويس|الطيارة · الطيارات
+o animal · os animais|أو أنيماو · أوس أنيمايس|الحيوان · الحيوانات
+o mês · os meses|أو ميس · أوس ميزيس|الشهر · الشهور`,d:`Eu tenho ___ irmã.|أخت وحدة|uma|um|umas
+Ele comprou ___ carro novo.|سيارة|um|uma|uns
+Os ___ estão na mesa.|الكتب|livros|livro|livroes
+As ___ são bonitas.|الورود|flores|flors|flor
+Tenho dois ___.|حيوانين|animais|animals|animales
+Os ___ chegaram.|الطيارات|aviões|aviãos|avião`},
+{id:'g-ar',ic:'🔁',t:'تصريف أفعال -ar بالحاضر',s:'falar، morar، trabalhar…',intro:'أغلب الأفعال بتخلص بـ <em>-ar</em>. شيل <em>-ar</em> وزيد النهاية حسب الشخص:<br>• eu → <em>-o</em> &nbsp;• você / ele / ela → <em>-a</em><br>• nós → <em>-amos</em> &nbsp;• vocês / eles / elas → <em>-am</em><br>بالبرازيل بيستعملوا <em>você</em> بدل tu، و<em>a gente</em> (= nós) مع تصريف ele: <em>a gente fala</em>.',r:`eu falo|إيو فالو|أنا بحكي
+você fala|ڤوسي فالا|إنت بتحكي
+ele / ela fala|إيلي / إيلا فالا|هو / هي بيحكي
+nós falamos|نوس فالاموس|إحنا بنحكي
+a gente fala|آ جينتشي فالا|إحنا بنحكي (عامية)
+vocês falam|ڤوسيس فالاون|إنتو بتحكوا
+eles falam|إيليس فالاون|هم بيحكوا
+Eu moro no Brasil.|إيو مورو نو برازيو.|أنا ساكن بالبرازيل.
+Ela trabalha muito.|إيلا تراباليا موينتو.|هي بتشتغل كتير.`,d:`Eu ___ português.|أحكي|falo|fala|falam
+Ela ___ em São Paulo.|تسكن|mora|moro|moramos
+Nós ___ todo dia.|نشتغل|trabalhamos|trabalham|trabalho
+Vocês ___ inglês?|تحكوا|falam|falamos|fala
+A gente ___ muito.|نحكي (عامية)|fala|falamos|falo
+Eles ___ café.|يشتروا|compram|compra|compramos`},
+{id:'g-er-ir',ic:'🔂',t:'أفعال -er و -ir بالحاضر',s:'comer، beber، abrir، dormir…',intro:'نفس الفكرة بس نهايات مختلفة شوي:<br>• <em>-er</em>: eu <em>como</em>، você <em>come</em>، nós <em>comemos</em>، eles <em>comem</em>.<br>• <em>-ir</em>: eu <em>abro</em>، você <em>abre</em>، nós <em>abrimos</em>، eles <em>abrem</em>.<br>لاحظ: مع ele/você النهاية <em>-e</em> للنوعين.',r:`eu como|إيو كومو|أنا باكل
+você come|ڤوسي كومي|إنت بتاكل
+nós comemos|نوس كوميموس|إحنا بناكل
+eles comem|إيليس كومين|هم بياكلوا
+eu abro|إيو أبرو|أنا بفتح
+ela abre|إيلا أبري|هي بتفتح
+nós abrimos|نوس أبريموس|إحنا بنفتح
+Eu bebo água.|إيو بيبو آغوا.|بشرب مي.
+Ele dorme cedo.|إيلي دورمي سيدو.|هو بينام بكير.`,d:`Eu ___ arroz todo dia.|آكل|como|come|comemos
+Ela ___ muita água.|تشرب|bebe|bebo|bebem
+Nós ___ a loja às 9.|نفتح|abrimos|abrem|abro
+Eles ___ no Brasil.|يعيشوا|vivem|vive|vivemos
+Você ___ cedo?|تنام|dorme|durmo|dormem
+Eu ___ o jornal.|أقرأ|leio|lê|lemos`},
+{id:'g-irreg',ic:'⭐',t:'أهم الأفعال الشاذة',s:'ter، ir، fazer، poder، querer',intro:'هدول الأفعال ما بيمشوا على القاعدة، بس هم الأكثر استعمالًا، فاحفظهم:<br>• <em>ter</em> (عنده): tenho، tem، temos، têm<br>• <em>ir</em> (يروح): vou، vai، vamos، vão<br>• <em>fazer</em> (يعمل): faço، faz، fazemos، fazem<br>• <em>poder</em> (يقدر): posso، pode، podemos، podem<br>• <em>querer</em> (بدّه): quero، quer، queremos، querem',r:`Eu tenho dois filhos.|إيو تينيو دويس فيليوس.|عندي ولدين.
+Ela tem carro.|إيلا تين كاهو.|هي عندها سيارة.
+Eu vou ao mercado.|إيو ڤو آو ميركادو.|أنا رايح عالسوق.
+Nós vamos juntos.|نوس ڤاموس جونتوس.|رايحين مع بعض.
+Eu faço café.|إيو فاسو كافيه.|بعمل قهوة.
+Posso entrar?|بوسو إينترار؟|بقدر أفوت؟
+Eu quero aprender.|إيو كيرو أبريندير.|بدي أتعلم.
+Você quer água?|ڤوسي كير آغوا؟|بدك مي؟`,d:`Eu ___ três irmãos.|عندي|tenho|tem|temos
+Eles ___ ao Brasil amanhã.|رايحين|vão|vai|vamos
+Eu ___ o jantar.|أعمل|faço|faz|fazo
+___ falar com você?|بقدر|Posso|Pode|Podo
+Ela ___ um café.|بدها|quer|quero|querem
+Nós ___ uma casa.|عنا|temos|tem|têm`},
+{id:'g-neg',ic:'❓',t:'النفي والسؤال',s:'não، né؟ وأدوات السؤال',intro:'• <b>النفي</b>: حط <em>não</em> قبل الفعل: <em>Eu não falo</em>. وبالحكي البرازيلي كتير بيكرروا: <em>Não sei não</em>.<br>• <b>السؤال</b>: نفس ترتيب الجملة، بس بترفع صوتك بالآخر: <em>Você fala português?</em><br>• <em>né?</em> بالآخر = «صح؟»<br>• أدوات السؤال بتيجي بالأول: <em>O que؟ Onde؟ Quando؟ Por que؟ Como؟ Quem؟ Quanto؟</em>',r:`Eu não entendo.|إيو ناو إينتيندو.|ما بفهم.
+Ela não mora aqui.|إيلا ناو مورا أكي.|هي مش ساكنة هون.
+Você fala português?|ڤوسي فالا بورتوغيس؟|بتحكي برتغالي؟
+Está calor, né?|إيستا كالور، نيه؟|الجو حر، صح؟
+Onde você mora?|أوندجي ڤوسي مورا؟|وين ساكن؟
+Por que você está triste?|بور كي ڤوسي إيستا تريستشي؟|ليش زعلان؟
+Porque estou cansado.|بوركي إيستو كانسادو.|لأني تعبان.
+Quanto custa?|كوانتو كوستا؟|قديش حقه؟`,tip:'<em>Por que</em> (منفصلة) = ليش؟ و<em>porque</em> (متصلة) = لأنّ.',d:`Eu ___ falo inglês.|ما|não|nem|nunca
+___ você mora?|وين|Onde|Quando|Quem
+___ custa isso?|قديش|Quanto|Como|Onde
+___ você chegou?|إمتى|Quando|Quem|Quanto
+___ é aquele homem?|مين|Quem|Que|Qual
+Está frio, ___?|صح؟|né|não|sim`},
+{id:'g-prep',ic:'📍',t:'حروف الجر والدمج',s:'em، de، a، por + o/a',intro:'حروف الجر بتندمج مع o / a:<br>• <em>em</em> (في) + o = <em>no</em>، + a = <em>na</em><br>• <em>de</em> (من) + o = <em>do</em>، + a = <em>da</em><br>• <em>a</em> (إلى) + o = <em>ao</em>، + a = <em>à</em><br>• <em>por</em> (عبر/من خلال) + o = <em>pelo</em>، + a = <em>pela</em><br>ومع الجمع: nos، nas، dos، das، aos، às.',r:`Eu moro no Brasil.|إيو مورو نو برازيو.|ساكن بالبرازيل.
+Ela está na escola.|إيلا إيستا نا إيسكولا.|هي بالمدرسة.
+Eu sou da Palestina.|إيو سو دا باليستشينا.|أنا من فلسطين.
+O livro do professor.|أو ليڤرو دو بروفيسور.|كتاب الأستاذ.
+Vou ao mercado.|ڤو آو ميركادو.|رايح عالسوق.
+Vou à praia.|ڤو آ برايا.|رايح عالبحر.
+Passei pela rua.|باسيي بيلا هوا.|مرّيت من الشارع.`,d:`Eu moro ___ Brasil.|في + o|no|na|em o
+Ela trabalha ___ farmácia.|في + a|na|no|em a
+Ele é ___ Síria.|من + a|da|do|de a
+Vou ___ médico amanhã.|إلى + o|ao|à|a o
+Vamos ___ praia!|إلى + a|à|ao|na
+O carro ___ meu pai.|تبع + o|do|da|de o`},
+{id:'g-posse',ic:'👜',t:'الملكية: meu، seu، dele…',s:'تبعي، تبعك، تبعه',intro:'الملكية بتتطابق مع <b>الشي المملوك</b> مش مع صاحبه:<br>• <em>meu</em> (مذكر) / <em>minha</em> (مؤنث) = تبعي<br>• <em>seu / sua</em> = تبعك<br>• <em>nosso / nossa</em> = تبعنا<br>• للغائب البرازيليين بيقولوا: <em>dele</em> (تبعه) و<em>dela</em> (تبعها) بعد الاسم.',r:`meu carro|ميو كاهو|سيارتي
+minha casa|مينيا كازا|بيتي
+meus filhos|ميوس فيليوس|أولادي
+minhas filhas|مينياس فيلياس|بناتي
+seu nome|سيو نومي|اسمك
+sua família|سوا فاميليا|عيلتك
+nossa cidade|نوسا سيدادجي|مدينتنا
+o carro dele|أو كاهو ديلي|سيارته
+a casa dela|آ كازا ديلا|بيتها`,d:`Esta é ___ mãe.|أمي|minha|meu|minhas
+___ irmão mora aqui.|أخوي|Meu|Minha|Meus
+Qual é ___ nome?|اسمك|seu|sua|seus
+A bolsa ___ é azul.|تبعها|dela|dele|seu
+___ casa é pequena.|بيتنا|Nossa|Nosso|Nossas
+Os livros ___ estão aqui.|تبعه|dele|dela|sua`},
+{id:'g-adj',ic:'🎨',t:'الصفة: مكانها ومطابقتها',s:'casa bonita، carros novos',intro:'• الصفة غالبًا بتيجي <b>بعد</b> الاسم: <em>uma casa bonita</em>.<br>• بتتطابق مع الاسم بالجنس والعدد: <em>carro novo، casa nova، carros novos، casas novas</em>.<br>• صفات بتخلص بـ <em>-e</em> أو حرف ساكن ما بتتغير مع الجنس: <em>grande، feliz، difícil</em>.',r:`um carro novo|أون كاهو نوڤو|سيارة جديدة
+uma casa nova|أوما كازا نوڤا|بيت جديد
+os carros novos|أوس كاهوس نوڤوس|السيارات الجديدة
+as casas novas|آس كازاس نوڤاس|البيوت الجديدة
+uma cidade grande|أوما سيدادجي غراندجي|مدينة كبيرة
+um homem feliz|أون أومين فيليز|رجل مبسوط
+Ela é muito bonita.|إيلا إيه موينتو بونيتا.|هي حلوة كتير.`,d:`A casa é ___.|حلو|bonita|bonito|bonitos
+Os carros são ___.|جديد|novos|novo|novas
+Ela está ___.|تعبانة|cansada|cansado|cansados
+As meninas são ___.|طويلات|altas|alta|altos
+É uma cidade ___.|كبيرة|grande|granda|grandes
+Eles são ___.|مبسوطين|felizes|feliz|felizs`},
+{id:'g-futuro',ic:'⏭️',t:'المستقبل القريب: ir + فعل',s:'vou comer = رح آكل',intro:'أسهل وأشهر طريقة للمستقبل بالبرازيل:<br><b>ir (مصرّف) + الفعل بالمصدر</b><br>• <em>Eu vou viajar</em> = رح أسافر<br>• <em>Ela vai trabalhar</em> = رح تشتغل<br>• <em>Nós vamos sair</em> = رح نطلع<br>• <em>Eles vão chegar</em> = رح يوصلوا',r:`Eu vou estudar amanhã.|إيو ڤو إيستودار أمانيا.|رح أدرس بكرة.
+Você vai trabalhar hoje?|ڤوسي ڤاي تراباليار أوجي؟|رح تشتغل اليوم؟
+Ela vai viajar em janeiro.|إيلا ڤاي ڤياجار إين جانيرو.|رح تسافر بكانون التاني.
+Nós vamos jantar fora.|نوس ڤاموس جانتار فورا.|رح نتعشى برا.
+Eles vão chegar tarde.|إيليس ڤاو شيغار تاردجي.|رح يوصلوا متأخر.
+Vai chover.|ڤاي شوڤير.|رح تشتّي.`,d:`Eu ___ estudar amanhã.|رح (أنا)|vou|vai|vamos
+Ela ___ viajar.|رح (هي)|vai|vou|vão
+Nós ___ comer pizza.|رح (إحنا)|vamos|vão|vai
+Eles ___ chegar cedo.|رح (هم)|vão|vai|vamos
+Amanhã vai ___.|تشتّي|chover|chove|choveu
+Você vai ___ hoje?|تشتغل|trabalhar|trabalha|trabalhou`},
+{id:'g-passado',ic:'⏮️',t:'الماضي البسيط',s:'falei، comi، abri',intro:'للحدث اللي صار وخلص:<br>• <em>-ar</em>: eu <em>falei</em>، você <em>falou</em>، nós <em>falamos</em>، eles <em>falaram</em><br>• <em>-er</em>: eu <em>comi</em>، você <em>comeu</em>، nós <em>comemos</em>، eles <em>comeram</em><br>• <em>-ir</em>: eu <em>abri</em>، você <em>abriu</em>، nós <em>abrimos</em>، eles <em>abriram</em><br>شاذة مهمة: <em>fui</em> (رحت/كنت)، <em>tive</em> (كان عندي)، <em>fiz</em> (عملت).',r:`Eu falei com ele ontem.|إيو فاليي كون إيلي أونتين.|حكيت معه مبارح.
+Você comprou pão?|ڤوسي كومبرو باو؟|اشتريت خبز؟
+Eu comi muito.|إيو كومي موينتو.|أكلت كتير.
+Ela bebeu café.|إيلا بيبيو كافيه.|هي شربت قهوة.
+Nós abrimos a loja.|نوس أبريموس آ لوجا.|فتحنا المحل.
+Eu fui ao médico.|إيو فوي آو ميدجيكو.|رحت عالدكتور.
+Eu fiz o trabalho.|إيو فيز أو تراباليو.|عملت الشغل.`,d:`Ontem eu ___ com a professora.|حكيت|falei|falou|falo
+Ela ___ um carro.|اشترت|comprou|comprei|compra
+Eu ___ pizza ontem.|أكلت|comi|comeu|como
+Eles ___ cedo.|طلعوا|saíram|saiu|saímos
+Eu ___ ao Brasil em 2024.|رحت|fui|foi|vou
+Você ___ o dever?|عملت|fez|fiz|faz`},
+{id:'g-gerundio',ic:'⏳',t:'هلأ عم: estar + -ndo',s:'estou comendo = عم باكل',intro:'لشي عم يصير <b>هلأ</b>:<br><b>estar + الفعل بـ -ndo</b><br>• -ar ← <em>-ando</em>: falando<br>• -er ← <em>-endo</em>: comendo<br>• -ir ← <em>-indo</em>: dormindo<br>مثال: <em>Estou trabalhando</em> = عم بشتغل.',r:`Estou trabalhando.|إيستو تراباليياندو.|عم بشتغل.
+O que você está fazendo?|أو كي ڤوسي إيستا فازيندو؟|شو عم تعمل؟
+Ela está dormindo.|إيلا إيستا دورميندو.|هي نايمة.
+Estamos comendo.|إيستاموس كوميندو.|عم ناكل.
+Está chovendo.|إيستا شوڤيندو.|عم تشتّي.
+Eles estão estudando.|إيليس إيستاو إيستوداندو.|عم يدرسوا.`,d:`Eu estou ___ agora.|عم بشتغل|trabalhando|trabalhar|trabalho
+Ela está ___.|نايمة|dormindo|dormendo|dorme
+O que você está ___?|عم تعمل|fazendo|fazindo|faz
+Está ___ lá fora.|عم تشتّي|chovendo|chovindo|chove
+Nós ___ comendo.|عم (إحنا)|estamos|estão|está
+Eles estão ___.|عم يدرسوا|estudando|estudendo|estudam`},
+{id:'g-gostar',ic:'❤️',t:'gostar de، precisar de، querer',s:'بحب، بحتاج، بدي',intro:'• <em>gostar</em> دايمًا معه <em>de</em>: <em>Eu gosto de café</em> (بحب القهوة)، ومع o/a: <em>gosto do Brasil</em>.<br>• <em>precisar de</em> + اسم: <em>Preciso de ajuda</em>. ومع فعل بدون de: <em>Preciso trabalhar</em>.<br>• <em>querer</em> بدون حرف جر: <em>Quero água</em>، <em>Quero dormir</em>.',r:`Eu gosto de chocolate.|إيو غوستو دجي شوكولاتشي.|بحب الشوكولاتة.
+Ela gosta do Brasil.|إيلا غوستا دو برازيو.|هي بتحب البرازيل.
+Você gosta de futebol?|ڤوسي غوستا دجي فوتشيبو؟|بتحب كرة القدم؟
+Preciso de um médico.|بريسيزو دجي أون ميدجيكو.|بحتاج دكتور.
+Preciso trabalhar amanhã.|بريسيزو تراباليار أمانيا.|لازم أشتغل بكرة.
+Quero um café, por favor.|كيرو أون كافيه، بور فاڤور.|بدي قهوة لو سمحت.`,d:`Eu gosto ___ café.|حرف الجر|de|o|em
+Ela gosta ___ praia.|de + a|da|do|de a
+Preciso ___ ajuda.|حرف الجر|de|o|para
+Eu ___ um suco.|بدي|quero|gosto|preciso
+Nós ___ de música.|بنحب|gostamos|gosta|gostam
+Você precisa ___ agora?|تطلع|sair|de sair|saindo`},
+{id:'g-compar',ic:'⚖️',t:'المقارنة',s:'mais… do que، melhor، pior',intro:'• أكتر من: <em>mais + صفة + do que</em>: <em>Ele é mais alto do que eu</em>.<br>• أقل من: <em>menos + صفة + do que</em>.<br>• متل: <em>tão + صفة + quanto</em>.<br>• شاذة: <em>melhor</em> (أحسن)، <em>pior</em> (أسوأ)، <em>maior</em> (أكبر)، <em>menor</em> (أصغر).<br>• الأكتر: <em>o mais</em>: <em>o mais bonito</em>.',r:`Ele é mais alto do que eu.|إيلي إيه مايس آوتو دو كي إيو.|هو أطول مني.
+Este é menos caro.|إيستشي إيه مينوس كارو.|هاد أرخص (أقل غلا).
+Ela é tão inteligente quanto ele.|إيلا إيه تاو إينتيليجينتشي كوانتو إيلي.|هي ذكية متله.
+Este café é melhor.|إيستشي كافيه إيه ميليور.|هالقهوة أحسن.
+Hoje está pior.|أوجي إيستا بيور.|اليوم أسوأ.
+São Paulo é a maior cidade do Brasil.|ساو باولو إيه آ مايور سيدادجي دو برازيو.|ساو باولو أكبر مدينة بالبرازيل.`,d:`Ele é mais alto ___ eu.|من|do que|que do|como
+Este carro é ___ do que aquele.|أحسن|melhor|mais bom|bom
+Ela é ___ inteligente quanto ele.|متل|tão|mais|muito
+O trânsito hoje está ___.|أسوأ|pior|mais mau|ruim
+É a ___ cidade do Brasil.|أكبر|maior|mais grande|grande
+Este é ___ caro.|أقل|menos|mais|tão`},
+];
+BG.forEach(t=>{t.cat='g';t.R=lines(t.r).map(([pt,pron,ar])=>({pt,pron,ar,key:'b|'+pt}));t.D=t.d?lines(t.d):[]});
 
 /* ===== قصص وحوارات مسموعة: واحدة لكل وحدة ===== */
 const STORIES=[
@@ -9573,11 +9784,11 @@ const PAIRS=[
    items: البرتغالي|النطق|العربي|عنوان صورة ويكيبيديا (أو - بدون صورة)|إيموجي
    fr:    جمل:  البرتغالي|النطق|العربي|إيموجي                                  */
 const KGROUPS=[
- {id:'first',ar:'أول الكلمات',ic:'🌱'},
- {id:'me',ar:'أنا وعيلتي',ic:'💛'},
- {id:'home',ar:'البيت والمدرسة',ic:'🏡'},
- {id:'world',ar:'العالم حوالينا',ic:'🌍'},
- {id:'day',ar:'كل يوم',ic:'☀️'},
+ {id:'s1',ar:'الخطوة 1: أول الكلمات',ic:'🌱',ids:['familia','cores','numeros','corpo']},
+ {id:'s2',ar:'الخطوة 2: حياتي كل يوم',ic:'🏡',ids:['comida','casa','roupas','animais']},
+ {id:'s3',ar:'الخطوة 3: بحكي وبلعب',ic:'💬',ids:['frases','sentimentos','brinquedos','escola']},
+ {id:'s4',ar:'الخطوة 4: العالم حوالينا',ic:'🌍',ids:['natureza','transporte','lugares','acoes']},
+ {id:'s5',ar:'الخطوة 5: كلمات أصعب',ic:'🚀',ids:['formas','opostos','profissoes','tempo']},
 ];
 const KIDS=[
  {id:'cores',g:'first',pt:'As cores',ar:'الألوان',ic:'🎨',bg:'#FFE3E3',fg:'#C92A2A',color:true,items:`vermelho|ڤيرميليو|أحمر|#E03131|🔴
@@ -9998,6 +10209,8 @@ Tchau! Até amanhã!|تشاو! أتيه أمانيا!|باي! لبكرة!|-|👋
 ];
 KIDS.forEach(k=>{k.L=lines(k.items).map(([pt,pron,ar,img,em])=>({pt,pron,ar,img:(img||'').trim(),em,key:'k|'+pt}));k.F=k.fr?lines(k.fr).map(([pt,pron,ar,em])=>({pt,pron,ar,em,img:'-',key:'kf|'+pt})):[]});
 
+const KORD=KGROUPS.flatMap(g=>g.ids);KIDS.sort((a,b)=>KORD.indexOf(a.id)-KORD.indexOf(b.id));KIDS.forEach(x=>{x.g=(KGROUPS.find(g=>g.ids.includes(x.id))||KGROUPS[4]).id;x.ord=KORD.indexOf(x.id)+1});
+
 /* ===== قسم الأطفال ===== */
 // كل عنصر: البرتغالي|النطق|العربي|عنوان صورة ويكيبيديا (إنجليزي)|إيموجي احتياطي
 /* --- صور ويكيبيديا (مع تخزين مؤقت) --- */
@@ -10020,10 +10233,10 @@ function hydrateKidPics(root){
 const kStars=id=>((S.kids||{})[id]||0);
 
 function vKids(){
-  const card=k=>`<a class="kcat" href="#kids-${k.id}" style="--kb:${k.bg};--kf:${k.fg}"><span class="kc-ic">${k.ic}</span><b lang="pt-BR" dir="ltr">${esc(k.pt)}</b><span>${esc(k.ar)}</span><span class="kc-n">${k.L.length} كلمة${k.F.length?' · '+k.F.length+' جملة':''}</span><span class="kc-st">${'★'.repeat(kStars(k.id))}${'☆'.repeat(3-kStars(k.id))}</span></a>`;
+  const card=k=>`<a class="kcat" href="#kids-${k.id}" style="--kb:${k.bg};--kf:${k.fg}"><span class="kc-ord">${k.ord}</span><span class="kc-ic">${k.ic}</span><b lang="pt-BR" dir="ltr">${esc(k.pt)}</b><span>${esc(k.ar)}</span><span class="kc-n">${k.L.length} كلمة${k.F.length?' · '+k.F.length+' جملة':''}</span><span class="kc-st">${'★'.repeat(kStars(k.id))}${'☆'.repeat(3-kStars(k.id))}</span></a>`;
   const tw=KIDS.reduce((a,k)=>a+k.L.length,0),tf=KIDS.reduce((a,k)=>a+k.F.length,0);
   app.innerHTML=`<div class="stack kids">
-   <div class="kids-hero"><span class="kh-ic">🧸</span><div><h1>${P('Português para crianças')}</h1><p>برتغالي للأطفال: اضغط على الصورة واسمع الكلمة، وبعدين العب! (${tw} كلمة و${tf} جملة)</p></div></div>
+   <div class="kids-hero"><span class="kh-ic">🧸</span><div><h1>${P('Português para crianças')}</h1><p>برتغالي للأطفال: ابدأ من الخطوة 1 بالترتيب. اضغط على الصورة واسمع الكلمة، وبعدين العب! (${tw} كلمة و${tf} جملة)</p></div></div>
    ${KGROUPS.map(g=>`<section class="kgroup"><h2 class="kg-h">${g.ic} ${esc(g.ar)}</h2><div class="kgrid">${KIDS.filter(k=>k.g===g.id).map(card).join('')}</div></section>`).join('')}
    <p class="muted kcredit">الصور من ويكيبيديا (Wikimedia Commons) برخص حرة.</p></div>`;
 }
@@ -10115,7 +10328,7 @@ if('speechSynthesis' in window){loadVoices();try{speechSynthesis.addEventListene
 const isBR=v=>/pt[-_]BR/i.test(v.lang);
 const hasBR=()=>AUD.voices.some(isBR);
 function rank(v){let s=0;if(isBR(v))s+=100;if(/(premium|enhanced|aprimorad|neural|natural)/i.test(v.name))s+=30;if(/google/i.test(v.name))s+=20;if(/(luciana|felipe|francisca|thalita|antonio)/i.test(v.name))s+=10;return s}
-function deviceVoice(){if(S.voice&&S.voice!=='auto'&&S.voice!=='claude'){const v=AUD.voices.find(x=>x.voiceURI===S.voice);if(v)return v}return AUD.voices.slice().sort((a,b)=>rank(b)-rank(a))[0]||null}
+function deviceVoice(){if(S.voice&&S.voice!=='auto'&&S.voice!=='claude'&&S.voice!=='device'){const v=AUD.voices.find(x=>x.voiceURI===S.voice);if(v)return v}return AUD.voices.slice().sort((a,b)=>rank(b)-rank(a))[0]||null}
 const useClaude=()=>!!AUD.tts&&(S.voice==='claude'||S.voice==='auto');
 const audioOK=()=>!!AUD.tts||('speechSynthesis' in window);
 function speechParts(t){
@@ -10124,15 +10337,47 @@ function speechParts(t){
   return t.split('\n').map(s=>s.replace(/\s+/g,' ').trim()).filter(s=>/[A-Za-zÀ-ÿ0-9]/.test(s));
 }
 let speakId=0;
+/* محرك الصوت: أصوات برازيلية أونلاين (رجل وامرأة) ← صوت الجهاز كاحتياط */
+const IS_PWA=(()=>{try{return typeof FB_CONFIG!=='undefined'&&!!FB_CONFIG}catch(e){return false}})();
+const NET={el:null,tok:0,dead:{}};
+try{Object.assign(NET.dead,JSON.parse(localStorage.getItem('netdead')||'{}'))}catch(e){}
+const netAlive=s=>!(NET.dead[s]&&Date.now()-NET.dead[s]<3*3600e3);
+function netDead(s){NET.dead[s]=Date.now();try{localStorage.setItem('netdead',JSON.stringify(NET.dead))}catch(e){}}
+const useNet=()=>{if(IS_PWA&&!S.vmig2){S.vmig2=1;S.voice='auto'}return IS_PWA&&!useClaude()&&(!S.voice||S.voice==='auto'||S.voice==='net')};
+const SEV={f:['Vitoria','Camila'],m:['Ricardo']};
+function netCands(it){const e=encodeURIComponent(it.t),sp=(S.rate||0.8)/0.8,c=[];const r=Math.max(0.5,Math.min(1.4,sp*(it.slow?0.68:1)));
+  if(netAlive('se'))c.push({src:'se',url:'https://api.streamelements.com/kappa/v2/speech?voice='+SEV[it.g==='m'?'m':'f'][it.v||0]+'&text='+e,rate:r,keep:true});
+  if(netAlive('g'))c.push(it.g==='m'?{src:'g',url:'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-BR&q='+e+(it.slow?'&ttsspeed=0.35':''),rate:Math.max(0.5,(it.slow?0.95:1)*0.84*sp),keep:false}
+                                  :{src:'g',url:'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-BR&q='+e,rate:r,keep:true});
+  return c}
+function netPlay(items){
+  const tok=++NET.tok;if(!NET.el){NET.el=new Audio();NET.el.preload='auto'}const el=NET.el;let i=0;
+  return new Promise(res=>{
+    const next=()=>{if(tok!==NET.tok||i>=items.length)return res();const it=items[i++],cs=netCands(it);let c=0;
+      const tryOne=()=>{if(tok!==NET.tok)return res();if(c>=cs.length){devSpeak([it]).then(next);return}const cd=cs[c++];let started=false;
+        const fail=()=>{if(started||tok!==NET.tok)return;started=true;clearTimeout(to);netDead(cd.src);tryOne()};
+        const to=setTimeout(fail,7000);
+        el.onplaying=()=>{started=true;clearTimeout(to)};el.onended=()=>{clearTimeout(to);next()};el.onerror=fail;
+        try{el.preservesPitch=el.webkitPreservesPitch=el.mozPreservesPitch=cd.keep}catch(e){}
+        el.src=cd.url;el.defaultPlaybackRate=cd.rate;el.playbackRate=cd.rate;
+        el.onloadedmetadata=()=>{el.playbackRate=cd.rate};
+        const p=el.play();if(p&&p.catch)p.catch(er=>{if(er&&er.name==='NotAllowedError'){clearTimeout(to);started=true;devSpeak(items.slice(i-1)).then(res)}else fail()})};
+      tryOne()};
+    next()})}
+function devSpeak(items){return new Promise(res=>{
+  if(!('speechSynthesis' in window)){toast('الصوت مش متاح هون. افتح الصفحة بمتصفح Chrome أو Safari.');return res()}
+  try{speechSynthesis.cancel()}catch(e){}const v=deviceVoice(),base=S.rate||0.8;let n=0,last=null;
+  items.forEach(it=>speechParts(it.t).forEach(p=>{const vv=(it.vo&&it.vo.dv)||v;const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'pt-BR';if(vv)u.voice=vv;
+    u.rate=it.slow?Math.max(0.35,base*0.55):base;u.pitch=it.vo?it.vo.pitch:(it.g==='m'?0.8:1);last=u;n++;speechSynthesis.speak(u)}));
+  if(!last)return res();last.onend=last.onerror=()=>res();
+  if(AUD.voices.length&&!hasBR()&&!say.warned){say.warned=true;toast('جهازك ما فيه صوت برازيلي، فالنطق ممكن يطلع أوروبي. شوف إعدادات الصوت.')}})}
 async function say(text,slow,vo){
   const parts=speechParts(text);if(!parts.length)return;
   const id=++speakId;const base=S.rate||0.8;
-  if(useClaude()){try{const r=Math.max(0.7,Math.min(1.3,(slow?0.75:base+0.15)));await AUD.tts.speak(parts.map(p=>Object.assign({text:p,language:'pt-BR',rate:r},vo&&vo.cv?{voice:vo.cv}:{})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
-  if('speechSynthesis' in window){try{speechSynthesis.cancel();await sleep(80);if(id!==speakId)return;const v=deviceVoice();
-      const vv=(vo&&vo.dv)||v;parts.forEach(p=>{const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'pt-BR';if(vv)u.voice=vv;u.rate=slow?Math.max(0.45,base*0.72):base;u.pitch=vo?vo.pitch:1;speechSynthesis.speak(u)});
-      if(AUD.voices.length&&!hasBR()&&!say.warned){say.warned=true;toast('جهازك ما فيه صوت برازيلي، فالنطق ممكن يطلع أوروبي. شوف إعدادات الصوت.')}
-      return}catch(e){}}
-  toast('الصوت مش متاح هون. افتح الصفحة بمتصفح Chrome أو Safari.');
+  if(useClaude()){try{const r=slow?0.7:Math.max(0.85,Math.min(1.3,base+0.2));await AUD.tts.speak(parts.map(p=>Object.assign({text:p,language:'pt-BR',rate:r},vo&&vo.cv?{voice:vo.cv}:{})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
+  const g=vo?vo.g:'f';
+  if(useNet()){try{speechSynthesis.cancel()}catch(e){}return netPlay(parts.map(t=>({t,g,slow,v:vo&&vo.sev||0,vo})))}
+  return devSpeak(parts.map(t=>({t,g,slow,vo})));
 }
 /* ===== أصوات الحوار: صوت مختلف لكل شخص ===== */
 const VOSP={};
@@ -10151,8 +10396,8 @@ function dlgVoices(key,sp){sp=sp||['A','B'];const ck=key+'|'+AUD.voices.length+'
   const used=[];const out=g.map((gg,k)=>{let c=(gg==='f'?F:M).filter(v=>!used.includes(v));if(!c.length)c=U.concat(gg==='f'?M:F).filter(v=>!used.includes(v));
     const dv=c.length?c[(h+k*13)%c.length]:(pool[0]||null);used.push(dv);
     const CF=['airy','glassy'],CM=['buttery','rounded'];const cv=(gg==='f'?CF:CM)[(h>>(k+1))%2];
-    return {dv,cv,g:gg,pitch:1}});
-  if(g[0]===g[1]&&out[0].cv===out[1].cv)out[1].cv=(g[1]==='f'?(out[0].cv==='airy'?'glassy':'airy'):(out[0].cv==='buttery'?'rounded':'buttery'));
+    return {dv,cv,g:gg,pitch:1,sev:gg==='f'?(h>>(k+3))%2:0}});
+  if(g[0]===g[1]&&g[0]==='f'){out[0].sev=0;out[1].sev=1}if(g[0]===g[1]&&out[0].cv===out[1].cv)out[1].cv=(g[1]==='f'?(out[0].cv==='airy'?'glassy':'airy'):(out[0].cv==='buttery'?'rounded':'buttery'));
   if(!out[0].dv||out[0].dv===out[1].dv){out[0].pitch=g[0]==='f'?1.2:0.85;out[1].pitch=g[1]==='f'?(g[0]==='f'?1.4:1.2):(g[0]==='m'?0.7:0.85)}
   return VCACHE[ck]=out}
 function voOf(s){const [key,k]=String(s).split('#');return dlgVoices(key,VOSP[key])[+k||0]}
@@ -10163,7 +10408,7 @@ function dlgPool(c,passage){const P0=c.DQ.map(([q,ok,...w],i)=>Object.assign(Q.m
     ex.push(Object.assign(Q.mc('مين قال هالجملة بالحوار؟',c.SP[x.s],[c.SP[1-x.s]],{pt:x.pt}),{id:'w'+i}))});
   const byType=t=>shuffle(ex.filter(q=>q.id[0]===t));const m=byType('m'),r=byType('r'),w=byType('w');const mix=[];while(m.length||r.length||w.length){[m,r,m,w].forEach(a=>{if(a.length)mix.push(a.shift())})}
   return P0.concat(mix)}
-function stopAudio(){speakId++;try{AUD.tts&&AUD.tts.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
+function stopAudio(){speakId++;NET.tok++;try{NET.el&&NET.el.pause()}catch(e){}try{AUD.tts&&AUD.tts.stop()}catch(e){}try{speechSynthesis.cancel()}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-say]');if(b){e.preventDefault();say(b.dataset.say,b.dataset.slow==='1',b.dataset.vo?voOf(b.dataset.vo):null);return}const em=e.target.closest('.lesson em, .card em');if(em){say(em.textContent)}});
 let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200)}
 
@@ -10182,13 +10427,13 @@ const lvOf=u=>u.lv||1;
 const unitsOf=n=>UNITS.filter(u=>lvOf(u)===n);
 const lvReady=n=>unitsOf(n).length>0;
 const canSkip=()=>IS_OWNER||!!ROLE.unlockAll;
-const lvFree=n=>(ROLE.openTo||0)>=n;
-const lvOpen=n=>n===1||canSkip()||lvFree(n)||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
+const lvFree=n=>(ROLE.openTo||0)>=n||(S.placeLv||1)>n;
+const lvOpen=n=>n===1||n<=(S.placeLv||1)||canSkip()||lvFree(n)||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
 const isFinal=k=>/^f\d$/.test(String(k));
 const PREVIEW=3;
 function chOpen(id){if(id<=PREVIEW)return true;const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L))return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
 const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||lvFree(n)||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||lvFree(lvOf(u))||EXAMS[k].chs.every(chDone))};
-function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
+function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(L.n<(S.placeLv||1))continue;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+k;
 const STEPS=[['lesson','الدرس'],['words','الكلمات'],['sents','الجمل'],['drills','القواعد'],['game','لعبة'],['quiz','الاختبار']];
 const stepsOf=id=>{const c=CH[id-1];return c&&c.DL?[STEPS[0],['dialog','الحوار'],...STEPS.slice(1)]:STEPS};
@@ -10249,7 +10494,7 @@ function runQuiz(el,qs,o){
   let i=0,score=0;const log=[];
   const show=()=>{
     const q=qs[i];let h=`<div class="quiz">${o.raw?'':`<div class="qhead"><span>${esc(o.title)}</span><span class="tnum">${i+1} / ${qs.length}</span></div><div class="qbar"><i style="width:${i/qs.length*100}%"></i></div>`}`;
-    if(o.raw)h+=`<div class="qhead"><span>${esc(o.title)}</span></div>`;
+    if(o.raw)h+=`<div class="qhead"><span>${esc(o.title)}</span><span class="tnum">${i+1} / ${qs.length}</span></div><div class="qbar"><i style="width:${i/qs.length*100}%"></i></div>`;
     if(q.sec&&(i===0||qs[i-1].sec!==q.sec))h+=`<div class="sec-start">القسم: ${SEC[q.sec]}</div>`;else if(q.sec)h+=`<span class="sec-tag">${SEC[q.sec]}</span>`;
     if(q.passage)h+=`<details class="passage" ${i===0||qs[i-1].passage!==q.passage?'open':''}><summary>النص ${sayBtn(q.passage)}</summary><p lang="pt-BR" dir="ltr">${esc(q.passage)}</p></details>`;
     h+=`<p class="qlab">${bidi(q.lab)}</p>`;
@@ -10262,7 +10507,7 @@ function runQuiz(el,qs,o){
     if(q.t==='fill')h+=`<div class="fill-s" lang="pt-BR" dir="ltr">${esc(q.sent).replace('___','<span class="blank">______</span>')}</div>${q.hint?`<p class="qhint">${bidi(q.hint)}</p>`:''}<div class="opts">${q.o.map(optHtml).join('')}</div>`;
     if(q.t==='mcq')h+=`<div class="opts">${q.o.map(optHtml).join('')}</div>`;
     if(q.t==='tf')h+=`<div class="tf-st">${bidi(q.stmt)}</div><div class="tf-btns"><button class="opt yes" data-v="1">صح ✓</button><button class="opt no" data-v="0">خطأ ✗</button></div>`;
-    if(q.t==='type')h+=`<input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" lang="pt-BR" dir="ltr" placeholder="اكتب هون…" aria-label="جوابك"><p class="tin-hint">${tileWords(q.ans)?'اضغط على الكلمات بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.':'اضغط على الحروف بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.'}</p><div class="tiles" id="tiles">${makeTiles(q.ans).map((t,i)=>`<button type="button" class="ltile${t===' '?' sp':''}" data-ti="${i}" data-tv="${esc(t)}">${t===' '?'␣':esc(t)}</button>`).join('')}</div><div class="row tile-ctl"><button type="button" class="btn ghost" id="tundo">⌫ تراجع</button><button type="button" class="btn ghost" id="tclr">مسح الكل</button></div><button class="btn primary" id="chk">تحقّق</button>`;
+    if(q.t==='type')h+=`<input class="tin" id="tin" autocomplete="off" autocapitalize="off" spellcheck="false" lang="pt-BR" dir="ltr" placeholder="اكتب هون…" aria-label="جوابك">${q.noTiles?'<p class="tin-hint">اكتب الجواب بنفسك من لوحة المفاتيح.</p>':`<p class="tin-hint">${tileWords(q.ans)?'اضغط على الكلمات بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.':'اضغط على الحروف بالترتيب الصحيح، أو اكتب من لوحة المفاتيح.'}</p><div class="tiles" id="tiles">${makeTiles(q.ans).map((t,i)=>`<button type="button" class="ltile${t===' '?' sp':''}" data-ti="${i}" data-tv="${esc(t)}">${t===' '?'␣':esc(t)}</button>`).join('')}</div><div class="row tile-ctl"><button type="button" class="btn ghost" id="tundo">⌫ تراجع</button><button type="button" class="btn ghost" id="tclr">مسح الكل</button></div>`}<button class="btn primary" id="chk">تحقّق</button>`;
     if(q.t==='scr')h+=`<div class="ansline" id="al"></div><div class="tiles" id="tl"></div><div class="row"><button class="btn primary" id="chk">تحقّق</button><button class="btn ghost" id="clr">امسح</button></div>`;
     h+=`<div class="fb" id="fb" aria-live="polite"></div><div class="row"><button class="btn primary" id="nx" hidden>${i<qs.length-1||o.raw?'التالي ←':'شوف النتيجة'}</button></div></div>`;
     el.innerHTML=h;
@@ -10298,7 +10543,7 @@ $$('[data-ac]',el).forEach(b=>b.onclick=()=>{const s=tin.selectionStart??tin.val
     if(q.listen)setTimeout(()=>say(q.say),300);
   };
   const end=()=>{
-    if(o.raw){save();return o.raw(score)}
+    if(o.raw){save();return o.raw(score,log)}
     const pct=Math.round(score/qs.length*100),pass=pct>=(o.pass||70);
     const secs={};qs.forEach((q,k)=>{if(!q.sec)return;secs[q.sec]=secs[q.sec]||{s:0,n:0};secs[q.sec].n++;secs[q.sec].s+=log[k].credit});
     const sp={};for(const k in secs)sp[k]=Math.round(secs[k].s/secs[k].n*100);
@@ -10378,7 +10623,7 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
-  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
+  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
@@ -10429,7 +10674,7 @@ function vHome(){
    <a class="btn" href="#settings">إعدادات الصوت والتقدّم</a></div>`;
 }
 
-function voiceOptions(){let h='';if(AUD.tts)h+=`<option value="claude">صوت Claude (برازيلي، الأوضح)</option>`;h+=`<option value="auto">تلقائي (أحسن صوت متاح)</option>`;
+function voiceOptions(){let h='';if(AUD.tts)h+=`<option value="claude">صوت Claude (برازيلي، الأوضح)</option>`;if(IS_PWA)h+=`<option value="auto">أصوات برازيلية حقيقية: رجل وامرأة (الأفضل)</option><option value="device">صوت الجهاز فقط</option>`;else h+=`<option value="auto">تلقائي (أحسن صوت متاح)</option>`;
   AUD.voices.slice().sort((a,b)=>rank(b)-rank(a)).forEach(v=>{h+=`<option value="${esc(v.voiceURI)}">${esc(v.name)} · ${isBR(v)?'برازيلي ✓':'برتغالي أوروبي ✗'}</option>`});return h}
 function fillVoiceSel(sel){sel.innerHTML=voiceOptions();sel.value=S.voice;if(sel.value!==S.voice)sel.value='auto';const w=$('#vwarn');if(w)w.hidden=!( 'speechSynthesis' in window)||hasBR()||useClaude()}
 function vSettings(){
@@ -10880,21 +11125,22 @@ async function askClaude(msgs){
   if(!v||typeof v!=='object'){const r=await sample(msgs,{cache:false,modelTier:'default'});const t=r.text||'';const a=t.indexOf('{'),b=t.lastIndexOf('}');v=JSON.parse(t.slice(a,b+1))}
   return v;
 }
+const canRec=()=>IS_PWA&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder);
 function vChat(){
   const lv=(S.chatLv)||LEVELS[Math.max(0,(nextItem()&&nextItem().t==='ch'?lvOf(unitOf(nextItem().id)):1)-1)].tag;
-  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">محادثة مع Claude</h1><p class="muted" style="margin:4px 0 0">اختار موقف. Claude بيلعب دور البرازيلي، وبيصحّحلك أهم غلطة بعد كل رد. تقدر تكتب بالعربي إذا علقت، وبيعلمك كيف تقولها.</p></div>
+  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">تكلّم مع الذكاء الاصطناعي 🤖</h1><p class="muted" style="margin:4px 0 0">اختار موقف واحكي بصوتك 🎤 أو اكتب. الذكاء الاصطناعي بيلعب دور البرازيلي، وبيصحّحلك أهم غلطة بعد كل رد. إذا علقت احكي بالعربي، وبيعلمك كيف تقولها.</p></div>
    <div class="pager" id="lvp">${LEVELS.map(L=>`<button class="pill${lv===L.tag?' on':''}" data-l="${L.tag}">${L.tag}</button>`).join('')}</div>
    <div class="ggrid">${SCEN.map(s=>`<button class="gcard" data-s="${s.k}"><span class="gi" style="background:var(--green-soft)">${s.ic}</span><h3>${s.ar}</h3></button>`).join('')}</div></div>`;
   $$('#lvp .pill').forEach(b=>b.onclick=()=>{S.chatLv=b.dataset.l;save();vChat()});
   $$('.gcard').forEach(b=>b.onclick=()=>chatRoom(SCEN.find(x=>x.k===b.dataset.s),lv));
 }
 function chatRoom(sc,lv){
-  chatSt={sc,lv,msgs:[{role:'user',content:chatSystem(sc,lv)+'\n\nStart the conversation now with your first line, in character.'}],view:[]};
+  chatSt={sc,lv,g:Math.random()<.5?'m':'f',msgs:[{role:'user',content:chatSystem(sc,lv)+'\n\nStart the conversation now with your first line, in character.'}],view:[]};
   app.innerHTML=`<div class="stack chat"><div class="row" style="justify-content:space-between"><button class="back linkbtn" id="cb">→ المواقف</button><span class="chip">${sc.ic} ${esc(sc.ar)} · ${lv}</span></div>
    <div id="log" class="log" aria-live="polite"></div>
    <div class="sugg" id="sugg"></div>
    <div class="chat-in"><textarea id="cin" rows="2" lang="pt-BR" dir="auto" placeholder="اكتب ردّك بالبرتغالي… (أو بالعربي إذا علقت)"></textarea>
-   <div class="row">${DICT?`<button class="btn" id="cmic">🎤 احكي</button>`:''}<button class="btn primary" id="send">أرسل</button><label class="toggle" style="gap:6px;margin-inline-start:auto"><input type="checkbox" class="switch" id="auto" ${S.chatAuto!==false?'checked':''}><span style="font-size:13px">صوت تلقائي</span></label></div></div></div>`;
+   <div class="row">${DICT||canRec()?`<button class="btn mic-big" id="cmic">🎤 احكي</button>`:''}<button class="btn primary" id="send">أرسل</button><label class="toggle" style="gap:6px;margin-inline-start:auto"><input type="checkbox" class="switch" id="auto" ${S.chatAuto!==false?'checked':''}><span style="font-size:13px">صوت تلقائي</span></label></div></div></div>`;
   $('#cb').onclick=vChat;$('#auto').onchange=e=>{S.chatAuto=e.target.checked;save()};
   const log=$('#log');
   const draw=()=>{log.innerHTML=chatSt.view.map(m=>m.me?`<div class="bub me" dir="auto">${esc(m.text)}</div>${m.cor?`<div class="cor"><b>تصحيح:</b> <span class="pt" dir="ltr">${esc(m.cor.you_said||'')}</span> ← <span class="pt good" dir="ltr" data-say="${esc(m.cor.better||'')}">${esc(m.cor.better||'')}</span><br><span class="muted">${esc(m.cor.why_ar||'')}</span></div>`:''}`
@@ -10906,24 +11152,34 @@ function chatRoom(sc,lv){
     try{const v=await askClaude(chatSt.msgs);chatSt.view.pop();
       const last=chatSt.view[chatSt.view.length-1];if(last&&last.me&&v.correction&&v.correction.better)last.cor=v.correction;
       chatSt.view.push({text:v.reply||'',ar:v.reply_ar||''});chatSt.msgs.push({role:'assistant',content:JSON.stringify(v)});sugg(v.suggestions);draw();
-      if(S.chatAuto!==false&&v.reply)say(v.reply);addXP(2)}
-    catch(e){chatSt.view.pop();chatSt.view.push({err:e&&e.code==='rate_limited'?'كثير رسائل بوقت قصير. استنى دقيقة وجرّب.':e&&e.code==='not_granted'?'ما في إذن لـ Claude بهالصفحة.':e&&e.code==='unavailable'?'المحادثة مع الذكاء الاصطناعي رح تنضاف بنسخة جاية.':'صار خطأ. جرّب كمان مرة.'});draw()}
+      if(S.chatAuto!==false&&v.reply)say(v.reply,false,{g:chatSt.g,pitch:1,cv:chatSt.g==='m'?'rounded':'airy',sev:0});addXP(2)}
+    catch(e){chatSt.view.pop();chatSt.view.push({err:e&&e.code==='rate_limited'?'كثير رسائل بوقت قصير. استنى دقيقة وجرّب.':e&&e.code==='not_granted'?'ما في إذن للذكاء الاصطناعي بهالصفحة.':e&&e.code==='setup'?(IS_OWNER?'الذكاء الاصطناعي لسا مش مفعّل بـ Firebase (AI Logic + App Check). ':'المحادثة مش متاحة هلأ، جرّب بعدين.'):e&&e.code==='unavailable'?'المحادثة مش متاحة بهالنسخة.':'صار خطأ بالاتصال. جرّب كمان مرة.'});draw()}
     $('#send').disabled=false};
   const send=()=>{const t=$('#cin').value.trim();if(!t)return;$('#cin').value='';chatSt.view.push({me:true,text:t});chatSt.msgs.push({role:'user',content:t});sugg([]);turn()};
   $('#send').onclick=send;$('#cin').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
   if(DICT){let base='';dictHandler=(type,e)=>{if(type==='partial')$('#cin').value=(base+' '+(e.text||'')).trim();if(type==='final'){base=(base+' '+(e.text||'')).trim();$('#cin').value=base}if(type==='state'){$('#cmic').classList.toggle('on',e.state==='listening');$('#cmic').textContent=e.state==='listening'?'⏹ خلّصت':'🎤 احكي'}};
     $('#cmic').onclick=()=>{if($('#cmic').classList.contains('on')){DICT.stop().catch(()=>{});return}base=$('#cin').value;stopAudio();DICT.start().catch(()=>toast('ما قدرت أشغّل المايك.'))}}
+  else if(canRec()){let rec=null,chunks=[];const mic=$('#cmic');
+    mic.onclick=async()=>{if(rec&&rec.state==='recording'){rec.stop();return}
+      stopAudio();try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];
+        const mt=['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg'].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||'';
+        rec=new MediaRecorder(stream,mt?{mimeType:mt}:{});rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+        rec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());mic.classList.remove('on');mic.textContent='⏳ عم أسمعك…';mic.disabled=true;
+          try{const blob=new Blob(chunks,{type:rec.mimeType||mt||'audio/mp4'});const sample=await claude.use('sample');const t=await sample.transcribe(blob);
+            if(t){$('#cin').value=t;send()}else toast('ما سمعت إشي، احكي أعلى شوي.')}catch(e){toast(e&&e.code==='rate_limited'?'كثير طلبات، استنى دقيقة.':'ما قدرت أفهم التسجيل، جرّب كمان مرة أو اكتب.')}
+          mic.disabled=false;mic.textContent='🎤 احكي'};
+        rec.start();mic.classList.add('on');mic.textContent='⏹ خلّصت، أرسل'}catch(e){toast('ما قدرت أشغّل المايك. اسمح للتطبيق يستخدم المايكروفون.')}}}
   turn();
 }
 
 /* ===== القصص ===== */
 const VOICES=['buttery','airy'];
 async function playStory(st){
-  const key=st.key||('st'+(st.id||st.pt||'')),sp=st.sp||['A','B'];VOSP[key]=sp;const vos=dlgVoices(key,sp);
-  if(AUD.tts&&useClaude()){try{await AUD.tts.speak(st.L.map(x=>({text:x.pt,language:'pt-BR',voice:vos[x.who==='A'?0:1].cv,rate:Math.max(0.75,(S.rate||0.8)+0.1)})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
-  if('speechSynthesis' in window){speechSynthesis.cancel();await sleep(80);const v=deviceVoice();
-    st.L.forEach(x=>{const vo=vos[x.who==='A'?0:1],vv=vo.dv||v;speechParts(x.pt).forEach(p=>{const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'pt-BR';if(vv)u.voice=vv;u.rate=S.rate||0.8;u.pitch=vo.pitch;speechSynthesis.speak(u)})});return}
-  toast('الصوت مش متاح هون.');
+  const key=st.key||('st'+(st.id||st.pt||'')),sp=st.sp||['A','B'];VOSP[key]=sp;const vos=dlgVoices(key,sp);stopAudio();
+  if(AUD.tts&&useClaude()){try{await AUD.tts.speak(st.L.map(x=>({text:x.pt,language:'pt-BR',voice:vos[x.who==='A'?0:1].cv,rate:Math.max(0.85,(S.rate||0.8)+0.2)})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
+  const items=st.L.flatMap(x=>{const vo=vos[x.who==='A'?0:1];return speechParts(x.pt).map(t=>({t,g:vo.g,v:vo.sev||0,vo}))});
+  if(useNet())return netPlay(items);
+  return devSpeak(items);
 }
 function vStories(){
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">قصص وحوارات مسموعة</h1><p class="muted" style="margin:4px 0 0">حوار لكل وحدة بصوتين. اسمعه كامل أول، بعدين اقرأ، وجاوب على الأسئلة.</p></div>
@@ -10943,36 +11199,65 @@ function vStory(id){
   show();
 }
 
-/* ===== الأصوات الصعبة ===== */
+/* ===== الأصوات المتشابهة ===== */
 function vSounds(){
-  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">الأصوات الصعبة على العرب</h1><p class="muted" style="margin:4px 0 0">كلمتين متشابهتين بس معناهم مختلف. اسمع، وبعدين امتحن أذنك.</p></div>
+  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">الأصوات المتشابهة</h1><p class="muted" style="margin:4px 0 0">كلمتين متشابهتين بس معناهم مختلف. اسمع، وبعدين امتحن أذنك.</p></div>
   <div class="row"><button class="btn primary" id="sq">امتحن أذنك (12 سؤال)</button></div>
   ${PAIRS.map(g=>`<section class="card"><h3 style="margin:0 0 4px;font-size:17px">${esc(g.g)}</h3><p class="muted" style="margin:0 0 8px;font-size:14px">${esc(g.tip)}</p><div class="pairs">${g.p.map(([a,b,ma,mb])=>`<div class="pair-row"><button class="pw" data-say="${esc(a)}">${SPK}<span class="pt" dir="ltr">${esc(a)}</span><small>${esc(ma)}</small></button><span class="vs">≠</span><button class="pw" data-say="${esc(b)}">${SPK}<span class="pt" dir="ltr">${esc(b)}</span><small>${esc(mb)}</small></button></div>`).join('')}</div></section>`).join('')}
-  <p class="muted" style="font-size:13px;margin:0">ملاحظة: دقة هالفروق بتعتمد على صوت جهازك. صوت Claude أو صوت برازيلي محسّن بيطلّع الفرق أوضح.</p></div>`;
+  <p class="muted" style="font-size:13px;margin:0">ملاحظة: دقة هالفروق بتعتمد على صوت جهازك. الأصوات البرازيلية الحقيقية (من الإعدادات) بتطلّع الفرق أوضح.</p></div>`;
   $('#sq').onclick=()=>{app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#sounds">→ الأصوات</a></div><div id="qb"></div>`;
     const all=PAIRS.flatMap(g=>g.p);const qs=pick(all,12).map(([a,b,ma,mb])=>{const pickA=Math.random()<.5;const t=pickA?a:b;const o=shuffle([a,b]);return{t:'mcq',lab:'شو الكلمة اللي سمعتها؟',listen:true,say:t,o,a:o.indexOf(t),reveal:pickA?`${a} = ${ma}`:`${b} = ${mb}`}});
     runQuiz($('#qb'),qs,{title:'امتحن أذنك',retry:vSounds,next:{label:'الرجوع إلى الأصوات',href:'#sounds'}})};
 }
 
-/* ===== امتحان تحديد المستوى ===== */
+/* ===== امتحان تحديد المستوى (احترافي: استماع، قراءة، قواعد، مفردات، كتابة) ===== */
+const PSEC={l:'🎧 الاستماع',r:'📖 القراءة',g:'🧩 القواعد',v:'🔤 المفردات',w:'✍️ الكتابة'};
+function placeQs(n){
+  const us=unitsOf(n),chs=us.flatMap(u=>u.chs).map(i=>CH[i-1]).filter(Boolean);
+  const W=chs.flatMap(c=>c.W.filter(w=>!w.x)),Sx=chs.flatMap(c=>c.S.filter(s=>!s.x)),D=chs.flatMap(c=>c.D);
+  const ex=shuffle(us.map(u=>EXAMS[u.n]).filter(E=>E&&E.passage));const E=ex[0];
+  const R=E?shuffle(E.qs).slice(0,2).map(([q,c,...w])=>Q.mc(q,c,w,{sec:'r',passage:E.passage})).concat(shuffle(E.tf).slice(0,1).map(([st,tr])=>Q.tf('صح أو خطأ حسب النص',st,tr,{sec:'r',passage:E.passage}))):[];
+  const ss=shuffle(Sx),short=shuffle(Sx.filter(s=>s.pt.split(' ').length<=6&&s.pt.split(' ').length>=3));
+  const L=ss.slice(0,2).map(s=>({...qListen(s,Sx),sec:'l'})).concat(short.slice(0,1).map(s=>({...qDict(s),sec:'l',noTiles:true})));
+  const G=pick(D,3).map(d=>({...drillQ(d),sec:'g'}));
+  const V=pick(W,2).map((w,i)=>({...(i?qAr2Pt(w,W):qPt2Ar(w,W)),sec:'v'}));
+  const Wr=short.slice(1,3).map(s=>({...K(Q.type(s.ar,s.pt,'ترجم للبرتغالي (بدون مساعدة)'),s),sec:'w',noTiles:true}));
+  return R.concat(L,G,V,Wr);
+}
 function vPlacement(){
-  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">امتحان تحديد المستوى</h1><p style="margin:0">أسئلة قواعد ومعاني بتصعب تدريجيًا من A1 لـ C1، 6 أسئلة لكل مستوى. بتوقف لما توصل حدّك. بالآخر بنقلك تبدأ من مستواك الحقيقي.</p>${S.place?`<p class="muted" style="margin:0">آخر نتيجة: ${S.place}</p>`:''}<div class="row"><button class="btn sun" id="go">ابدأ</button></div></div></div>`;
+  const last=S.placeRes;
+  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">🧭 امتحان تحديد المستوى</h1>
+   <p style="margin:0">امتحان حقيقي بيقيس <b>5 مهارات</b> بكل مستوى: الاستماع، القراءة، القواعد، المفردات، والكتابة.</p>
+   <ul class="plain" style="margin:0;padding-inline-start:20px;line-height:1.9"><li>بتبدأ من A1، وكل ما تنجح بمستوى بتنتقل للي بعده.</li><li>عشان تنجح بمستوى لازم تجيب <b>70٪ أو أكتر</b>، وما تقل أي مهارة عن <b>50٪</b>.</li><li>بالكتابة ما في مساعدة: اكتب الجواب بنفسك.</li><li>بالنهاية <b>بينفتحلك المسار من مستواك الحقيقي</b> وبتكمل منه.</li></ul>
+   <p class="muted" style="margin:0">المدة: من 5 لـ 25 دقيقة (13 سؤال لكل مستوى). جاوب بصدق، بدون ترجمة خارجية، عشان تبدأ من المكان الصح.</p>
+   ${last?`<p class="muted" style="margin:0">آخر نتيجة: <b>${esc(S.place||'')}</b></p>`:''}
+   <div class="row"><button class="btn primary" id="go">ابدأ الامتحان</button></div></div></div>`;
   $('#go').onclick=()=>runLevel(1,[]);
 }
 function runLevel(n,res){
-  const chs=unitsOf(n).flatMap(u=>u.chs).map(i=>CH[i-1]);
-  const W=chs.flatMap(c=>c.W);const qs=pick(chs.flatMap(c=>c.D.filter(d=>d[0].includes('___'))),4).map(drillQ).concat(pick(W,2).map(w=>qPt2Ar(w,W)));
-  app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#practice">→ التدريب</a><span class="eyebrow">المستوى ${LEVELS[n-1].tag}</span></div><div id="qb"></div>`;
-  runQuiz($('#qb'),shuffle(qs),{title:'تحديد المستوى · '+LEVELS[n-1].tag,xp:2,raw:score=>{const p=score/qs.length;res.push(p);const more=p>=.67&&n<5&&lvReady(n+1);if(more)runLevel(n+1,res);else placeResult(res)}});
+  const qs=placeQs(n);
+  app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#placement">→ تحديد المستوى</a><span class="eyebrow">المستوى ${LEVELS[n-1].tag} · ${esc(LEVELS[n-1].name)}</span></div><div id="qb"></div>`;
+  runQuiz($('#qb'),qs,{title:'تحديد المستوى · '+LEVELS[n-1].tag,xp:2,raw:(score,log)=>{
+    const sk={};qs.forEach((q,k)=>{sk[q.sec]=sk[q.sec]||{s:0,n:0};sk[q.sec].n++;sk[q.sec].s+=(log&&log[k]?log[k].credit:0)});
+    const p=score/qs.length,min=Math.min(...Object.values(sk).map(x=>x.s/x.n));const pass=p>=.7&&min>=.5;
+    res.push({n,p,pass,sk:Object.fromEntries(Object.entries(sk).map(([k,x])=>[k,x.s/x.n]))});
+    if(pass&&n<5&&lvReady(n+1))levelGate(n,res);else placeResult(res)}});
 }
+function levelGate(n,res){const r=res[res.length-1];
+  app.innerHTML=`<div class="stack"><div class="result card"><div class="ring" style="--p:${Math.round(r.p*100)};--c:var(--ok)"><b>${Math.round(r.p*100)}%</b></div><h2>نجحت بمستوى ${LEVELS[n-1].tag} 👏</h2><p class="muted" style="margin:0">الجاي: ${LEVELS[n].tag} · ${esc(LEVELS[n].name)} (أصعب).</p>
+   <div class="row" style="justify-content:center"><button class="btn primary" id="nx">كمّل للمستوى ${LEVELS[n].tag}</button><button class="btn" id="st">وقّف هون وشوف النتيجة</button></div></div></div>`;
+  $('#nx').onclick=()=>runLevel(n+1,res);$('#st').onclick=()=>placeResult(res)}
 function placeResult(res){
-  let lv=1;res.forEach((p,i)=>{if(p>=.67)lv=Math.min(5,i+2)});lv=Math.min(lv,LEVELS.filter(L=>lvReady(L.n)).length);
-  const L=LEVELS[lv-1];S.place=L.tag;save();
-  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="result card"><div class="ring" style="--p:${lv*20};--c:var(--green)"><b>${L.tag}</b></div><h2>ننصحك تبدأ من ${esc(L.name)}</h2>
-   <div class="secbars">${res.map((p,i)=>`<div class="secbar"><span>${LEVELS[i].tag}</span><span class="tr"><i style="width:${Math.round(p*100)}%;background:${p>=.67?'var(--ok)':'var(--bad)'}"></i></span><span>${Math.round(p*100)}%</span></div>`).join('')}</div>
-   <p class="muted" style="margin:0">النتيجة تقريبية. إذا حسّيت الدروس سهلة، كمّل، وإذا صعبة ارجع مستوى.</p>
-   <div class="row" style="justify-content:center">${lv>1&&IS_OWNER?`<button class="btn primary" id="open">افتح المستويات لحد ${L.tag}</button>`:''}<a class="btn" href="#path">للمسار</a></div></div></div>`;
-  const o=$('#open');if(o)o.onclick=()=>{S.openTo=Math.max(S.openTo||1,lv);save();toast('انفتحت المستويات لحد '+L.tag);location.hash='#path'};
+  const passed=res.filter(r=>r.pass).length;const maxLv=LEVELS.filter(L=>lvReady(L.n)).length;
+  const lv=Math.min(maxLv,passed+1),all=passed>=maxLv;const L=LEVELS[lv-1];
+  S.place=all?'C1 ✓':L.tag;S.placeRes=res.map(r=>({n:r.n,p:Math.round(r.p*100),pass:r.pass}));S.placeLv=Math.max(S.placeLv||1,lv);save();pushStats&&pushStats(true);
+  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="result card"><div class="ring" style="--p:${lv*20};--c:var(--green)"><b>${all?'C1':L.tag}</b></div>
+   <h2>${all?'مستواك متقدم جدًا! خلّصت كل المستويات 🏆':passed?`مستواك: ابدأ من ${esc(L.name)} (${L.tag})`:'ابدأ من البداية: المستوى الأول (A1)'}</h2>
+   ${res.map(r=>`<div class="pl-lv"><h3>${LEVELS[r.n-1].tag} ${r.pass?'✅':'❌'} <span class="muted">${Math.round(r.p*100)}%</span></h3><div class="secbars">${Object.entries(r.sk).map(([k,v])=>`<div class="secbar"><span>${PSEC[k]||k}</span><span class="tr"><i style="width:${Math.round(v*100)}%;background:${v>=.5?'var(--ok)':'var(--bad)'}"></i></span><span>${Math.round(v*100)}%</span></div>`).join('')}</div></div>`).join('')}
+   ${(()=>{const last=res[res.length-1];const weak=Object.entries(last.sk).filter(([k,v])=>v<.6).map(([k])=>PSEC[k]);return weak.length?`<p class="tip" style="margin:0">ركّز على: ${weak.join('، ')}</p>`:''})()}
+   ${passed?`<p style="margin:0">انفتحلك المسار لحد <b>${L.tag}</b>. المستويات اللي قبله مفتوحة إذا حبيت تراجع.</p>`:''}
+   <div class="row" style="justify-content:center"><a class="btn primary" href="#path">ابدأ من مستواك</a><button class="btn" id="again">أعد الامتحان</button></div></div></div>`;
+  $('#again').onclick=vPlacement;
 }
 
 /* ===== الشهادات ===== */
@@ -11014,9 +11299,9 @@ function vPractice(){
    <div class="ggrid">
    ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك بمواعيد ذكية لحد ما تثبت.',n||'', 'var(--sun-soft)')}
    ${card('#speak','🎤','تمرين الحكي','قول الجمل بصوتك، وشوف شو انفهم.','','var(--green-soft)')}
-   ${card('#chat','💬','محادثة مع Claude','مواقف حقيقية مع تصحيح فوري.','','var(--blue-soft)')}
+   ${card('#chat','🤖','تكلّم مع الذكاء الاصطناعي','احكي بصوتك أو اكتب، مع تصحيح فوري.','','var(--blue-soft)')}
    ${card('#stories','🎧','قصص مسموعة','حوار بصوتين لكل وحدة مع أسئلة.','','var(--green-soft)')}
-   ${card('#sounds','👂','الأصوات الصعبة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--blue-soft)')}
+   ${card('#sounds','👂','الأصوات المتشابهة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--blue-soft)')}
    ${card('#games','🎮','الألعاب','مطابقة، اسمع واختار، رتّب، صح ولا غلط.','','var(--bad-soft)')}
    ${card('#placement','🧭','تحديد المستوى','اعرف من وين تبدأ.',S.place||'','var(--sun-soft)')}
    ${card(certs.length?'#cert-'+certs[certs.length-1].n:'#cert-1','🎓','شهاداتي',certs.length?certs.map(L=>L.tag).join(' · '):'بعد النجاح بامتحان نهائي.','','var(--green-soft)')}
