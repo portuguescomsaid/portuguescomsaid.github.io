@@ -427,6 +427,15 @@ html[dir=rtl] .bub.me{align-self:flex-start}
 .adm-tools{display:flex;gap:8px;flex-wrap:wrap}.adm-tools input{flex:1;min-width:160px;padding:11px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
 .adm-col em{font-style:normal;font-size:10px;color:var(--muted);min-height:12px}
 .stats{flex-wrap:wrap}
+nav.tabs{grid-template-columns:repeat(5,1fr)}
+.back{display:none!important}
+.backbar{position:sticky;top:58px;z-index:15;background:var(--paper);border-bottom:1px solid var(--line);padding:8px 0}
+.backbar .wrap{display:flex;gap:10px;align-items:center}
+.bb{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 18px;border-radius:14px;font:inherit;font-weight:700;font-size:16px;text-decoration:none;cursor:pointer}
+.bb-back{flex:1;background:var(--card);color:var(--ink);border:2px solid var(--ink)}
+.bb-home{flex:1;background:var(--green);color:var(--on-green);border:2px solid var(--green)}
+@media (min-width:820px){.backbar{top:106px}.bb{flex:0 0 auto;min-width:170px}}
+.backbar{margin:-20px 0 16px}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -450,7 +459,7 @@ html[dir=rtl] .bub.me{align-self:flex-start}
   <a href="#practice" data-r="practice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.5" r=".8" fill="currentColor"/><circle cx="17.5" cy="14" r=".8" fill="currentColor"/></svg>تدريب</a>
   <a href="#basics" data-r="basics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>الأساسيات</a>
 </nav>
-<main><div class="wrap" id="app"></div></main>
+<main><div class="backbar" id="backbar" hidden><div class="wrap"><button class="bb bb-back" id="bb-back" type="button">→ رجوع</button><a class="bb bb-home" href="#path">🏠 الرئيسية</a></div></div><div class="wrap" id="app"></div></main>
 <div class="toast" id="toast" role="status"></div>
 <script>/* ===== Firebase bridge: provides window.claude.use('db'|'user') so the app code runs unchanged ===== */
 const FB_CONFIG={"apiKey":"AIzaSyAo5gQN66Dzo-OmPtafmYX_dWxhYVAdHK4","authDomain":"portugues-com-said.firebaseapp.com","projectId":"portugues-com-said","storageBucket":"portugues-com-said.firebasestorage.app","messagingSenderId":"1010796813043","appId":"1:1010796813043:web:e3517943625980eb4a7586"};
@@ -688,7 +697,7 @@ geladeira|جيلاديرا|ثلاجة`)+
 H('١١. v مش f')+Pp('حرف <em>v</em> بنكتبه «ڤ» عشان ما يختلط مع f.')+X(`você|ڤوسيه|إنت
 uva|أوڤا|عنب
 vinte|ڤينتشي|عشرين`)+
-TIP('<b>مهم:</b> <em>está</em> بتنلفظ «إستا» بـ s عادية، مش «إشتا». النطق بـ «ش» هو لهجة ريو والبرتغال، مش كوريتيبا.'),
+TIP('<b>مهم:</b> <em>está</em> بتنلفظ «إستا» بـ s عادية، مش «إشتا». معظم البرازيل بتلفظها بـ s عادية، وببعض المناطق زي ريو بتسمعها «ش».'),
 w:`casa|كازا|بيت
 mesa|ميزا|طاولة
 dia|دجيا|يوم
@@ -736,7 +745,7 @@ H('كيف ترد على «كيفك؟»')+X(`Tudo bem, e você?|تودو بين،
 Tudo ótimo!|تودو أوتشيمو!|كل إشي ممتاز!
 Mais ou menos.|مايس أو مينوس.|نص نص.
 Tô bem, obrigado.|تو بين، أوبريغادو.|أنا منيح، شكرًا.`)+
-TIP('<b>tô</b> = estou بالحكي اليومي، و<b>tá</b> = está. بتسمعهم كل يوم بكوريتيبا.')+
+TIP('<b>tô</b> = estou بالحكي اليومي، و<b>tá</b> = está. بتسمعهم كل يوم بالبرازيل.')+
 H('كلمات المجاملة')+X(`Por favor.|بور فاڤور.|لو سمحت.
 Obrigado.|أوبريغادو.|شكرًا (لما يحكيها رجل).
 Obrigada.|أوبريغادا.|شكرًا (لما تحكيها امرأة).
@@ -796,8 +805,8 @@ a gente|إحنا (الحكي اليومي)
 vocês|إنتو
 eles|هم (مذكر أو مختلط)
 elas|هنّ (مؤنث)`)+
-TIP('<b>a gente</b> = إحنا، بس فعلها زي ele: <em>A gente mora em Curitiba.</em> البرازيليين بيستعملوها أكثر من nós بالحكي.')+
-TIP('<b>tu</b> موجودة بجنوب البرازيل، بس بكوريتيبا الأشهر <em>você</em>.')+
+TIP('<b>a gente</b> = إحنا، بس فعلها زي ele: <em>A gente mora em São Paulo.</em> البرازيليين بيستعملوها أكثر من nós بالحكي.')+
+TIP('<b>tu</b> مستعملة ببعض المناطق، بس الأشهر بكل البرازيل <em>você</em>.')+
 H('فعل SER (يكون): للهوية الثابتة')+TB(`eu sou|أنا
 você é|إنت
 ele é|هو
@@ -819,7 +828,7 @@ Como você se chama?|كومو ڤوسيه سي شاما؟|شو اسمك؟ (أشه
 Eu me chamo Said.|إيو مي شامو سعيد.|اسمي سعيد.
 De onde você é?|دجي أوندجي ڤوسيه إيه؟|من وين إنت؟
 Onde você mora?|أوندجي ڤوسيه مورا؟|وين ساكن؟
-Eu moro em Curitiba.|إيو مورو إين كوريتيبا.|ساكن بكوريتيبا.
+Eu moro em São Paulo.|إيو مورو إين ساو باولو.|ساكن بساو باولو.
 O que você faz?|أو كي ڤوسيه فاز؟|شو بتشتغل؟
 Muito prazer!|موينتو برازير!|تشرفنا!
 O prazer é meu.|أو برازير إيه ميو.|الشرف إلي.`)+
@@ -846,7 +855,7 @@ s:`Meu nome é Said.|ميو نومي إيه سعيد.|اسمي سعيد.
 Como você se chama?|كومو ڤوسيه سي شاما؟|شو اسمك؟
 Eu sou da Palestina.|إيو سو دا باليستشينا.|أنا من فلسطين.
 De onde você é?|دجي أوندجي ڤوسيه إيه؟|إنت من وين؟
-Eu moro em Curitiba.|إيو مورو إين كوريتيبا.|ساكن بكوريتيبا.
+Eu moro em São Paulo.|إيو مورو إين ساو باولو.|ساكن بساو باولو.
 Eu sou fotógrafo.|إيو سو فوتوغرافو.|أنا مصوّر.
 Ela é brasileira.|إيلا إيه برازيليرا.|هي برازيلية.
 Nós somos palestinos.|نوس سوموس باليستشينوس.|إحنا فلسطينيين.
@@ -954,7 +963,7 @@ Ela é da Síria.|إيلا إيه دا سيريا.|هي من سوريا.
 Ele é do Egito.|إيلي إيه دو إيجيتو.|هو من مصر.
 Ela é dos Estados Unidos.|إيلا إيه دوس إستادوس أونيدوس.|هي من أمريكا.
 Eu sou de Gaza.|إيو سو دجي غازا.|أنا من غزة.`)+
-TIP('أسماء المدن غالبًا بدون أداة: <em>de Gaza</em>، <em>de Curitiba</em>، <em>de São Paulo</em>.')+
+TIP('أسماء المدن غالبًا بدون أداة: <em>de Gaza</em>، <em>de São Paulo</em>، <em>de São Paulo</em>.')+
 H('الجنسية: مذكر ومؤنث')+TB(`palestino / palestina|فلسطيني / فلسطينية
 brasileiro / brasileira|برازيلي / برازيلية
 sírio / síria|سوري / سورية
@@ -969,7 +978,7 @@ H('em + البلد = في')+TB(`no|em + o: في (مذكر) — no Brasil
 na|em + a: في (مؤنث) — na Turquia`)+
 X(`Eu moro no Brasil.|إيو مورو نو برازيو.|ساكن بالبرازيل.
 Eu morei na Turquia.|إيو موريي نا توركيا.|سكنت بتركيا.
-Eu moro em Curitiba.|إيو مورو إين كوريتيبا.|ساكن بكوريتيبا.`),
+Eu moro em São Paulo.|إيو مورو إين ساو باولو.|ساكن بساو باولو.`),
 w:`país|بايس|بلد
 cidade|سيدادجي|مدينة
 Palestina|باليستشينا|فلسطين
@@ -1001,7 +1010,7 @@ Ele é ___ Brasil.|هو من البرازيل.|do|da|de
 Eu sou ___ Gaza.|أنا من غزة.|de|da|do
 Eu moro ___ Brasil.|ساكن بالبرازيل.|no|na|em
 Ela mora ___ Turquia.|ساكنة بتركيا.|na|no|da
-Eu moro ___ Curitiba.|ساكن بكوريتيبا.|em|no|na
+Eu moro ___ São Paulo.|ساكن بساو باولو.|em|no|na
 Ela é ___.|هي سورية.|síria|sírio|sírios
 Eu ___ árabe.|بحكي عربي.|falo|fala|falam`});
 
@@ -1019,7 +1028,7 @@ Hoje ela está nervosa.|أوجي إيلا إستا نيرڤوزا.|اليوم ه
 Ele é feliz.|إيلي إيه فيليز.|هو إنسان سعيد.
 Ele está feliz hoje.|إيلي إستا فيليز أوجي.|هو مبسوط اليوم.
 Eu sou de Gaza.|إيو سو دجي غازا.|أنا من غزة. (أصل)
-Eu estou em Curitiba.|إيو إستو إين كوريتيبا.|أنا بكوريتيبا. (مكان)`)+
+Eu estou em São Paulo.|إيو إستو إين ساو باولو.|أنا بساو باولو. (مكان)`)+
 H('المشاعر والحالات')+X(`Estou feliz.|إستو فيليز.|أنا مبسوط.
 Estou cansado.|إستو كانسادو.|أنا تعبان.
 Estou nervoso.|إستو نيرڤوزو.|أنا متوتر.
@@ -1060,7 +1069,7 @@ Estou com pressa.|إستو كون بريسا.|أنا مستعجل.
 Ela é uma pessoa calma.|إيلا إيه أوما بيسوا كاوما.|هي شخصية هادية.
 Meu filho está doente.|ميو فيليو إستا دوينتشي.|ابني مريض.
 Vocês estão ocupados?|ڤوسيس إستاو أوكوبادوس؟|إنتو مشغولين؟
-Curitiba é fria.|كوريتيبا إيه فريا.|كوريتيبا باردة.
+Porto Alegre é fria.|بورتو أليغري إيه فريا.|بورتو أليغري باردة.
 Hoje está frio.|أوجي إستا فريو.|اليوم الجو بارد.`,
 d:`Eu ___ cansado hoje.|أنا تعبان اليوم.|estou|sou|está
 Ela ___ uma pessoa calma.|هي شخصية هادية.|é|está|estão
@@ -1069,7 +1078,7 @@ Vocês ___ bem?|إنتو منيحين؟|estão|está|são
 Eu ___ da Palestina.|أنا من فلسطين.|sou|estou|está
 Estou ___ fome.|أنا جوعان.|com|de|em
 Ela está ___.|هي تعبانة.|cansada|cansado|cansados
-Nós ___ em Curitiba.|إحنا بكوريتيبا.|estamos|estão|está`});
+Nós ___ em São Paulo.|إحنا بساو باولو.|estamos|estão|está`});
 
 C({id:7,u:2,pt:'Estrutura da frase',ar:'ترتيب الجملة وأدوات التعريف',
 lesson:H('الجملة الأساسية (Aula 6 – Escrita)')+Pp('كتاب Nossa Casa بيعلّم إنه الجملة بالبرتغالي غالبًا بتمشي هيك:')+Pp('<b>Sujeito + Verbo + Complemento</b> = الفاعل + الفعل + التكملة')+X(`Eu sou do Brasil.|إيو سو دو برازيو.|أنا من البرازيل.
@@ -1138,7 +1147,7 @@ Ela ___ para a praia todo ano.|بتسافر عالبحر كل سنة.|viaja|viaj
 
 C({id:8,u:2,pt:'Há, por que e gerúndio',ar:'المدة، ليش ولأنه، وعم بعمل هلأ',
 lesson:H('há + مدة = صرلي / من…')+Pp('عشان تحكي من قديش إشي صاير، استعمل <em>há</em>. بتنلفظ «آ» لأن h ما بتنلفظ.')+X(`Estou no Brasil há dois meses.|إستو نو برازيو آ دويس ميزيس.|صرلي شهرين بالبرازيل.
-Moro em Curitiba há cinco meses.|مورو إين كوريتيبا آ سينكو ميزيس.|ساكن بكوريتيبا من خمس شهور.
+Moro em São Paulo há cinco meses.|مورو إين ساو باولو آ سينكو ميزيس.|ساكن بساو باولو من خمس شهور.
 Estou aqui há uma semana.|إستو آكي آ أوما سيمانا.|صرلي أسبوع هون.
 Estudo português há três meses.|إستودو بورتوغيس آ تريس ميزيس.|بدرس برتغالي من تلت شهور.
 Há quanto tempo você mora aqui?|آ كوانتو تيمبو ڤوسيه مورا آكي؟|من قديش ساكن هون؟`)+
@@ -1179,7 +1188,7 @@ fazer|فازير|يعمل
 agora|أغورا|هلأ`,
 s:`Estou no Brasil há dois meses.|إستو نو برازيو آ دويس ميزيس.|صرلي شهرين بالبرازيل.
 Há quanto tempo você está no Brasil?|آ كوانتو تيمبو ڤوسيه إستا نو برازيو؟|من قديش إنت بالبرازيل؟
-Moro em Curitiba há cinco meses.|مورو إين كوريتيبا آ سينكو ميزيس.|ساكن بكوريتيبا من خمس شهور.
+Moro em São Paulo há cinco meses.|مورو إين ساو باولو آ سينكو ميزيس.|ساكن بساو باولو من خمس شهور.
 Por que você está cansado?|بور كي ڤوسيه إستا كانسادو؟|ليش إنت تعبان؟
 Porque eu trabalhei muito.|بوركي إيو تراباليي موينتو.|لأني اشتغلت كثير.
 Estou estudando português.|إستو إستوداندو بورتوغيس.|عم بدرس برتغالي.
@@ -1906,7 +1915,7 @@ Onde fica o ponto de ônibus?|أوندجي فيكا أو بونتو دجي أو�
 Quero descer aqui.|كيرو ديسير آكي.|بدي أنزل هون.
 Abre o porta-malas, por favor.|آبري أو بورتا مالاس، بور فاڤور.|افتح الشنطة لو سمحت.
 Pode me mandar a localização?|بودجي مي ماندار آ لوكاليزاساو؟|ممكن تبعتلي اللوكيشن؟`)+
-TIP('بكوريتيبا في محطات باص على شكل أنبوب اسمها <em>estação-tubo</em>.'),
+TIP('بساو باولو في محطات باص على شكل أنبوب اسمها <em>estação-tubo</em>.'),
 w:`ônibus|أونيبوس|باص
 carro|كاهّو|سيارة
 rua|هوا|شارع
@@ -2024,7 +2033,7 @@ vocês / eles trabalham · comem · abrem|هم: -am / -em`,['trabalhar · comer 
 X(`Eu trabalho com fotografia.|إيو تراباليو كون فوتوغرافيا.|بشتغل بالتصوير.
 Ela edita vídeos.|إيلا إيدجيتا ڤيدجيوس.|هي بتمنتج فيديوهات.
 Nós aprendemos português.|نوس أبريندِموس بورتوغيس.|بنتعلم برتغالي.
-Eles moram em Curitiba.|إيليس موران إين كوريتيبا.|ساكنين بكوريتيبا.
+Eles moram em São Paulo.|إيليس موران إين ساو باولو.|ساكنين بساو باولو.
 Eu abro a loja às nove.|إيو آبرو آ لوجا آس نوڤي.|بفتح المحل الساعة تسعة.
 Você escreve em árabe?|ڤوسيه إسكريڤي إين أرابي؟|بتكتب بالعربي؟`)+
 TIP('<b>trabalho com</b> = بشتغل بمجال: <em>Trabalho com fotografia.</em> مش «trabalho em fotografia».')+
@@ -2067,7 +2076,7 @@ Eu edito vídeos.|إيو إيدجيتو ڤيدجيوس.|بمنتج فيديوه�
 d:`Eu ___ com fotografia.|بشتغل بالتصوير.|trabalho|trabalha|trabalhamos
 Ela ___ vídeos.|بتمنتج فيديوهات.|edita|edito|editam
 Nós ___ português.|بنتعلم برتغالي.|aprendemos|aprende|aprendem
-Eles ___ em Curitiba.|ساكنين بكوريتيبا.|moram|mora|moramos
+Eles ___ em São Paulo.|ساكنين بساو باولو.|moram|mora|moramos
 Eu ___ a loja às nove.|بفتح المحل الساعة تسعة.|abro|abre|abrimos
 Você ___ em árabe?|بتكتب بالعربي؟|escreve|escrevo|escrevem
 Eu trabalho ___ fotografia.|بشتغل بالتصوير.|com|em|de`});
@@ -2139,13 +2148,13 @@ const UNITS=[
  {n:4,pt:'Comida e mercado',ar:'الأكل والسوق',chs:[13,14,15,16,17]},
  {n:5,pt:'Vida na cidade',ar:'الحياة بالمدينة',chs:[18,19,20,21,22]}
 ];
-EXAMS[1]={chs:[1,2,3,4],passage:'Bom dia! Meu nome é Ana. Eu sou brasileira e moro em Curitiba. Eu tenho vinte e oito anos. Eu sou professora. Eu falo português e um pouco de inglês. Muito prazer!',
- qs:[['من وين آنا؟','من البرازيل','من فلسطين','من البرتغال','من مصر'],['قديش عمرها؟','28','18','38','82'],['شو شغلتها؟','معلمة','دكتورة','مصوّرة','بياعة'],['وين ساكنة؟','بكوريتيبا','بساو باولو','بريو','بغزة']],
+EXAMS[1]={chs:[1,2,3,4],passage:'Bom dia! Meu nome é Ana. Eu sou brasileira e moro em São Paulo. Eu tenho vinte e oito anos. Eu sou professora. Eu falo português e um pouco de inglês. Muito prazer!',
+ qs:[['من وين آنا؟','من البرازيل','من فلسطين','من البرتغال','من مصر'],['قديش عمرها؟','28','18','38','82'],['شو شغلتها؟','معلمة','دكتورة','مصوّرة','بياعة'],['وين ساكنة؟','بساو باولو','بساو باولو','بريو','بغزة']],
  tf:[['آنا بتحكي عربي.',false],['آنا بتحكي شوي إنجليزي.',true]]};
-EXAMS[2]={chs:[5,6,7,8],passage:'O Omar é da Síria. Ele está no Brasil há seis meses e mora em Curitiba há quatro meses. Ele é engenheiro, mas agora está trabalhando em um restaurante. Hoje ele está cansado porque trabalhou muito. Ele está estudando português todos os dias.',
+EXAMS[2]={chs:[5,6,7,8],passage:'O Omar é da Síria. Ele está no Brasil há seis meses e mora em São Paulo há quatro meses. Ele é engenheiro, mas agora está trabalhando em um restaurante. Hoje ele está cansado porque trabalhou muito. Ele está estudando português todos os dias.',
  qs:[['من وين عمر؟','من سوريا','من لبنان','من البرازيل','من مصر'],['من قديش هو بالبرازيل؟','6 شهور','4 شهور','سنة','شهرين'],['شو شغلته الأصلية؟','مهندس','طبّاخ','معلم','سواق'],['ليش هو تعبان اليوم؟','لأنه اشتغل كثير','لأنه مريض','لأنه درس كثير','لأنه ما نام']],
- tf:[['عمر ساكن بكوريتيبا من 6 شهور.',false],['عمر عم يدرس برتغالي كل يوم.',true]]};
-EXAMS[3]={chs:[9,10,11,12],passage:'Esta é a família da Mariana. O pai dela se chama Paulo. Ele é alto e magro e tem cabelo grisalho. A mãe dela é baixa e tem olhos verdes. Mariana tem dois irmãos e uma irmã. O irmão mais velho é casado. A esposa dele é a cunhada da Mariana. A família mora em uma casa grande em Curitiba.',
+ tf:[['عمر ساكن بساو باولو من 6 شهور.',false],['عمر عم يدرس برتغالي كل يوم.',true]]};
+EXAMS[3]={chs:[9,10,11,12],passage:'Esta é a família da Mariana. O pai dela se chama Paulo. Ele é alto e magro e tem cabelo grisalho. A mãe dela é baixa e tem olhos verdes. Mariana tem dois irmãos e uma irmã. O irmão mais velho é casado. A esposa dele é a cunhada da Mariana. A família mora em uma casa grande em São Paulo.',
  qs:[['شو اسم أبو ماريانا؟','باولو','بيدرو','لوكاس','ماركوس'],['كيف شكل أبوها؟','طويل ونحيف وشعره شايب','قصير وعريض','طويل وشعره أسود','قصير وإله لحية'],['شو لون عيون أمها؟','أخضر','بني','أزرق','أسود'],['شو بتكون مرت أخوها لماريانا؟','cunhada','sogra','prima','tia']],
  tf:[['عند ماريانا أخوين وأخت.',true],['العيلة ساكنة بشقة صغيرة.',false]]};
 EXAMS[4]={chs:[13,14,15,16,17],passage:'No sábado, a família de Karim foi ao mercado. Eles compraram meia dúzia de ovos, um quilo de frango, arroz, feijão e muitas frutas: banana, maçã e uva. No almoço, eles comeram arroz, feijão e frango. Karim não come carne de porco. À noite, eles jantaram sopa e tomaram suco de laranja.',
@@ -2154,9 +2163,9 @@ EXAMS[4]={chs:[13,14,15,16,17],passage:'No sábado, a família de Karim foi ao m
 EXAMS[5]={chs:[18,19,20,21,22],passage:'Rami mora em um apartamento de dois quartos no bairro Portão. O aluguel é mil e oitocentos reais, e o condomínio está incluso. Ele trabalha com fotografia. Na segunda-feira, ele tem um ensaio às nove horas. Ele vai de ônibus porque o carro está na oficina. À tarde, ele está com dor de cabeça e vai à farmácia.',
  qs:[['كم غرفة نوم بشقة رامي؟','2','1','3','4'],['قديش الإيجار؟','1800 ريال','1500 ريال','800 ريال','1080 ريال'],['كيف بروح يوم الاثنين؟','بالباص','بالسيارة','مشي','بأوبر'],['ليش بروح عالصيدلية؟','عنده صداع','عنده حرارة','بدو يشتري مي','عنده سعلة']],
  tf:[['رسوم العمارة مشمولة بالإيجار.',true],['جلسة التصوير الساعة 10.',false]]};
-EXAMS.f1={chs:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],final:true,passage:'Meu nome é Layla. Eu sou da Palestina e cheguei ao Brasil há um ano. Eu sou casada e tenho três filhos. Meus filhos estudam em uma escola perto de casa. Eu trabalho de manhã e estudo português à noite. No fim de semana, a gente almoça junto e depois vai ao parque. Eu gosto muito de Curitiba, mas o inverno aqui é muito frio!',
+EXAMS.f1={chs:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],final:true,passage:'Meu nome é Layla. Eu sou da Palestina e cheguei ao Brasil há um ano. Eu sou casada e tenho três filhos. Meus filhos estudam em uma escola perto de casa. Eu trabalho de manhã e estudo português à noite. No fim de semana, a gente almoça junto e depois vai ao parque. Eu gosto muito de São Paulo, mas o inverno aqui é muito frio!',
  qs:[['من وين ليلى؟','من فلسطين','من سوريا','من البرازيل','من لبنان'],['من قديش وصلت البرازيل؟','من سنة','من شهر','من سنتين','من أسبوع'],['كم ولد عندها؟','3','2','4','1'],['إيمتى بتدرس برتغالي؟','بالليل','الصبح','الظهر','آخر الأسبوع'],['شو بيعملوا بالويكند؟','بيتغدوا مع بعض وبيروحوا عالحديقة','بيسافروا عالبحر','بيشتغلوا','بيروحوا عالسوق']],
- tf:[['الشتا بكوريتيبا دافي.',false],['ولاد ليلى بيدرسوا قريب عالبيت.',true]]};
+ tf:[['الشتا بساو باولو دافي.',false],['ولاد ليلى بيدرسوا قريب عالبيت.',true]]};
 
 /* ===================== المستوى الثاني (A2) ===================== */
 /* ===== Unidade 6: O passado ===== */
@@ -2210,7 +2219,7 @@ Eles chegaram na semana passada.|إيليس شيغارون نا سيمانا ب�
 Eu cheguei atrasado.|إيو شيغيي أترازادو.|وصلت متأخرًا.
 Já paguei a conta.|جا باغيي آ كونتا.|دفعت الفاتورة.
 Ainda não comecei.|آيندا ناو كوميسيي.|لم أبدأ بعد.
-A gente mudou para Curitiba em junho.|آ جينتشي مودو بارا كوريتيبا إين جونيو.|انتقلنا إلى كوريتيبا في يونيو.
+A gente mudou para São Paulo em junho.|آ جينتشي مودو بارا ساو باولو إين جونيو.|انتقلنا إلى ساو باولو في يونيو.
 Quanto você pagou?|كوانتو ڤوسيه باغو؟|كم دفعت؟
 Eu te liguei ontem.|إيو تشي ليغيي أونتين.|اتصلت بك أمس.`,
 d:`Ontem eu ___ até tarde.|أمس عملت حتى وقت متأخر.|trabalhei|trabalho|trabalhou
@@ -2388,7 +2397,7 @@ A gente ___ à praia aos domingos.|كنا نذهب إلى البحر.|ia|foi|vai
 Eu ___ dormindo quando você ligou.|كنت نائمًا عندما اتصلت.|estava|estive|estou
 Eu estava dormindo quando você ___.|...عندما اتصلت.|ligou|ligava|liga
 Minha mãe ___ pão todo dia.|كانت أمي تخبز كل يوم.|fazia|fez|faz
-Nós ___ em Curitiba.|كنا نسكن في كوريتيبا.|morávamos|moramos de|moravam`});
+Nós ___ em São Paulo.|كنا نسكن في ساو باولو.|morávamos|moramos de|moravam`});
 
 /* ===== Unidade 7: Serviços e documentos ===== */
 C({id:27,u:7,pt:'Documentos',ar:'الوثائق والمعاملات',
@@ -2615,7 +2624,7 @@ Vou chegar dez minutos ___.|سأتأخر عشر دقائق.|atrasado|adiantado|c
 C({id:31,u:8,pt:'A escola dos filhos',ar:'مدرسة الأولاد',
 lesson:H('كلمات المدرسة')+TB(`matrícula|تسجيل الطالب
 escola municipal / estadual|مدرسة بلدية / حكومية تابعة للولاية
-CMEI|حضانة بلدية للأطفال الصغار (في كوريتيبا)
+CMEI|حضانة بلدية للأطفال الصغار (الاسم بيختلف حسب المدينة)
 ano / série|الصف الدراسي
 turma|الشعبة / الفصل
 professora|المعلمة
@@ -2733,7 +2742,7 @@ C({id:33,u:8,pt:'Comparações',ar:'المقارنة والتفضيل',
 lesson:H('أكثر من / أقل من')+TB(`mais ... (do) que|أكثر ... من
 menos ... (do) que|أقل ... من
 tão ... quanto|... مثل / بنفس قدر`)+
-X(`Curitiba é mais fria que São Paulo.|كوريتيبا إيه مايس فريا كي ساو باولو.|كوريتيبا أبرد من ساو باولو.
+X(`Porto Alegre é mais fria que São Paulo.|بورتو أليغري إيه مايس فريا كي ساو باولو.|بورتو أليغري أبرد من ساو باولو.
 O ônibus é mais barato do que o Uber.|أو أونيبوس إيه مايس باراتو دو كي أو أوبر.|الحافلة أرخص من أوبر.
 Este apartamento é menos caro.|إيستشي أبارتامينتو إيه مينوس كارو.|هذه الشقة أقل غلاءً.
 Ele é tão alto quanto o pai.|إيلي إيه تاو آوتو كوانتو أو باي.|هو طويل مثل أبيه.`)+
@@ -2766,7 +2775,7 @@ movimentado|موڤيمينتادو|مزدحم
 tranquilo|ترانكويلو|هادئ
 rápido|هابيدو|سريع
 devagar|دجيڤاغار|ببطء`,
-s:`Curitiba é mais fria que São Paulo.|كوريتيبا إيه مايس فريا كي ساو باولو.|كوريتيبا أبرد من ساو باولو.
+s:`Porto Alegre é mais fria que São Paulo.|بورتو أليغري إيه مايس فريا كي ساو باولو.|بورتو أليغري أبرد من ساو باولو.
 O ônibus é mais barato do que o Uber.|أو أونيبوس إيه مايس باراتو دو كي أو أوبر.|الحافلة أرخص من أوبر.
 Este mercado é melhor.|إيستشي ميركادو إيه ميليور.|هذا السوبرماركت أفضل.
 O trânsito hoje está pior.|أو ترانزيتو أوجي إستا بيور.|الزحمة اليوم أسوأ.
@@ -2776,7 +2785,7 @@ A minha casa é maior que a sua.|آ مينيا كازا إيه مايور كي �
 Este é o mais barato.|إيستشي إيه أو مايس باراتو.|هذا هو الأرخص.
 Esse celular é caríssimo!|إيسي سيلولار إيه كاريسيمو!|هذا الجوال غالٍ جدًا!
 O bairro é mais tranquilo à noite.|أو بايهو إيه مايس ترانكويلو آ نويتشي.|الحي أهدأ في الليل.`,
-d:`Curitiba é mais fria ___ São Paulo.|أبرد من ساو باولو.|que|como|de
+d:`Porto Alegre é mais fria ___ São Paulo.|أبرد من ساو باولو.|que|como|de
 Este mercado é ___.|هذا السوبرماركت أفضل.|melhor|mais bom|bem
 A minha casa é ___ que a sua.|بيتي أكبر من بيتك.|maior|mais grande|grande
 Ele é tão alto ___ o pai.|طويل مثل أبيه.|quanto|que|de
@@ -3242,14 +3251,14 @@ Preciso fazer um boletim de ___.|أحتاج تقديم بلاغ.|ocorrência|aci
 
 C({id:42,u:10,pt:'Clima e roupas',ar:'الطقس والملابس',
 lesson:H('الطقس: fazer و estar')+X(`Está frio.|إستا فريو.|الجو بارد (الآن).
-Faz frio em Curitiba.|فاز فريو إين كوريتيبا.|كوريتيبا باردة (عمومًا).
+Faz frio em Porto Alegre.|فاز فريو إين بورتو أليغري.|بورتو أليغري باردة (عمومًا).
 Está calor hoje.|إستا كالور أوجي.|الجو حار اليوم.
 Está chovendo.|إستا شوڤيندو.|إنها تمطر.
 Vai chover à tarde.|ڤاي شوڤير آ تاردجي.|ستمطر بعد الظهر.
 Está garoando.|إستا غارواندو.|يوجد رذاذ مطر.
 Está nublado.|إستا نوبلادو.|الجو غائم.
 Tem neblina.|تين نيبلينا.|يوجد ضباب.`)+
-TIP('كوريتيبا مشهورة بتقلّب الطقس: يقول أهلها إنها <b>«as quatro estações em um dia»</b>، أي الفصول الأربعة في يوم واحد. خذ معك معطفًا دائمًا.')+
+TIP('البرازيل كبيرة والطقس بيختلف كتير: الشمال والشمال الشرقي حر أغلب السنة، والجنوب بارد بالشتا. بالجنوب بيقولوا عن الطقس المتقلب <b>«as quatro estações em um dia»</b>، يعني الفصول الأربعة بيوم واحد.')+
 H('الفصول والحرارة')+TB(`verão|الصيف (ديسمبر–مارس)
 outono|الخريف
 inverno|الشتاء (يونيو–سبتمبر)
@@ -3282,7 +3291,7 @@ blusa|بلوزا|كنزة
 calça|كاوسا|بنطلون
 guarda-chuva|غواردا شوڤا|مظلة`,
 s:`Está frio hoje.|إستا فريو أوجي.|الجو بارد اليوم.
-Faz frio em Curitiba no inverno.|فاز فريو إين كوريتيبا نو إينڤيرنو.|كوريتيبا باردة في الشتاء.
+Faz frio em Porto Alegre no inverno.|فاز فريو إين بورتو أليغري نو إينڤيرنو.|بورتو أليغري باردة في الشتاء.
 Vai chover à tarde.|ڤاي شوڤير آ تاردجي.|ستمطر بعد الظهر.
 Está garoando.|إستا غارواندو.|يوجد رذاذ مطر.
 Qual é a previsão do tempo?|كوال إيه آ بريڤيزاو دو تيمبو؟|ما توقعات الطقس؟
@@ -3296,7 +3305,7 @@ Vai ___ à tarde.|ستمطر بعد الظهر.|chover|chuva|chovendo
 Está ___.|إنها تمطر الآن.|chovendo|chover|chuva
 Está fazendo dez ___.|عشر درجات.|graus|grau de|graduados
 Esqueci o ___.|نسيت المظلة.|guarda-chuva|casaco de|chuveiro
-___ frio em Curitiba no inverno.|كوريتيبا باردة في الشتاء.|Faz|Fica de|Tem de
+___ frio em Porto Alegre no inverno.|بورتو أليغري باردة في الشتاء.|Faz|Fica de|Tem de
 Qual é a ___ do tempo?|ما توقعات الطقس؟|previsão|previsto|prever`});
 
 /* ===== Level 2 units & exams ===== */
@@ -3350,7 +3359,7 @@ TIP('البرازيليون يتجنّبون الرفض المباشر غالب�
 H('السؤال عن الرأي')+X(`O que você acha?|أو كي ڤوسيه آشا؟|ما رأيك؟
 Qual é a sua opinião sobre isso?|كوال إيه آ سوا أوبينياو سوبري إيسو؟|ما رأيك في هذا؟
 Você concorda?|ڤوسيه كونكوردا؟|هل توافق؟`)+
-H('مثال نقاش')+SRC('حوار','— O que você acha de Curitiba? — Eu acho que é uma cidade muito organizada, mas o inverno é difícil. — Concordo! Por outro lado, o transporte público é muito bom.','— ما رأيك في كوريتيبا؟ — أظن أنها مدينة منظمة جدًا، لكن الشتاء صعب. — أوافقك! ومن جهة أخرى، النقل العام جيد جدًا.'),
+H('مثال نقاش')+SRC('حوار','— O que você acha de São Paulo? — Eu acho que é uma cidade muito organizada, mas o inverno é difícil. — Concordo! Por outro lado, o transporte público é muito bom.','— ما رأيك في ساو باولو؟ — أظن أنها مدينة منظمة جدًا، لكن الشتاء صعب. — أوافقك! ومن جهة أخرى، النقل العام جيد جدًا.'),
 w:`opinião|أوبينياو|رأي
 achar|آشار|يظن / يجد
 acreditar|أكريدجيتار|يعتقد
@@ -3366,7 +3375,7 @@ parecer|باريسير|يبدو
 ponto de vista|بونتو دجي ڤيستا|وجهة نظر
 discussão|دجيسكوساو|نقاش`,
 s:`Eu acho que você tem razão.|إيو آشو كي ڤوسيه تين هازاو.|أظن أن معك حقًا.
-Na minha opinião, Curitiba é muito organizada.|نا مينيا أوبينياو، كوريتيبا إيه موينتو أورغانيزادا.|برأيي كوريتيبا منظمة جدًا.
+Na minha opinião, São Paulo é muito organizada.|نا مينيا أوبينياو، ساو باولو إيه موينتو أورغانيزادا.|برأيي ساو باولو منظمة جدًا.
 O que você acha?|أو كي ڤوسيه آشا؟|ما رأيك؟
 Concordo com você.|كونكوردو كون ڤوسيه.|أوافقك.
 Não concordo muito.|ناو كونكوردو موينتو.|لا أوافق كثيرًا.
@@ -4089,7 +4098,7 @@ feriado|عطلة رسمية
 feriadão|عطلة طويلة (مع نهاية أسبوع)`)+
 TIP('تواريخ بعض العطل تتغير كل سنة (مثل الكرنفال). وكل مدينة وولاية لها عطل محلية إضافية.')+
 H('عادات اجتماعية')+X(`Os brasileiros se cumprimentam com beijo no rosto.|أوس برازيليروس سي كومبريمينتان كون بيجو نو هوستو.|البرازيليون يسلّمون بقبلة على الخد.
-Em Curitiba, geralmente é um beijo só.|إين كوريتيبا، جيراومينتشي إيه أوم بيجو سو.|في كوريتيبا غالبًا قبلة واحدة.
+O número de beijos muda de região para região.|أو نوميرو دجي بيجوس موضا دجي هيجياو بارا هيجياو.|عدد القبلات بيختلف من منطقة لمنطقة.
 É comum chegar um pouco atrasado em festas.|إيه كومون شيغار أوم بوكو أترازادو إين فيستاس.|من العادي التأخر قليلًا عن الحفلات.
 Num churrasco, cada um leva alguma coisa.|نوم شوهاسكو، كادا أوم ليڤا آوغوما كويزا.|في الشواء كل واحد يحضر شيئًا.`)+
 TIP('<b>نصيحة:</b> إذا كنت لا تصافح النساء بالتقبيل، يكفي أن تبتسم وتقول <em>Prazer!</em> مع وضع يدك على صدرك. أغلب الناس يتفهمون ذلك.')+
@@ -4097,7 +4106,7 @@ H('كرة القدم')+X(`Para qual time você torce?|بارا كوال تشيم
 Eu torço pelo Athletico.|إيو تورسو بيلو أتليتشيكو.|أشجّع أتلتيكو. (مثال)
 Foi gol!|فوي غوو!|هدف!
 O jogo empatou.|أو جوغو إيمباتو.|انتهت المباراة بالتعادل.`)+
-TIP('في كوريتيبا ثلاثة أندية كبيرة: Athletico Paranaense و Coritiba و Paraná Clube.'),
+TIP('أشهر الأندية بالبرازيل: Flamengo وCorinthians وPalmeiras وSão Paulo وGrêmio وInternacional وBahia. السؤال «Pra que time você torce?» بيفتح أي حديث مع برازيلي.'),
 w:`festa|فيستا|حفلة / عيد
 feriado|فيريادو|عطلة رسمية
 Carnaval|كارناڤاو|كرنفال
@@ -4125,7 +4134,7 @@ A Festa Junina da escola é no sábado.|آ فيستا جونينا دا إسكو
 d:`Feliz ___!|عيد ميلاد سعيد (25 ديسمبر)|Natal|Carnaval|aniversário de
 Segunda-feira é ___.|الاثنين عطلة.|feriado|festa de|férias de
 Para qual ___ você torce?|لأي فريق تشجّع؟|time|jogo|gol
-Eu ___ pelo Coritiba.|أشجّع كوريتيبا.|torço|torce|torcer
+Eu ___ pelo Flamengo.|أشجّع فلامنغو.|torço|torce|torcer
 O jogo ___.|تعادلوا.|empatou|empata de|empatado
 Trouxe um ___ para você.|أحضرت لك هدية.|presente|presença|presentar
 A Festa ___ é em junho.|احتفالات يونيو.|Junina|Junho|Junina de`});
@@ -4294,9 +4303,9 @@ UNITS.push(
  {n:14,lv:3,pt:'Vida social e cultura',ar:'الحياة الاجتماعية والثقافة',chs:[55,56,57]},
  {n:15,lv:3,pt:'Comunicação formal',ar:'التواصل الرسمي',chs:[58,59,60]}
 );
-EXAMS[11]={chs:[43,44,45,46],passage:'Na minha opinião, Curitiba é uma ótima cidade para famílias. Por um lado, o transporte é organizado e há muitos parques. Por outro lado, o inverno é longo e o aluguel está caro. Quando cheguei, tudo me parecia estranho, mas aos poucos me acostumei. Além disso, a cidade foi planejada nos anos setenta, por isso é bem organizada.',
- qs:[['ما رأي الكاتب في كوريتيبا؟','مدينة ممتازة للعائلات','مدينة خطرة','مدينة مملة','لا رأي له'],['ما الشيء السلبي؟','الشتاء طويل والإيجار غالٍ','النقل سيئ','لا توجد حدائق','الناس غير لطفاء'],['كيف كان شعوره عندما وصل؟','كل شيء بدا غريبًا','كان سعيدًا جدًا','كان يعرف المدينة','كان مريضًا'],['لماذا المدينة منظمة؟','لأنها خُططت في السبعينات','لأنها صغيرة','لأنها جديدة','لأنها غنية']],
- tf:[['النقل في كوريتيبا منظم حسب النص.',true],['لم يعتد الكاتب على المدينة أبدًا.',false]]};
+EXAMS[11]={chs:[43,44,45,46],passage:'Na minha opinião, a cidade onde moro é ótima para famílias. Por um lado, o transporte é organizado e há muitos parques. Por outro lado, o inverno é longo e o aluguel está caro. Quando cheguei, tudo me parecia estranho, mas aos poucos me acostumei. Além disso, a cidade foi planejada nos anos setenta, por isso é bem organizada.',
+ qs:[['ما رأي الكاتب في مدينته؟','مدينة ممتازة للعائلات','مدينة خطرة','مدينة مملة','لا رأي له'],['ما الشيء السلبي؟','الشتاء طويل والإيجار غالٍ','النقل سيئ','لا توجد حدائق','الناس غير لطفاء'],['كيف كان شعوره عندما وصل؟','كل شيء بدا غريبًا','كان سعيدًا جدًا','كان يعرف المدينة','كان مريضًا'],['لماذا المدينة منظمة؟','لأنها خُططت في السبعينات','لأنها صغيرة','لأنها جديدة','لأنها غنية']],
+ tf:[['النقل في مدينة الكاتب منظم حسب النص.',true],['لم يعتد الكاتب على المدينة أبدًا.',false]]};
 EXAMS[12]={chs:[47,48,49,50],passage:'Querida Laila, espero que você esteja bem. Fico muito feliz que você venha nos visitar em dezembro! Quando você chegar ao aeroporto, me ligue. Se fizer frio, traga um casaco, porque aqui o tempo muda muito. Talvez a gente vá à praia no fim de semana, mas duvido que esteja calor. Tomara que dê tudo certo com a sua viagem!',
  qs:[['متى ستأتي ليلى؟','في ديسمبر','في يناير','في يوليو','غدًا'],['ماذا يجب أن تفعل عند الوصول للمطار؟','تتصل','تأخذ تاكسي','تنتظر','تكتب رسالة'],['لماذا تحضر معطفًا؟','لأن الطقس يتغير كثيرًا','لأنها ستذهب للجبل','لأنه شتاء الآن','لأنها مريضة'],['ما رأيه في حرارة الجو في الويكند؟','يشك أن يكون حارًا','متأكد أنه حار','لا يعرف شيئًا','سيكون حارًا جدًا']],
  tf:[['الكاتب سعيد بزيارة ليلى.',true],['من المؤكد أنهم سيذهبون للبحر.',false]]};
@@ -4509,7 +4518,7 @@ Pode usar o carro, desde que devolva amanhã.|بودجي أوزار أو كاه�
 Saia antes que comece a chover.|سايا أنتشيس كي كوميسي آ شوڤير.|اخرج قبل المطر.
 Mesmo que seja difícil, não vou desistir.|ميزمو كي سيجا دجيفيسيو، ناو ڤو ديزيستشير.|حتى لو كان صعبًا لن أستسلم.
 Ele saiu sem que ninguém percebesse.|إيلي سايو سين كي نينغين بيرسيبيسي.|خرج بدون أن يلاحظ أحد.
-Embora chova muito, gosto de Curitiba.|إيمبورا شوڤا موينتو، غوستو دجي كوريتيبا.|رغم كثرة المطر أحب كوريتيبا.
+Embora chova muito, gosto de São Paulo.|إيمبورا شوڤا موينتو، غوستو دجي ساو باولو.|رغم كثرة المطر أحب ساو باولو.
 Te empresto, contanto que você cuide bem.|تشي إيمبريستو، كونتانتو كي ڤوسيه كويدجي بين.|أعيرك بشرط أن تعتني به.`,
 d:`Embora ___ cansado, vou trabalhar.|رغم أنني متعب...|esteja|estou|estar
 Falo devagar para que você ___.|لكي تفهم.|entenda|entende|entender
@@ -4754,7 +4763,7 @@ H('الشرطي الصحفي: «يُزعم»')+Pp('تستخدم الصحافة <
 A empresa estaria em crise.|آ إيمبريزا إستاريا إين كريزي.|يُقال إن الشركة في أزمة.`)+
 H('أمثلة من عناوين')+X(`Prefeitura anuncia novas linhas de ônibus.|بريفيتورا أنونسيا نوڤاس لينياس دجي أونيبوس.|البلدية تعلن خطوط حافلات جديدة.
 Segundo o IBGE, o desemprego caiu.|سيغوندو أو إي بيه جيه إيه، أو ديزيمبريغو كايو.|وفقًا لمعهد الإحصاء، انخفضت البطالة.
-Frente fria deve chegar a Curitiba nesta semana.|فرينتشي فريا ديڤي شيغار آ كوريتيبا نيستا سيمانا.|من المتوقع وصول جبهة باردة إلى كوريتيبا هذا الأسبوع.
+Frente fria deve chegar a Porto Alegre nesta semana.|فرينتشي فريا ديڤي شيغار آ بورتو أليغري نيستا سيمانا.|من المتوقع وصول جبهة باردة إلى بورتو أليغري هذا الأسبوع.
 Preço da gasolina sobe pela terceira vez.|بريسو دا غازولينا سوبي بيلا تيرسيرا ڤيز.|سعر البنزين يرتفع للمرة الثالثة.`)+
 TIP('العناوين تستخدم المضارع للأحداث الماضية: <em>Prefeitura anuncia</em> = أعلنت البلدية. و<b>deve + فعل</b> = من المتوقع أن.'),
 w:`notícia|نوتيسيا|خبر
@@ -4846,7 +4855,7 @@ Preciso de orientação ___.|استشارة قانونية.|jurídica|jurídico|
 Qual é o ___ passo?|الخطوة التالية؟|próximo|próxima|perto`});
 
 C({id:71,u:18,pt:'Meio ambiente e cidade',ar:'البيئة والمدينة',
-lesson:H('فرز النفايات في كوريتيبا')+Pp('كوريتيبا معروفة ببرنامج فرز النفايات منذ سنوات طويلة. القاعدة الأساسية: افصل <b>النفايات العضوية</b> عن <b>القابلة لإعادة التدوير</b>.')+TB(`lixo orgânico|نفايات عضوية: بقايا الطعام
+lesson:H('فرز النفايات في المدن البرازيلية')+Pp('كثير من المدن البرازيلية عندها برامج لفرز النفايات. القاعدة الأساسية: افصل <b>النفايات العضوية</b> عن <b>القابلة لإعادة التدوير</b>.')+TB(`lixo orgânico|نفايات عضوية: بقايا الطعام
 lixo reciclável|قابلة للتدوير: بلاستيك، ورق، معدن، زجاج
 rejeito|نفايات لا تُدوّر
 coleta seletiva|جمع النفايات المفروزة
@@ -4861,7 +4870,7 @@ aquecimento global|أكيسيمينتو غلوباو|الاحتباس الحرا
 área verde|أريا ڤيرجي|مساحة خضراء
 economizar água|إيكونوميزار أغوا|يوفّر الماء`)+
 H('جمل ونقاش')+X(`É importante separar o lixo.|إيه إيمبورتانتشي سيبارار أو ليشو.|من المهم فرز النفايات.
-Curitiba tem muitos parques e áreas verdes.|كوريتيبا تين موينتوس باركيس إي أرياس ڤيرجيس.|في كوريتيبا حدائق ومساحات خضراء كثيرة.
+São Paulo tem muitos parques e áreas verdes.|ساو باولو تين موينتوس باركيس إي أرياس ڤيرجيس.|في ساو باولو حدائق ومساحات خضراء كثيرة.
 A poluição do ar está aumentando nas grandes cidades.|آ بولويساو دو آر إستا أومينتاندو ناس غراندجيس سيدادجيس.|تلوث الهواء يزداد في المدن الكبيرة.
 Devemos evitar o desperdício de comida.|ديڤيموس إيڤيتار أو دجيسبيردجيسيو دجي كوميدا.|يجب أن نتجنب هدر الطعام.
 Vou de bicicleta para economizar e poluir menos.|ڤو دجي بيسيكليتا بارا إيكونوميزار إي بولوير مينوس.|أذهب بالدراجة لأوفّر وألوّث أقل.`),
@@ -4882,7 +4891,7 @@ bicicleta|بيسيكليتا|دراجة
 s:`É importante separar o lixo.|إيه إيمبورتانتشي سيبارار أو ليشو.|من المهم فرز النفايات.
 Onde coloco o lixo reciclável?|أوندجي كولوكو أو ليشو هيسيكلاڤيو؟|أين أضع النفايات القابلة للتدوير؟
 O caminhão do lixo passa às terças.|أو كامينياو دو ليشو باسا آس تيرساس.|شاحنة النفايات تمر أيام الثلاثاء.
-Curitiba tem muitos parques.|كوريتيبا تين موينتوس باركيس.|في كوريتيبا حدائق كثيرة.
+São Paulo tem muitos parques.|ساو باولو تين موينتوس باركيس.|في ساو باولو حدائق كثيرة.
 A poluição do ar está aumentando.|آ بولويساو دو آر إستا أومينتاندو.|تلوث الهواء يزداد.
 Devemos evitar o desperdício de comida.|ديڤيموس إيڤيتار أو دجيسبيردجيسيو دجي كوميدا.|يجب تجنب هدر الطعام.
 Feche a torneira para economizar água.|فيشي آ تورنيرا بارا إيكونوميزار أغوا.|أغلق الحنفية لتوفير الماء.
@@ -4963,7 +4972,7 @@ exquisito|غير موجود بالبرتغالية`,['الكلمة','المعن�
 TIP('<em>propaganda</em> في البرازيل = إعلان تجاري عادي. <em>agência de propaganda</em> = وكالة إعلانات.')+
 X(`Puxe a porta, não empurre.|بوشي آ بورتا، ناو إيمبوهي.|اسحب الباب، لا تدفعه.
 Pretendo abrir uma agência de propaganda.|بريتيندو أبرير أوما أجينسيا دجي بروباغاندا.|أنوي فتح وكالة إعلانات.
-Atualmente moro em Curitiba.|أتواومينتشي مورو إين كوريتيبا.|حاليًا أسكن في كوريتيبا.
+Atualmente moro em São Paulo.|أتواومينتشي مورو إين ساو باولو.|حاليًا أسكن في ساو باولو.
 Que comida esquisita!|كي كوميدا إسكيزيتا!|يا له من أكل غريب!
 Meus parentes moram longe.|ميوس بارينتشيس موران لونجي.|أقاربي يسكنون بعيدًا.
 Comprei o livro na livraria.|كومبريي أو ليڤرو نا ليڤراريا.|اشتريت الكتاب من المكتبة.
@@ -4985,7 +4994,7 @@ legenda|ليجيندا|ترجمة نصية
 balcão|باوكاو|كاونتر`,
 s:`Puxe a porta, não empurre.|بوشي آ بورتا، ناو إيمبوهي.|اسحب الباب لا تدفعه.
 Pretendo abrir uma agência de propaganda.|بريتيندو أبرير أوما أجينسيا دجي بروباغاندا.|أنوي فتح وكالة إعلانات.
-Atualmente moro em Curitiba.|أتواومينتشي مورو إين كوريتيبا.|حاليًا أسكن في كوريتيبا.
+Atualmente moro em São Paulo.|أتواومينتشي مورو إين ساو باولو.|حاليًا أسكن في ساو باولو.
 Que comida esquisita!|كي كوميدا إسكيزيتا!|يا له من أكل غريب!
 Meus parentes moram longe.|ميوس بارينتشيس موران لونجي.|أقاربي يسكنون بعيدًا.
 Comprei o livro na livraria.|كومبريي أو ليڤرو نا ليڤراريا.|اشتريت الكتاب من المكتبة.
@@ -4995,7 +5004,7 @@ Tem legenda em português?|تين ليجيندا إين بورتوغيس؟|تو�
 Na verdade, eu não sabia.|نا ڤيردادجي، إيو ناو سابيا.|في الحقيقة لم أكن أعرف.`,
 d:`___ a porta. (اسحب)|اسحب الباب.|Puxe|Empurre|Pushe
 ___ abrir uma empresa. (أنوي)|أنوي فتح شركة.|Pretendo|Finjo|Atendo
-___ moro em Curitiba. (حاليًا)|حاليًا أسكن...|Atualmente|Na verdade|Eventualmente
+___ moro em São Paulo. (حاليًا)|حاليًا أسكن...|Atualmente|Na verdade|Eventualmente
 Que comida ___! (غريب)|أكل غريب!|esquisita|requintada|deliciosa
 Meus ___ moram longe. (أقارب)|أقاربي...|parentes|pais|país
 Comprei o livro na ___. (محل كتب)|اشتريت من المكتبة.|livraria|biblioteca|livreira
@@ -5052,57 +5061,58 @@ casa → ___ (صغير)|بيت صغير|casinha|casão|casazinha de
 Ele comprou um ___.|سيارة فخمة.|carrão|carrinho|carrozão
 pão → ___|خبزة صغيرة|pãozinho|pãinho|pãonzinho`});
 
-C({id:75,u:19,pt:'Registro e regionalismos',ar:'الرسمي والعامي ولهجة كوريتيبا',
+C({id:75,u:19,pt:'Registro e regionalismos',ar:'الرسمي والعامي ولهجات البرازيل',
 lesson:H('ثلاثة مستويات')+TB(`Gostaria de saber se o senhor poderia me ajudar.|رسمي جدًا
 Você pode me ajudar, por favor?|عادي مهذب
 Me dá uma força aí?|عامي بين الأصدقاء`,['الجملة','المستوى'],false)+
 TIP('<b>o senhor / a senhora</b> للاحترام مع كبار السن والمسؤولين والزبائن. مع الشباب والأصدقاء <em>você</em>. واستخدام o senhor مع شاب قد يبدو غريبًا أو باردًا.')+
-H('كلمات خاصة بكوريتيبا وبارانا')+TB(`piá|ولد / صبي
-guria|بنت (جنوب البرازيل)
-vina|نقانق (salsicha في باقي البرازيل)
-penal|مقلمة (estojo في باقي البرازيل)
-japona|جاكيت شتوي سميك
-tubo|محطة الحافلات الأنبوبية`)+
-X(`O piá está na escola.|أو بيا إستا نا إسكولا.|الولد في المدرسة.
-Quero um cachorro-quente com duas vinas.|كيرو أوم كاشوهو كينتشي كون دواس ڤيناس.|أريد هوت دوغ بنقانقتين.
-Leva a japona, tá frio!|ليڤا آ جابونا، تا فريو!|خذ الجاكيت، الجو بارد!
-— Você vai na festa? — Capaz!|ڤوسيه ڤاي نا فيستا؟ كاباس!|— ستذهب للحفلة؟ — مستحيل! / لا أبدًا!`)+
-TIP('<em>Capaz!</em> في كوريتيبا وجنوب البرازيل تعني غالبًا «لا، أبدًا!» وليس «قادر». تعبير محلي مشهور.')+
-H('مفردات تختلف بين المناطق')+TB(`mandioca / aipim / macaxeira|منيهوت (حسب المنطقة)
-ônibus / busão|باص
-semáforo / sinaleiro / farol|إشارة مرور (sinaleiro في كوريتيبا)
-bergamota / mexerica / tangerina|يوسفي (bergamota في الجنوب)`),
+H('البرازيل بلد كبير: كل منطقة إلها كلماتها')+Pp('البرتغالي مفهوم بكل البرازيل، بس في كلمات وتعابير بتختلف من منطقة لمنطقة. ما لازم تحفظها كلها، المهم تفهمها لما تسمعها.')+TB(`oxente! / arretado|الشمال الشرقي: تعجّب / «ممتاز»
+uai! / trem|ميناس جيرايس: تعجّب / «شي، غرض»
+bah! / tchê|الجنوب: تعجّب / «يا صاحبي»
+mano / meu|ساو باولو: «يا زلمة»
+mermão / maneiro|ريو: «يا أخي» / «حلو»`,['الكلمة','المنطقة والمعنى'],false)+
+X(`Oxente, que calor!|أوشينتشي، كي كالور!|يا الله، شو هالشوب!
+Uai, você já chegou?|واي، ڤوسيه جا شيغو؟|ولك، وصلت؟
+Bah, tchê, que frio!|با، تشي، كي فريو!|يا زلمة، شو هالبرد!
+Mano, que legal!|مانو، كي ليغاو!|يا زلمة، شو حلو!`)+
+TIP('<em>tu</em> مستعملة ببعض المناطق (زي الجنوب والشمال وأجزاء من الشمال الشرقي)، بس <em>você</em> مفهومة بكل مكان، وهي الأأمن للمتعلم.')+
+H('نفس الشي، أسماء مختلفة')+TB(`mandioca / aipim / macaxeira|منيهوت
+abóbora / jerimum|يقطين
+semáforo / sinal / farol / sinaleiro|إشارة مرور
+bergamota / mexerica / tangerina|يوسفي
+biscoito / bolacha|بسكويت
+menino / guri / moleque|ولد`),
 w:`o senhor|أو سينيور|حضرتك (رجل)
 a senhora|آ سينيورا|حضرتك (امرأة)
 formal|فورماو|رسمي
 informal|إينفورماو|غير رسمي
 gíria|جيريا|عامية
 sotaque|سوتاكي|لهجة / نبرة
-piá|بيا|ولد (كوريتيبا)
-guria|غوريا|بنت (الجنوب)
-vina|ڤينا|نقانق (بارانا)
-penal|بيناو|مقلمة (بارانا)
-japona|جابونا|جاكيت شتوي
-sinaleiro|سيناليرو|إشارة مرور (بارانا)
+região|هيجياو|منطقة
+regional|هيجيوناو|محلي / إقليمي
+mandioca|ماندجيوكا|منيهوت
+macaxeira|ماكاشيرا|منيهوت (الشمال الشرقي)
+aipim|آيبين|منيهوت (ريو والجنوب)
 bergamota|بيرغاموتا|يوسفي (الجنوب)
-capaz|كاباس|مستحيل! (كوريتيبا)`,
+mexerica|ميشيريكا|يوسفي (ساو باولو وميناس)
+semáforo|سيمافورو|إشارة مرور`,
 s:`Gostaria de saber se o senhor poderia me ajudar.|غوستاريا دجي سابير سي أو سينيور بوديريا مي أجودار.|أود أن أعرف إن كان بإمكان حضرتك مساعدتي.
 Você pode me ajudar, por favor?|ڤوسيه بودجي مي أجودار، بور فاڤور؟|هل تستطيع مساعدتي؟
 Me dá uma força aí?|مي دا أوما فورسا آي؟|ساعدني شوي؟ (عامي)
-O piá está na escola.|أو بيا إستا نا إسكولا.|الولد في المدرسة.
-Leva a japona, tá frio!|ليڤا آ جابونا، تا فريو!|خذ الجاكيت، الجو بارد!
-Vire à direita no sinaleiro.|ڤيري آ دجيريتا نو سيناليرو.|لف يمين عند الإشارة.
-Quero um quilo de bergamota.|كيرو أوم كيلو دجي بيرغاموتا.|أريد كيلو يوسفي.
+Cada região tem seu sotaque.|كادا هيجياو تين سيو سوتاكي.|كل منطقة إلها لهجتها.
+Em cada lugar a mandioca tem um nome.|إين كادا لوغار آ ماندجيوكا تين أون نومي.|بكل مكان المنيهوت إله اسم.
+Vire à direita no semáforo.|ڤيري آ دجيريتا نو سيمافورو.|لف يمين عند الإشارة.
+Quero um quilo de mexerica.|كيرو أون كيلو دجي ميشيريكا.|بدي كيلو يوسفي.
 Você tem sotaque!|ڤوسيه تين سوتاكي!|عندك لكنة!
-Capaz! Nem pensar.|كاباس! نين بينسار.|مستحيل! ولا تفكر.
+Oxente, que calor!|أوشينتشي، كي كالور!|يا الله، شو هالشوب!
 A senhora deseja mais alguma coisa?|آ سينيورا ديزيجا مايس آوغوما كويزا؟|هل تريد حضرتك شيئًا آخر؟`,
 d:`___ poderia me ajudar? (رسمي لرجل)|هل تستطيع حضرتك...|O senhor|Você|Cara
-O ___ está na escola. (ولد، كوريتيبا)|الولد...|piá|guria|vina
-Leva a ___, tá frio!|خذ الجاكيت.|japona|japonesa|jaqueta de
-Vire à direita no ___. (كوريتيبا)|عند الإشارة.|sinaleiro|sinal de|semafórico
+Cada ___ tem seu sotaque.|كل منطقة إلها لهجتها.|região|regional|regiões
+Vire à direita no ___.|عند الإشارة.|semáforo|semana|sinalzinho de
 Você tem ___!|عندك لكنة!|sotaque|sotaco|gíria de
-Quero um quilo de ___. (يوسفي، الجنوب)|كيلو يوسفي.|bergamota|bergamoto|laranja de
-شو يعني «Capaz!» في كوريتيبا غالبًا؟||مستحيل / لا أبدًا|أنا قادر|ممتاز`});
+Quero um quilo de ___. (يوسفي)|كيلو يوسفي.|mexerica|mexerico|laranja de
+«macaxeira» هي نفس:||mandioca|abóbora|batata
+«Oxente!» من أي منطقة غالبًا؟||الشمال الشرقي|الجنوب|ساو باولو`});
 
 C({id:76,u:19,pt:'Pronúncia avançada',ar:'النطق المتقدم وإيقاع الكلام',
 lesson:H('لماذا لا أفهم البرازيليين عندما يتكلمون بسرعة؟')+Pp('لأن الكلام الحقيقي يختصر ويدمج الكلمات. هذه أهم الظواهر:')+
@@ -5168,7 +5178,7 @@ EXAMS[16]={chs:[61,62,63,64],passage:'O curso de português para imigrantes, cuj
 EXAMS[17]={chs:[65,66,67,68],passage:'Bom dia, Sr. Paulo. Conforme combinado na nossa reunião, segue em anexo a proposta para as fotos do evento. O valor total é de três mil reais, que pode ser parcelado em três vezes sem juros. Para pagamento à vista, oferecemos dez por cento de desconto. O prazo de entrega é de dez dias úteis. A proposta é válida até sexta-feira. Fico à disposição. Atenciosamente, Said.',
  qs:[['ما موضوع العرض؟','تصوير حدث','بيع كاميرا','إيجار شقة','دورة تصوير'],['كم السعر الكلي؟','3000 ريال','300 ريال','1000 ريال','3500 ريال'],['ما الخصم للدفع الفوري؟','10%','5%','20%','لا يوجد'],['ما مدة التسليم؟','10 أيام عمل','أسبوع','شهر','3 أيام']],
  tf:[['يمكن التقسيط على 3 دفعات بدون فوائد.',true],['العرض ساري لمدة شهر.',false]]};
-EXAMS[18]={chs:[69,70,71,72],passage:'Segundo dados divulgados ontem pela prefeitura, a coleta de lixo reciclável aumentou vinte por cento em Curitiba neste ano. De acordo com a secretaria do meio ambiente, os moradores estão separando melhor o lixo. Em contrapartida, o desperdício de comida ainda é alto. Diante disso, a prefeitura pretende lançar uma campanha nas escolas. Vale ressaltar que o serviço de coleta é gratuito.',
+EXAMS[18]={chs:[69,70,71,72],passage:'Segundo dados divulgados ontem pela prefeitura, a coleta de lixo reciclável aumentou vinte por cento na cidade neste ano. De acordo com a secretaria do meio ambiente, os moradores estão separando melhor o lixo. Em contrapartida, o desperdício de comida ainda é alto. Diante disso, a prefeitura pretende lançar uma campanha nas escolas. Vale ressaltar que o serviço de coleta é gratuito.',
  qs:[['من نشر البيانات؟','البلدية','الحكومة الفيدرالية','جامعة','صحيفة'],['كم زاد جمع النفايات القابلة للتدوير؟','20%','10%','50%','2%'],['ما المشكلة التي ما زالت موجودة؟','هدر الطعام','تلوث الهواء','نقص الشاحنات','الأسعار'],['ماذا تنوي البلدية؟','إطلاق حملة في المدارس','رفع الأسعار','إغلاق الحدائق','شراء شاحنات']],
  tf:[['خدمة جمع النفايات مجانية.',true],['السكان يفرزون النفايات بشكل أسوأ.',false]]};
 EXAMS[19]={chs:[73,74,75,76],passage:'— E aí, cê vai na festa do Marcos? — Capaz! Tô cansadão. Trabalhei o dia inteiro. — Ah, vamos! É pertinho daqui. A gente toma um cafezinho e volta rapidinho. — Tá bom, mas peraí, deixa eu pegar a japona, que tá um frio danado. — Beleza! Tamo junto!',
@@ -5297,8 +5307,8 @@ H('لا crase أبدًا')+TB(`a pé|قبل كلمة مذكرة
 a partir de|قبل فعل
 a ela / a você|قبل ضمائر
 a uma|قبل أداة نكرة
-a Curitiba|قبل مدن بدون أداة`,null,false)+
-TIP('<b>قاعدة المدن:</b> «Vou a, volto da, crase há; vou a, volto de, crase pra quê?» يعني: إذا تقول <em>volto da Bahia</em> ← <em>vou à Bahia</em>. إذا تقول <em>volto de Curitiba</em> ← <em>vou a Curitiba</em>.'),
+a São Paulo|قبل مدن بدون أداة`,null,false)+
+TIP('<b>قاعدة المدن:</b> «Vou a, volto da, crase há; vou a, volto de, crase pra quê?» يعني: إذا تقول <em>volto da Bahia</em> ← <em>vou à Bahia</em>. إذا تقول <em>volto de São Paulo</em> ← <em>vou a São Paulo</em>.'),
 w:`à|آ|إلى الـ (مؤنث)
 às|آس|إلى الـ (جمع مؤنث)
 crase|كرازي|دمج a + a
@@ -5319,7 +5329,7 @@ A reunião é às duas horas.|آ هيونياو إيه آس دواس أوراس.
 Paguei à vista.|باغيي آ ڤيستا.|دفعت دفعة واحدة.
 Vou a pé.|ڤو آ بيه.|أذهب مشيًا.
 A partir de amanhã, estudo mais.|آ بارتشير دجي أمانيا، إستودو مايس.|ابتداءً من غد أدرس أكثر.
-Vou a Curitiba.|ڤو آ كوريتيبا.|أذهب إلى كوريتيبا.
+Vou a São Paulo.|ڤو آ ساو باولو.|أذهب إلى ساو باولو.
 Vou à Bahia nas férias.|ڤو آ باييا ناس فيرياس.|أذهب إلى باهيا في الإجازة.
 O atraso foi devido à chuva.|أو أترازو فوي ديڤيدو آ شوڤا.|التأخير بسبب المطر.
 Frango à moda da casa.|فرانغو آ مودا دا كازا.|دجاج على طريقة البيت.`,
@@ -5327,7 +5337,7 @@ d:`Vou ___ escola.|إلى المدرسة|à|a|há
 Vou ___ pé.|مشيًا|a|à|há
 A reunião é ___ duas horas.|الساعة الثانية|às|as|há
 Paguei ___ vista.|دفعة واحدة|à|a|ha
-Vou ___ Curitiba.|إلى كوريتيبا|a|à|há
+Vou ___ São Paulo.|إلى ساو باولو|a|à|há
 Entreguei o documento ___ diretora.|للمديرة|à|a|há
 Começo ___ partir de amanhã.|ابتداءً من|a|à|há`});
 
@@ -5399,7 +5409,7 @@ H('صيغ المخاطبة')+TB(`Vossa Senhoria (V. Sa.)|حضرتكم: لموظ�
 Vossa Excelência (V. Exa.)|معاليكم: لكبار المسؤولين والقضاة
 Ilustríssimo(a) Senhor(a)|السيد المحترم (في العنوان)`)+
 TIP('الفعل مع Vossa Senhoria يأتي بصيغة الغائب: <em>Vossa Senhoria <b>sabe</b>...</em> وليس «sabeis».')+
-H('نموذج طلب (requerimento)')+SRC('نموذج','Ilustríssimo Senhor Diretor, Said Yahya, residente em Curitiba, portador do documento número indicado em anexo, vem respeitosamente requerer a Vossa Senhoria a emissão de uma segunda via do seu certificado de conclusão de curso, pelos motivos expostos. Nestes termos, pede deferimento. Curitiba, 15 de novembro de 2026.','حضرة السيد المدير المحترم، سعيد يحيى، المقيم في كوريتيبا، حامل الوثيقة المرفق رقمها، يتقدم باحترام بطلب إصدار نسخة ثانية من شهادة إتمام الدورة، للأسباب المذكورة. وعليه، يلتمس الموافقة. كوريتيبا، 15 نوفمبر 2026.')+
+H('نموذج طلب (requerimento)')+SRC('نموذج','Ilustríssimo Senhor Diretor, Said Yahya, residente em São Paulo, portador do documento número indicado em anexo, vem respeitosamente requerer a Vossa Senhoria a emissão de uma segunda via do seu certificado de conclusão de curso, pelos motivos expostos. Nestes termos, pede deferimento. São Paulo, 15 de novembro de 2026.','حضرة السيد المدير المحترم، سعيد يحيى، المقيم في ساو باولو، حامل الوثيقة المرفق رقمها، يتقدم باحترام بطلب إصدار نسخة ثانية من شهادة إتمام الدورة، للأسباب المذكورة. وعليه، يلتمس الموافقة. ساو باولو، 15 نوفمبر 2026.')+
 TIP('<b>Nestes termos, pede deferimento.</b> = الخاتمة التقليدية للطلب الرسمي: «وعليه يلتمس الموافقة». و<em>deferido</em> = مقبول، <em>indeferido</em> = مرفوض.')+
 H('عبارات رسمية')+X(`Venho respeitosamente requerer...|ڤينيو هيسبيتوزامينتشي هيكيرير|أتقدم باحترام بطلب...
 Pelos motivos expostos...|بيلوس موتشيڤوس إسبوستوس|للأسباب المذكورة...
@@ -5596,7 +5606,7 @@ Faz dois anos que moro aqui.|فاز دويس آنوس كي مورو آكي.|مض
 Sabe-se que o problema é antigo.|سابي سي كي أو بروبليما إيه أنتشيغو.|من المعروف أن المشكلة قديمة.
 Recomenda-se chegar cedo.|هيكوميندا سي شيغار سيدو.|يُنصح بالوصول مبكرًا.
 Espera-se que o projeto seja aprovado.|إسبيرا سي كي أو بروجيتو سيجا أبروڤادو.|يُتوقع الموافقة على المشروع.
-Vive-se bem em Curitiba.|ڤيڤي سي بين إين كوريتيبا.|العيش جيد في كوريتيبا.`,
+Vive-se bem em São Paulo.|ڤيڤي سي بين إين ساو باولو.|العيش جيد في ساو باولو.`,
 d:`___-se casas. (رسمي)|تُباع بيوت.|Vendem|Vende|Vendemos
 ___-se de funcionários.|مطلوب موظفون.|Precisa|Precisam|Precisamos
 ___ muitas pessoas na fila.|كان يوجد أشخاص كثيرون.|Havia|Haviam|Houveram
@@ -5975,7 +5985,7 @@ lesson:H('بنية العرض القصير (pitch)')+TB(`1. Quem sou eu|من أ�
 3. Como eu resolvo|كيف أحلها
 4. Por que eu|لماذا أنا (ميزتي)
 5. Chamada para ação|الخطوة التالية المطلوبة`)+
-H('مثال (يمكنك تعديله)')+SRC('pitch','Muito prazer, eu sou o Said, fotógrafo e designer com mais de dez anos de experiência. Muitas pequenas empresas em Curitiba têm ótimos produtos, mas uma imagem fraca nas redes sociais. Eu crio fotos, vídeos e identidade visual que transformam a marca e atraem clientes. Já trabalhei com marcas no Brasil e no Oriente Médio, e falo árabe, inglês e português. Que tal marcarmos uma conversa de quinze minutos esta semana?','تشرفنا، أنا سعيد، مصوّر ومصمم بخبرة أكثر من عشر سنوات. كثير من الشركات الصغيرة في كوريتيبا لديها منتجات ممتازة لكن صورة ضعيفة على مواقع التواصل. أنا أصنع صورًا وفيديوهات وهوية بصرية تغيّر العلامة وتجذب العملاء. عملت مع علامات في البرازيل والشرق الأوسط، وأتكلم العربية والإنجليزية والبرتغالية. ما رأيك أن نرتب حديثًا لربع ساعة هذا الأسبوع؟')+
+H('مثال (يمكنك تعديله)')+SRC('pitch','Muito prazer, eu sou o Said, fotógrafo e designer com mais de dez anos de experiência. Muitas pequenas empresas em São Paulo têm ótimos produtos, mas uma imagem fraca nas redes sociais. Eu crio fotos, vídeos e identidade visual que transformam a marca e atraem clientes. Já trabalhei com marcas no Brasil e no Oriente Médio, e falo árabe, inglês e português. Que tal marcarmos uma conversa de quinze minutos esta semana?','تشرفنا، أنا سعيد، مصوّر ومصمم بخبرة أكثر من عشر سنوات. كثير من الشركات الصغيرة في ساو باولو لديها منتجات ممتازة لكن صورة ضعيفة على مواقع التواصل. أنا أصنع صورًا وفيديوهات وهوية بصرية تغيّر العلامة وتجذب العملاء. عملت مع علامات في البرازيل والشرق الأوسط، وأتكلم العربية والإنجليزية والبرتغالية. ما رأيك أن نرتب حديثًا لربع ساعة هذا الأسبوع؟')+
 TIP('هذا <b>مثال</b> مبني على مجالك المهني. عدّل الأرقام والتفاصيل حسب الحقيقة قبل استخدامه.')+
 H('عبارات قوية')+X(`O nosso diferencial é...|أو نوسو دجيفيرينسياو إيه|ما يميزنا هو...
 Isso gera mais engajamento.|إيسو جيرا مايس إينغاجامينتو.|هذا يولّد تفاعلًا أكثر.
@@ -6145,7 +6155,7 @@ Meia dúzia = 6 unidades.|ميا دوزيا سييس أونيدادجيس|نصف
 5:{w:`brasileira|برازيلييرا|برازيلية
 brasileiros|برازيلييروس|برازيليون
 São Paulo|ساو پاولو|ساو باولو
-Curitiba|كوريتيبا|كوريتيبا
+São Paulo|ساو باولو|ساو باولو
 países|پايزيس|بلدان`,s:`Ela é do Egito.|إيلا إيه دو إيجيتو|هي من مصر`},
 6:{w:`calma|كاوما|هادئة
 divertida|دجيڤيرتشيدا|مرحة
@@ -6784,12 +6794,12 @@ B|Vou levar a azul. Aceita Pix?|ڤو ليڤار آ أزوو. أسيتا بيكس
 A|Aceito, sim. Obrigado!|أسيتو، سين. أوبريغادو!|آه بقبل. شكرًا!`,
 q:[['كم سعر البلوزة الأولى؟','35 ريال','28 ريال','25 ريال'],['أي وحدة اشترى؟','الزرقا','الأولى','ولا وحدة'],['كيف دفع؟','بيكس','نقدًا','بطاقة']]},
 5:{sp:['Paulo','Nour'],l:`A|Você não é brasileira, né?|ڤوسي ناو إيه برازيليرا، نيه؟|إنتِ مش برازيلية، صح؟
-B|Não, eu sou síria. Moro em Curitiba há um ano.|ناو، إيو سو سيريا. مورو إين كوريتشيبا آ أون آنو.|لا، أنا سورية. ساكنة بكوريتيبا من سنة.
+B|Não, eu sou síria. Moro em São Paulo há um ano.|ناو، إيو سو سيريا. مورو إين ساو باولو آ أون آنو.|لا، أنا سورية. ساكنة بساو باولو من سنة.
 A|Que línguas você fala?|كي لينغواس ڤوسي فالا؟|شو اللغات اللي بتحكيها؟
 B|Falo árabe, inglês e um pouco de português.|فالو آرابي، إينغليس إي أون بوكو دجي بورتوغيس.|بحكي عربي وإنجليزي وشوية برتغالي.
 A|Seu português é muito bom!|سيو بورتوغيس إيه مويتو بون!|البرتغالي تبعك منيح كتير!
 B|Obrigada! Eu estudo todos os dias.|أوبريغادا! إيو إستودو تودوس أوس دجياس.|شكرًا! بدرس كل يوم.`,
-q:[['نور من وين؟','من سوريا','من لبنان','من البرازيل'],['من قديش ساكنة بكوريتيبا؟','من سنة','من شهر','من خمس سنين'],['أي لغات بتحكي؟','عربي وإنجليزي وشوية برتغالي','برتغالي بس','عربي بس']]},
+q:[['نور من وين؟','من سوريا','من لبنان','من البرازيل'],['من قديش ساكنة بساو باولو؟','من سنة','من شهر','من خمس سنين'],['أي لغات بتحكي؟','عربي وإنجليزي وشوية برتغالي','برتغالي بس','عربي بس']]},
 6:{sp:['Ana','Hassan'],l:`A|Oi, Hassan! Você está bem?|أوي، حسن! ڤوسي إيستا بين؟|هاي حسن! إنت منيح؟
 B|Estou cansado. Trabalhei muito hoje.|إيستو كانسادو. ترابالييه مويتو أوجي.|أنا تعبان. اشتغلت كتير اليوم.
 A|E seus filhos, como estão?|إي سيوس فيليوس، كومو إيستاو؟|وأولادك كيفهم؟
@@ -6818,7 +6828,7 @@ A|E quem é esse menino?|إي كين إيه إيسي مينينو؟|ومين ه�
 B|É meu filho mais novo. Eu tenho três filhos.|إيه ميو فيليو مايس نوڤو. إيو تينيو تريس فيليوس.|ابني الصغير. عندي تلات أولاد.
 A|Você tem irmãos?|ڤوسي تين إيرماوس؟|عندك إخوة؟
 B|Tenho dois irmãos e uma irmã. Eles moram em Gaza.|تينيو دويس إيرماوس إي أوما إيرما. إيليس مورام إين غازا.|عندي أخين وأخت. ساكنين بغزة.`,
-q:[['كم ولد عند أحمد؟','تلاتة','اتنين','أربعة'],['مين الولد اللي بالصورة؟','ابنه الصغير','أخوه','ابن أخوه'],['وين ساكنين إخوته؟','بغزة','بكوريتيبا','بساو باولو']]},
+q:[['كم ولد عند أحمد؟','تلاتة','اتنين','أربعة'],['مين الولد اللي بالصورة؟','ابنه الصغير','أخوه','ابن أخوه'],['وين ساكنين إخوته؟','بغزة','بساو باولو','بساو باولو']]},
 10:{sp:['Professor','Aluna'],l:`A|De quem é esta mochila?|دجي كين إيه إيستا موشيلا؟|لمين هاي الشنطة؟
 B|É minha, professor.|إيه مينيا، بروفيسور.|إلي يا أستاذ.
 A|E esse caderno? É seu também?|إي إيسي كاديرنو؟ إيه سيو تامبين؟|وهالدفتر؟ إلك كمان؟
@@ -6932,7 +6942,7 @@ q:[['متى أكلت نور باو دجي كيجو لأول مرة؟','مبار�
 B|Primeiro, fomos ao Jardim Botânico.|بريميرو، فوموس آو جاردجين بوتانيكو.|أولًا رحنا عالحديقة النباتية.
 A|Que lindo! E depois?|كي ليندو! إي ديبويس؟|حلو! وبعدين؟
 B|Depois, fizemos um piquenique. De repente, começou a chover!|ديبويس، فيزيموس أون بيكينيكي. دجي هيبينتشي، كوميسو آ شوڤير!|بعدين عملنا نزهة. فجأة بلشت تشتي!
-A|Típico de Curitiba! E aí?|تشيبيكو دجي كوريتشيبا! إي آي؟|عادي بكوريتيبا! وشو صار؟
+A|Que azar! E aí?|كي أزار! إي آي؟|يا لسوء الحظ! وشو صار؟
 B|No fim, voltamos para casa molhados, mas felizes.|نو فين، ڤولتاموس بارا كازا موليادوس، ماس فيليزيس.|بالآخر رجعنا عالبيت مبلولين بس مبسوطين.`,
 q:[['وين راحوا أول اشي؟','الحديقة النباتية','البحر','السوق'],['شو صار فجأة؟','بلشت تشتي','ضاعوا','سكّرت الحديقة'],['أي كلمة معناها «فجأة»؟','De repente','Depois','No fim']]},
 26:{sp:['Neta','Avô'],l:`A|Vovô, como era a sua vida em Gaza?|ڤوڤو، كومو إيرا آ سوا ڤيدا إين غازا؟|يا جدو، كيف كانت حياتك بغزة؟
@@ -6987,13 +6997,13 @@ B|Pronto. E agora?|برونتو. إي أغورا؟|جاهز. وهلأ؟
 A|Ligue o carro e saia devagar. Não acelere muito!|ليغي أو كاهو إي سايا ديڤاغار. ناو أسيليري مويتو!|شغّل السيارة واطلع على مهل. لا تسرّع كتير!
 B|Pode falar mais devagar, por favor?|بودجي فالار مايس ديڤاغار، بور فاڤور؟|بتقدر تحكي أبطأ لو سمحت؟`,
 q:[['شو نوع الدرس؟','درس سواقة','درس برتغالي','درس سباحة'],['شو أول اشي طلبه المدرب؟','يحط الحزام ويظبط المراية','يسرّع','يطفي السيارة'],['أي جملة طلب فيها حسن مساعدة؟','Pode falar mais devagar?','Ligue o carro','Sente aqui']]},
-33:{sp:['Lucas','Tarek'],l:`A|Você prefere Curitiba ou São Paulo?|ڤوسي بريفيري كوريتشيبا أو ساو باولو؟|بتحب كوريتيبا أكتر ولا ساو باولو؟
-B|Curitiba. É mais tranquila que São Paulo.|كوريتشيبا. إيه مايس ترانكويلا كي ساو باولو.|كوريتيبا. أهدى من ساو باولو.
-A|Mas é mais fria, né?|ماس إيه مايس فريا، نيه؟|بس أبرد، صح؟
-B|É, o inverno aqui é pior. Mas o ônibus é melhor.|إيه، أو إينڤيرنو أكي إيه بيور. ماس أو أونيبوس إيه ميليور.|آه، الشتا هون أسوأ. بس الباصات أحسن.
+33:{sp:['Lucas','Tarek'],l:`A|Você prefere morar numa cidade grande ou pequena?|ڤوسي بريفيري مورار نوما سيدادجي غرانجي أو بيكينا؟|بتفضّل تسكن بمدينة كبيرة ولا صغيرة؟
+B|Pequena. É mais tranquila que uma cidade grande.|بيكينا. إيه مايس ترانكويلا كي أوما سيدادجي غرانجي.|صغيرة. أهدى من المدينة الكبيرة.
+A|Mas tem menos opções, né?|ماس تين مينوس أوبسويس، نيه؟|بس فيها خيارات أقل، صح؟
+B|É, tem menos empregos. Mas o trânsito é melhor.|إيه، تين مينوس إيمبريغوس. ماس أو ترانزيتو إيه ميليور.|آه، فيها شغل أقل. بس السير أحسن.
 A|E o aluguel?|إي أو آلوغيو؟|والإيجار؟
-B|Aqui é mais barato. São Paulo é a cidade mais cara do Brasil!|أكي إيه مايس باراتو. ساو باولو إيه آ سيدادجي مايس كارا دو برازيو!|هون أرخص. ساو باولو أغلى مدينة بالبرازيل!`,
-q:[['ليش طارق بيفضل كوريتيبا؟','لأنها أهدى','لأنها أسخن','لأنها أكبر'],['شو الأسوأ بكوريتيبا حسب الحوار؟','الشتا','الباصات','الإيجار'],['شو معنى melhor؟','أحسن','أسوأ','أكبر']]},
+B|É mais barato. Nas capitais, o aluguel é o mais caro.|إيه مايس باراتو. ناس كابيتاييس، أو آلوغيو إيه أو مايس كارو.|أرخص. بالعواصم الإيجار هو الأغلى.`,
+q:[['ليش طارق بيفضّل المدينة الصغيرة؟','لأنها أهدى','لأنها أسخن','لأنها أكبر'],['شو العيب بالمدينة الصغيرة؟','شغل أقل','سير أكتر','إيجار أغلى'],['شو معنى melhor؟','أحسن','أسوأ','أكبر']]},
 34:{sp:['Ana','Rami'],l:`A|Como é a sua rotina?|كومو إيه آ سوا هوتشينا؟|كيف روتينك؟
 B|Eu me levanto às seis e me arrumo rápido.|إيو مي ليڤانتو آس سييس إي مي أهومو هابيدو.|بقوم الساعة ستة وبجهّز حالي بسرعة.
 A|E seus filhos?|إي سيوس فيليوس؟|وولادك؟
@@ -7050,7 +7060,7 @@ B|Meu vizinho caiu da escada e não consegue levantar.|ميو ڤيزينيو ك�
 A|Ele está consciente?|إيلي إيستا كونسيينتشي؟|هو واعي؟
 B|Está, mas sente muita dor na perna.|إيستا، ماس سينتشي مويتا دور نا بيرنا.|آه، بس بيوجعه إجره كتير.
 A|Qual é o endereço?|كواو إيه أو إينديريسو؟|شو العنوان؟
-B|Rua das Flores, número cento e vinte, no Portão.|هوا داس فلوريس، نوميرو سينتو إي ڤينتشي، نو بورتاو.|شارع داس فلوريس، رقم 120، بحي بورتاو.
+B|Rua das Flores, número cento e vinte, no Centro.|هوا داس فلوريس، نوميرو سينتو إي ڤينتشي، نو سينترو.|شارع داس فلوريس، رقم 120، بوسط البلد.
 A|Não mexa nele. A ambulância já está a caminho.|ناو ميشا نيلي. آ أمبولانسيا جا إيستا آ كامينيو.|لا تحركيه. الإسعاف بالطريق.`,
 q:[['شو صار للجار؟','وقع عن الدرج','انحرق','ضاع'],['هو واعي؟','آه بس بيوجعه إجره','لا','نايم'],['شو نصحت موظفة الإسعاف؟','ما تحركه','تعطيه دوا','تاخده بالسيارة']]},
 42:{sp:['Marido','Esposa'],l:`A|Como está o tempo hoje?|كومو إيستا أو تيمبو أوجي؟|كيف الطقس اليوم؟
@@ -7064,7 +7074,7 @@ q:[['كيف الطقس؟','برد وغيم','شوب وشمس','تلج'],['قدي
 
 /* ===== حوارات المستوى الثالث B1 (الفصول 43–60) ===== */
 Object.assign(DIALOGS,{
-43:{sp:['Renata','Omar'],l:`A|O que você acha do transporte em Curitiba?|أو كي ڤوسي أشا دو ترانسبورتشي إين كوريتشيبا؟|شو رأيك بالمواصلات بكوريتيبا؟
+43:{sp:['Renata','Omar'],l:`A|O que você acha do transporte na nossa cidade?|أو كي ڤوسي أشا دو ترانسبورتشي نا نوسا سيدادجي؟|شو رأيك بالمواصلات بمدينتنا؟
 B|Eu acho que é bom, mas poderia ser mais barato.|إيو أشو كي إيه بون، ماس بوديريا سير مايس باراتو.|برأيي منيحة، بس ممكن تكون أرخص.
 A|Concordo com você. A passagem subiu muito.|كونكوردو كوم ڤوسي. آ باساجين سوبيو مويتو.|متفقة معك. التذكرة غليت كتير.
 B|Por outro lado, os ônibus são pontuais.|بور أوترو لادو، أوس أونيبوس ساو بونتواييس.|من جهة تانية، الباصات بتوصل بوقتها.
@@ -7261,7 +7271,7 @@ A|Documentos de todos da família e comprovante de residência.|دوكومينت
 B|E as crianças precisam estar na escola?|إي آس كريانساس بريسيزام إيستار نا إسكولا؟|والأولاد لازم يكونوا بالمدرسة؟
 A|Sim, com frequência mínima e vacinas em dia.|سين، كوم فريكوينسيا مينيما إي ڤاسيناس إين دجيا.|آه، بحد أدنى من الحضور وتطعيمات محدّثة.`,
 q:[['عن أي برنامج بتسأل؟','بولسا فاميليا','منحة جامعة','قرض'],['شو أول خطوة؟','تسجّل بالكادأونيكو','تفتح حساب','تشتغل'],['شو شرط الأولاد؟','يروحوا عالمدرسة وتطعيماتهم محدّثة','يشتغلوا','ولا اشي']]},
-71:{sp:['Vizinho','Hassan'],l:`A|Hassan, aqui em Curitiba a gente separa o lixo.|حسن، أكي إين كوريتشيبا آ جينتشي سيبارا أو ليشو.|حسن، هون بكوريتيبا منفرز الزبالة.
+71:{sp:['Vizinho','Hassan'],l:`A|Hassan, aqui no prédio a gente separa o lixo.|حسن، أكي نو بريدجيو آ جينتشي سيبارا أو ليشو.|حسن، هون بالعمارة منفرز الزبالة.
 B|Como funciona?|كومو فونسيونا؟|كيف بتمشي؟
 A|O lixo reciclável vai no saco verde, e o orgânico no preto.|أو ليشو هيسيكلاڤيو ڤاي نو ساكو ڤيردجي، إي أو أورغانيكو نو بريتو.|الزبالة القابلة للتدوير بالكيس الأخضر، والعضوية بالأسود.
 B|E quando o caminhão passa?|إي كواندو أو كامينياو باسا؟|ومتى بتمرق الشاحنة؟
@@ -7289,13 +7299,13 @@ B|Que casinha linda a senhora tem!|كي كازينيا ليندا آ سينيو�
 A|Obrigada! E aquele carrão lá fora é do meu filho.|أوبريغادا! إي أكيلي كاهاو لا فورا إيه دو ميو فيليو.|شكرًا! وهديك السيارة الكبيرة برا لابني.
 B|Nossa, que carrão mesmo!|نوسا، كي كاهاو ميزمو!|يا الله، سيارة ضخمة فعلًا!`,
 q:[['شو قدّمت دونا سيدا أول؟','فنجان قهوة','عصير','مي'],['شو معنى -inho بـ cafezinho؟','تصغير/تلطيف','تكبير','جمع'],['carrão يعني:','سيارة كبيرة','سيارة صغيرة','باص']]},
-75:{sp:['Senhor','Piá'],l:`A|Ô piá, você sabe onde fica a vina mais gostosa daqui?|أو بيا، ڤوسي سابي أوندجي فيكا آ ڤينا مايس غوستوزا داكي؟|يا ولد، بتعرف وين أطيب «ڤينا» (نقانق) هون؟
-B|Sei, sim senhor! Na lanchonete da esquina.|سيي، سين سينيور! نا لانشونيتشي دا إسكينا.|بعرف يا عمو! بالسناك اللي عالزاوية.
-A|E é longe?|إي إيه لونجي؟|بعيد؟
-B|Não, é logo ali, depois do sinaleiro.|ناو، إيه لوغو آلي، ديبويس دو سيناليرو.|لا، هون قريب، بعد الإشارة.
-A|Obrigado! Você fala igual curitibano mesmo.|أوبريغادو! ڤوسي فالا إيغواو كوريتشيبانو ميزمو.|شكرًا! بتحكي زي أهل كوريتيبا تمامًا.
-B|O senhor também já está falando «vina» e «piá»!|أو سينيور تامبين جا إيستا فالاندو «ڤينا» إي «بيا»!|وإنت كمان صرت تقول «ڤينا» و«بيا»!`,
-q:[['شو يعني «piá» بكوريتيبا؟','ولد','بنت','صديق'],['شو يعني «vina»؟','نقانق','خبز','عصير'],['شو يعني «sinaleiro»؟','إشارة المرور','بائع','محطة']]},
+75:{sp:['Bia','Omar'],l:`A|Omar, você já percebeu que o brasileiro fala diferente em cada região?|أومار، ڤوسي جا بيرسيبيو كي أو برازيليرو فالا دجيفيرينتشي إين كادا هيجياو؟|عمر، لاحظت إن البرازيلي بيحكي غير بكل منطقة؟
+B|Percebi! Em Recife ouvi «macaxeira» e em São Paulo «mandioca».|بيرسيبي! إين هيسيفي أوڤي «ماكاشيرا» إي إين ساو باولو «ماندجيوكا».|لاحظت! بريسيفي سمعت «macaxeira» وبساو باولو «mandioca».
+A|É a mesma coisa! E no Rio falam «aipim».|إيه آ ميزما كويزا! إي نو هيو فالام «آيبين».|نفس الشي! وبريو بيقولوا «aipim».
+B|E com o chefe, uso «você» ou «o senhor»?|إي كوم أو شيفي، أوزو «ڤوسي» أو «أو سينيور»؟|ومع المدير، بستعمل «você» ولا «o senhor»؟
+A|No começo, «o senhor». Se ele pedir, aí você muda.|نو كوميسو، «أو سينيور». سي إيلي بيدجير، آي ڤوسي مودا.|بالأول «o senhor». إذا طلب، بتغيّر.
+B|Entendi: formal no trabalho, informal com os amigos.|إينتيندجي: فورماو نو ترابالیو، إينفورماو كوم أوس أميغوس.|فهمت: رسمي بالشغل، وعادي مع الأصحاب.`,
+q:[['شو معنى macaxeira؟','منيهوت','يقطين','موز'],['شو بيستعمل مع المدير بالأول؟','o senhor','você','cara'],['شو الفكرة الأساسية؟','الكلمات بتختلف حسب المنطقة والموقف','كل البرازيل بتحكي نفس الشي','العامية ممنوعة']]},
 76:{sp:['Professora','Said'],l:`A|Vamos treinar o ritmo. Repita: «Tô indo pra casa».|ڤاموس ترينار أو هيتمو. هيبيتا: «تو إيندو برا كازا».|خلينا نتدرب عالإيقاع. عيد: «Tô indo pra casa».
 B|«Tô indo pra casa.» Parece mais rápido que «estou indo para casa».|«تو إيندو برا كازا.» باريسي مايس هابيدو كي «إيستو إيندو بارا كازا».|بتطلع أسرع من «estou indo para casa».
 A|Exatamente. Na fala, «para» vira «pra», «você» vira «cê».|إيزاتامينتشي. نا فالا، «بارا» ڤيرا «برا»، «ڤوسي» ڤيرا «سي».|بالضبط. بالحكي «para» بتصير «pra»، و«você» بتصير «cê».
@@ -7460,7 +7470,7 @@ ir|vou · vai · vamos · vão
 fazer|faço · faz · fazemos · fazem`,['الفعل','eu · ele/você · nós · eles'])}
 ${H('SER ولا ESTAR؟')}${Pp('<b>ser</b> للثابت: الهوية، الأصل، المهنة، الطبع. <b>estar</b> للمؤقت: الحالة، الشعور، المكان.')}${X(`Eu sou palestino.|إيو سو باليستشينو.|أنا فلسطيني (ثابت).
 Eu estou cansado.|إيو إستو كانسادو.|أنا تعبان (هلأ).
-Curitiba é fria.|كوريتيبا إيه فريا.|كوريتيبا باردة (بشكل عام).
+Porto Alegre é fria.|بورتو أليغري إيه فريا.|بورتو أليغري باردة (بشكل عام).
 Hoje está frio.|أوجي إستا فريو.|اليوم بارد (اليوم بس).`)}</div>
 <div class="card lesson">${H('الدمج مع الأدوات')}${TB(`do / da|de + o / de + a: من الـ
 no / na|em + o / em + a: في الـ
@@ -7487,7 +7497,7 @@ B|Pix. Obrigado, tchau!|بيكس. شكرًا، مع السلامة!`,q:[['كم �
 B|Sou, sim. Meu nome é Omar. Eu sou da Síria.|نعم. اسمي عمر. أنا من سوريا.
 A|Muito prazer! Eu sou a Lúcia. Há quanto tempo você está no Brasil?|تشرفنا! أنا لوسيا. منذ متى أنت في البرازيل؟
 B|Há três meses. Ainda estou aprendendo português.|منذ ثلاثة أشهر. ما زلت أتعلم البرتغالية.
-A|Você fala muito bem! Está gostando de Curitiba?|تتكلم جيدًا! هل تعجبك كوريتيبا؟
+A|Você fala muito bem! Está gostando do Brasil?|تتكلم جيدًا! هل تعجبك البرازيل؟
 B|Estou, mas hoje está muito frio!|نعم، لكن الجو بارد جدًا اليوم!`,q:[['من أين عمر؟','من سوريا','من لبنان','من مصر'],['منذ متى هو في البرازيل؟','ثلاثة أشهر','سنة','شهر'],['ماذا قال عن الطقس؟','بارد جدًا','حار','ممطر']]},
 {u:3,pt:'Fotos da família',ar:'صور العائلة',sp:['Paula','Karim'],l:`A|Que foto bonita! Quem é esse?|يا لها من صورة جميلة! من هذا؟
 B|É o meu pai. E essa é a minha mãe.|هذا أبي. وهذه أمي.
@@ -7537,7 +7547,7 @@ A|Ela tem alguma alergia?|هل عندها حساسية؟
 B|Não, nenhuma. Mas ela está vomitando.|لا، أبدًا. لكنها تتقيأ.
 A|Vou medir a temperatura. Aguarde um momento, o médico já vai chamar.|سأقيس الحرارة. انتظر لحظة، الطبيب سينادي قريبًا.
 B|Obrigado. Ela precisa ficar em jejum?|شكرًا. هل يجب أن تبقى صائمة؟`,q:[['منذ متى الحرارة؟','منذ أمس','منذ أسبوع','منذ ساعة'],['هل عندها حساسية؟','لا','نعم','لا يعرف'],['ماذا ستفعل الممرضة؟','تقيس الحرارة','تعطي دواء','تكتب وصفة']]},
-{u:11,pt:'Morar em Curitiba',ar:'السكن في كوريتيبا',sp:['Marina','Yusuf'],l:`A|O que você acha de morar em Curitiba?|ما رأيك في السكن في كوريتيبا؟
+{u:11,pt:'Morar numa cidade nova',ar:'السكن في مدينة جديدة',sp:['Marina','Yusuf'],l:`A|O que você acha de morar nesta cidade?|ما رأيك في السكن في هذه المدينة؟
 B|Na minha opinião, é uma cidade muito organizada. Por outro lado, o inverno é duro.|برأيي مدينة منظمة جدًا. من جهة أخرى الشتاء قاسٍ.
 A|Concordo! Mas eu acho que as pessoas são um pouco fechadas.|أوافقك! لكن أظن أن الناس منغلقون قليلًا.
 B|No começo achei isso também, mas depois fiz muitos amigos.|في البداية ظننت ذلك، لكن لاحقًا كوّنت أصدقاء كثيرين.
@@ -7585,12 +7595,12 @@ A|E quais são os próximos passos?|وما الخطوات التالية؟
 B|A prefeitura pretende lançar uma campanha nas escolas contra o desperdício de comida.|البلدية تنوي إطلاق حملة في المدارس ضد هدر الطعام.
 A|Obrigado pelas informações.|شكرًا على المعلومات.
 B|Eu que agradeço. Boa noite.|الشكر لك. مساء الخير.`,q:[['ما الخبر؟','زيادة جمع النفايات القابلة للتدوير','ارتفاع الأسعار','حادث'],['ما سبب الزيادة؟','السكان يفرزون أفضل','شاحنات جديدة','قانون جديد'],['ما الخطوة التالية؟','حملة في المدارس','إغلاق الحدائق','رفع الضرائب']]},
-{u:19,pt:'Papo de curitibano',ar:'حديث على طريقة كوريتيبا',sp:['Piá','Said'],l:`A|E aí, piá! Cê vai no jogo do Coxa hoje?|أهلًا يا شب! رايح على مباراة كوريتيبا اليوم؟
-B|Capaz! Tá um frio danado e eu tô cansadão.|مستحيل! الجو بارد جدًا وأنا تعبان كثير.
-A|Leva a japona, é pertinho! A gente come uma vina no caminho.|خذ الجاكيت، قريب جدًا! ناكل نقانق في الطريق.
-B|Tá bom, tá bom, mas só se a gente voltar rapidinho.|طيب طيب، بس بشرط نرجع بسرعة.
-A|Fechado! Tamo junto!|اتفقنا! نحن معًا!
-B|Peraí que vou pegar a japona.|استنى لأجيب الجاكيت.`,q:[['إلى أين الدعوة؟','مباراة كرة قدم','حفلة','مطعم'],['لماذا رفض في البداية؟','بارد وهو تعبان','لا يحب الكرة','عنده عمل'],['ما شرطه للذهاب؟','أن يرجعوا بسرعة','أن يأكلوا في مطعم','أن يذهبوا بالسيارة']]},
+{u:19,pt:'Sotaques do Brasil',ar:'لهجات البرازيل',sp:['Bia','Said'],l:`A|Said, você percebeu que cada brasileiro fala de um jeito?|سعيد، لاحظت إن كل برازيلي بيحكي بطريقة؟
+B|Percebi! Meu vizinho do Nordeste fala «oxente» o tempo todo.|لاحظت! جاري من الشمال الشرقي بيقول «oxente» طول الوقت.
+A|E meu primo de Minas fala «uai» e chama tudo de «trem».|وابن عمي من ميناس بيقول «uai» وبيسمّي كل اشي «trem».
+B|E no Sul eu ouvi «bah, tchê»!|وبالجنوب سمعت «bah, tchê»!
+A|Pois é. Mas todo mundo se entende.|بالضبط. بس الكل بيفهم على بعض.
+B|Que bom, porque eu ainda estou aprendendo o básico!|منيح، لأني لسا بتعلم الأساسيات!`,q:[['شو بيقول الجار من الشمال الشرقي؟','oxente','uai','bah'],['من وين كلمة «uai»؟','ميناس جيرايس','الجنوب','ريو'],['شو الفكرة الأساسية؟','الكل بيفهم على بعض رغم اللهجات','اللهجات صعبة جدًا','لازم تحفظ كل اللهجات']]},
 {u:20,pt:'Revisão do texto',ar:'مراجعة النص',sp:['Orientadora','Said'],l:`A|Li o seu texto. Está bom, porém falta coesão em alguns parágrafos.|قرأت نصك. جيد، لكن ينقصه ترابط في بعض الفقرات.
 B|O que a senhora sugere?|ماذا تقترحين حضرتك؟
 A|Use conectores como não obstante e por conseguinte, mas sem exagerar.|استخدم روابط مثل não obstante و por conseguinte، لكن بدون مبالغة.
@@ -7904,10 +7914,22 @@ function route(){
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
   else if((m=h.match(/^ch-(\d+)$/)))vChapter(+m[1]);else if((m=h.match(/^exam-(\d+|f\d)$/)))vExam(/^\d+$/.test(m[1])?+m[1]:m[1]);else vHome();
+  const bb=$('#backbar');if(bb)bb.hidden=TOP.includes(h);
   const tab=h.startsWith('ch-')||h.startsWith('exam-')||h==='settings'||h.startsWith('admin')?'path':/^(games|review|speak|chat|stories|story-|sounds|placement|cert-)/.test(h)?'practice':h;$$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r===tab));
   window.scrollTo(0,0);
 }
-window.addEventListener('hashchange',route);
+window.addEventListener('hashchange',()=>{if(!navBack)navDepth++;navBack=false;route()});
+const TOP=['path','words','sentences','practice','basics',''];
+let navDepth=0,navBack=false;
+function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h))return '#admin';if(h==='admin')return '#path';if(h==='games')return '#practice';return '#practice'}
+function goBack(){
+  const h=(location.hash||'#path').slice(1);
+  const m=h.match(/^ch-(\d+)$/);
+  if(m&&chState.id===+m[1]){const st=stepsOf(+m[1]),i=st.findIndex(([k])=>k===chState.step);if(i>0){clearTimers();stopAudio();chState.step=st[i-1][0];vChapter(+m[1]);window.scrollTo(0,0);return}}
+  if(navDepth>0){navDepth--;navBack=true;history.back();return}
+  location.hash=parentOf(h);
+}
+document.addEventListener('click',e=>{if(e.target.closest('#bb-back')){e.preventDefault();goBack()}});
 
 function vHome(){
   const nd=CH.filter(c=>chDone(c.id)).length,ne=UNITS.filter(u=>exDone(u.n)).length,nx=nextItem();
@@ -7964,7 +7986,7 @@ function vSettings(){
   bindBackup();
   const sel=$('#vsel');fillVoiceSel(sel);sel.onchange=()=>{S.voice=sel.value;save();fillVoiceSel(sel)};
   $('#vrate').oninput=e=>{S.rate=+e.target.value;$('#vrv').textContent=Math.round(S.rate*100)+'%'};$('#vrate').onchange=()=>save();
-  const T='Bom dia! Eu estou aprendendo português em Curitiba. Está tudo bem?';
+  const T='Bom dia! Eu estou aprendendo português no Brasil. Está tudo bem?';
   $('#vtest').onclick=()=>say(T);$('#vtest2').onclick=e=>{e.stopPropagation();say(T,true)};
   if($('#sw-all'))$('#sw-all').onchange=e=>{S.unlockAll=e.target.checked;save()};
   let armed=false;$('#reset').onclick=e=>{if(!armed){armed=true;e.target.textContent='اضغط كمان مرة للتأكيد';e.target.style.color='var(--bad)';setTimeout(()=>{armed=false;if(e.target.isConnected){e.target.textContent='امسح كل التقدّم';e.target.style.color=''}},4000);return}const keep={rate:S.rate,voice:S.voice};S=Object.assign(defState(),keep);save();toast('انمسح التقدّم');location.hash='#path'};
@@ -7981,26 +8003,26 @@ function vChapter(id){
    <div id="body"></div></div>`;
   $$('.step').forEach(b=>b.onclick=()=>{clearTimers();stopAudio();chState.step=b.dataset.st;vChapter(id)});
   const body=$('#body');const go=k=>{chState.step=k;vChapter(id);window.scrollTo(0,0)};
-  if(st==='lesson'){body.innerHTML=`<div class="card lesson">${c.lesson}</div><div class="row" style="margin-top:14px"><button class="btn primary" id="gonx">فهمت، ${c.DL?'عالحوار':'عالكلمات'} ←</button></div>`;$('#gonx',body).onclick=()=>{mark(id,'lesson',true);go(c.DL?'dialog':'words')}}
+  if(st==='lesson'){body.innerHTML=`<div class="card lesson">${c.lesson}</div><div class="row" style="margin-top:14px"><button class="btn primary" id="gonx">التالي: ${c.DL?'الحوار':'الكلمات'} ←</button></div>`;$('#gonx',body).onclick=()=>{mark(id,'lesson',true);go(c.DL?'dialog':'words')}}
   if(st==='dialog')vDialog(c,body,nav=>{mark(id,'dialog',true);if(nav)go('words')});
   if(st==='words'){
     const list=()=>{body.innerHTML=`<p class="muted" style="margin:0 0 10px">${c.W.length} كلمة. اسمع كل كلمة وقولها بصوت عالي. بعدين اختبر حالك: 8 أسئلة، النجاح 70%.</p><div class="wgrid">${c.W.filter(w=>!w.x).map(wcard).join('')}</div>${c.W.some(w=>w.x)?`<h3 class="xtra-h">كلمات إضافية للدرس (${c.W.filter(w=>w.x).length})</h3><div class="wgrid">${c.W.filter(w=>w.x).map(wcard).join('')}</div>`:''}<div class="row" style="margin-top:14px"><button class="btn primary" id="startq">اختبار الكلمات ←</button></div>`;$('#startq',body).onclick=quiz};
-    const quiz=()=>runQuiz(body,quizWords(c),{title:'اختبار الكلمات',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'words',true)},next:{label:'عالجمل ←',href:'#ch-'+id,click:()=>go('sents')}});
+    const quiz=()=>runQuiz(body,quizWords(c),{title:'اختبار الكلمات',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'words',true)},next:{label:'التالي: الجمل ←',href:'#ch-'+id,click:()=>go('sents')}});
     list();}
   if(st==='sents'){
     const list=()=>{body.innerHTML=`<p class="muted" style="margin:0 0 10px">${c.S.length} جملة. اقرأ، اسمع، وقلّد. بعدين 7 أسئلة.</p><div class="slist">${c.S.filter(s=>!s.x).map(sitem).join('')}</div>${c.S.some(s=>s.x)?`<h3 class="xtra-h">جمل إضافية للدرس (${c.S.filter(s=>s.x).length})</h3><div class="slist">${c.S.filter(s=>s.x).map(sitem).join('')}</div>`:''}<div class="row" style="margin-top:14px"><button class="btn" id="spk">🎤 تمرين الحكي</button><button class="btn primary" id="startq">اختبار الجمل ←</button></div>`;$('#startq',body).onclick=quiz;$('#spk',body).onclick=()=>speakPractice(body,c.S.slice(),'تمرين الحكي · الدرس '+id,'#ch-'+id)};
-    const quiz=()=>runQuiz(body,quizSents(c),{title:'اختبار الجمل',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'sents',true)},next:{label:'عالقواعد ←',href:'#ch-'+id,click:()=>go('drills')}});
+    const quiz=()=>runQuiz(body,quizSents(c),{title:'اختبار الجمل',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'sents',true)},next:{label:'التالي: القواعد ←',href:'#ch-'+id,click:()=>go('drills')}});
     list();}
   if(st==='drills'){
     const intro=()=>{body.innerHTML=`<div class="card stack"><h2 style="font-size:19px">تمارين القواعد</h2><p style="margin:0">${c.D.length} تمرين على قاعدة الدرس: كمّل الفراغ واختار الشكل الصح. بعد كل جواب بتسمع الجملة كاملة.</p><div class="row"><button class="btn primary" id="startq">ابدأ التمارين</button><button class="btn" id="relesson">ارجع للشرح</button></div></div>`;$('#startq',body).onclick=quiz;$('#relesson',body).onclick=()=>go('lesson')};
-    const quiz=()=>runQuiz(body,shuffle(c.D).map(drillQ),{title:'تمارين القواعد',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'drills',true)},next:{label:'عاللعبة ←',href:'#ch-'+id,click:()=>go('game')}});
+    const quiz=()=>runQuiz(body,shuffle(c.D).map(drillQ),{title:'تمارين القواعد',retry:quiz,onDone:(p,pass)=>{if(pass)mark(id,'drills',true)},next:{label:'التالي: اللعبة ←',href:'#ch-'+id,click:()=>go('game')}});
     intro();}
-  if(st==='game'){body.innerHTML=`<p class="muted" style="margin:0 0 10px">العب أي لعبة بكلمات هالدرس. بعد أول لعبة روح عالاختبار.</p><div id="g"></div><div class="row" style="margin-top:14px"><button class="btn" id="toq">لاختبار الدرس ←</button></div>`;$('#toq',body).onclick=()=>go('quiz');
+  if(st==='game'){body.innerHTML=`<p class="muted" style="margin:0 0 10px">العب أي لعبة بكلمات هالدرس. بعد أول لعبة انتقل إلى الاختبار.</p><div id="g"></div><div class="row" style="margin-top:14px"><button class="btn" id="toq">التالي: اختبار الدرس ←</button></div>`;$('#toq',body).onclick=()=>go('quiz');
     gameMenu($('#g',body),c.W,c.S,()=>{if(!stepDone(id,'game')){mark(id,'game',true);const s=$$('.step')[stepsOf(id).findIndex(([k])=>k==='game')];if(s){s.classList.add('ok');s.querySelector('i').textContent='✓'}}})}
   if(st==='quiz'){
     const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${id}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}%</p>`:''}<div class="row"><button class="btn primary" id="startq">ابدأ الاختبار</button></div></div>`;$('#startq',body).onclick=quiz};
     const u=unitOf(id),last=u.chs[u.chs.length-1]===id;
-    const nxt=last?{label:`لاختبار الوحدة ${u.n} ←`,href:'#exam-'+u.n}:{label:`الدرس ${id+1} ←`,href:'#ch-'+(id+1)};
+    const nxt=last?{label:`التالي: اختبار الوحدة ${u.n} ←`,href:'#exam-'+u.n}:{label:`التالي: الدرس ${id+1} ←`,href:'#ch-'+(id+1)};
     const quiz=()=>runQuiz(body,quizChapter(c),{title:'اختبار الدرس '+id,retry:quiz,onDone:p=>{const prev=(S.ch[id]&&S.ch[id].quiz)||0;if(p>prev)mark(id,'quiz',p)},next:nxt});
     intro();}
 }
@@ -8014,8 +8036,8 @@ function vExam(k){
   if(!exOpen(k)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">${name} مقفل</h2><p class="muted">${isFinal(k)?'بينفتح لما تنجح بكل اختبارات وحدات المستوى.':'بينفتح لما تنجح باختبارات كل دروس الوحدة.'}</p></div>`;return}
   const prev=S.ex[exKey(k)];const n=quizExam(k);const cnt=s=>n.filter(q=>q.sec===s).length;
   const u=isFinal(k)?null:UNITS.find(x=>x.n===k);
-  let next={label:'عالمسار ←',href:'#path'};
-  if(u){const sib=unitsOf(lvOf(u));const i=sib.indexOf(u);next=i<sib.length-1?{label:`الوحدة ${sib[i+1].n} ←`,href:'#ch-'+sib[i+1].chs[0]}:{label:'للامتحان النهائي ←',href:'#exam-f'+lvOf(u)}}
+  let next={label:'الرجوع إلى المسار',href:'#path'};
+  if(u){const sib=unitsOf(lvOf(u));const i=sib.indexOf(u);next=i<sib.length-1?{label:`التالي: الوحدة ${sib[i+1].n} ←`,href:'#ch-'+sib[i+1].chs[0]}:{label:'التالي: الامتحان النهائي ←',href:'#exam-f'+lvOf(u)}}
   const intro=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${u?'الوحدة '+k+': '+esc(u.ar):'كل وحدات '+esc(LEVELS[+String(k).slice(1)-1].name)}</span><h1>${name}</h1></div>
     <div class="card stack"><div class="nodes">${['r','l','g','v','w'].map((s,i)=>`<div class="node"><span class="num">${i+1}</span><span class="t"><b>${SEC[s]}</b><small>${cnt(s)} سؤال</small></span><span></span></div>`).join('')}</div>
     <p style="margin:0">المجموع ${n.length} سؤال. النجاح بـ <b>70%</b>. استعمل سماعة لقسم الاستماع.${audioOK()?'':' <b>الصوت مش متاح هون،</b> فالاستماع رح يصير قراءة.'}</p>
@@ -8049,7 +8071,7 @@ function vWords(){
 }
 function flash(ws){
   let i=0,back=false;
-  const show=()=>{const w=ws[i];app.innerHTML=`<div class="stack"><div class="row" style="justify-content:space-between"><button class="btn ghost" id="fx">→ رجوع للكلمات</button><span class="tnum muted">${i+1} / ${ws.length}</span></div>
+  const show=()=>{const w=ws[i];app.innerHTML=`<div class="stack"><div class="row" style="justify-content:space-between"><button class="btn ghost" id="fx">→ الرجوع إلى الكلمات</button><span class="tnum muted">${i+1} / ${ws.length}</span></div>
     <div class="flash"><div class="face${back?' back':''}" id="face" role="button" tabindex="0" aria-label="اقلب البطاقة">${back?`<span class="ar">${bidi(w.ar)}</span><span class="muted">${esc(w.pron)}</span>${P(w.pt)}`:`${PIC(w.pt,1,uIcon(w.ch))}${P(w.pt)}${SYL(w.pt)}<span class="muted">اضغط عشان تشوف المعنى</span>`}</div></div>
     <div class="row" style="justify-content:center">${sayBtn(w.pt)}<button class="btn" id="pv" ${i===0?'disabled':''}>السابق</button><button class="btn primary" id="nv">${i<ws.length-1?'التالي':'خلّصت'}</button></div></div>`;
     const f=$('#face');f.onclick=()=>{back=!back;show()};f.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();back=!back;show()}};
@@ -8085,7 +8107,7 @@ function vDialog(c,body,done){
    <div class="row" style="margin-top:14px"><button class="btn primary" id="dq">اختبر فهمك (${c.DQ.length} أسئلة) ←</button></div>`;
     $('#playall',body).onclick=()=>playStory(st);$('#stopall',body).onclick=stopAudio;$('#dq',body).onclick=quiz};
   const passage=c.DL.map(x=>c.SP[x.s]+': '+x.pt).join(' ');
-  const quiz=()=>runQuiz(body,c.DQ.map(([q,ok,...w])=>Q.mc(q,ok,w,{passage})),{title:'فهم الحوار',retry:quiz,onDone:(p,pass)=>{if(pass)done(false)},next:{label:'عالكلمات ←',href:'#ch-'+c.id,click:()=>done(true)}});
+  const quiz=()=>runQuiz(body,c.DQ.map(([q,ok,...w])=>Q.mc(q,ok,w,{passage})),{title:'فهم الحوار',retry:quiz,onDone:(p,pass)=>{if(pass)done(false)},next:{label:'التالي: الكلمات ←',href:'#ch-'+c.id,click:()=>done(true)}});
   show();
 }
 
@@ -8272,7 +8294,7 @@ function vReview(){
   const n=srsDue().length,tot=srsTotal();
   if(!n){app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">مراجعة اليوم</h1><p style="margin:0">ما في شي للمراجعة اليوم ✓</p><p class="muted" style="margin:0">${tot?`عندك ${tot} عنصر بالمراجعة، رح يرجعوا بمواعيدهم.`:'كل غلطة بتغلطها بالاختبارات بتنضاف هون تلقائيًا، وبترجعلك بعد يوم، 3 أيام، أسبوع، أسبوعين، شهر.'}</p></div></div>`;return}
   const start=()=>{app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#practice">→ التدريب</a></div><div id="rb"></div>`;
-    runQuiz($('#rb'),reviewQs(),{title:'مراجعة اليوم',retry:vReview,pass:0,onDone:()=>{save();const left=srsDue().length;return `<p style="margin:0">${left?`باقي ${left} للمراجعة اليوم.`:'خلّصت مراجعة اليوم ✓'}</p>`},next:{label:'للتدريب ←',href:'#practice'}})};
+    runQuiz($('#rb'),reviewQs(),{title:'مراجعة اليوم',retry:vReview,pass:0,onDone:()=>{save();const left=srsDue().length;return `<p style="margin:0">${left?`باقي ${left} للمراجعة اليوم.`:'خلّصت مراجعة اليوم ✓'}</p>`},next:{label:'الرجوع إلى التدريب',href:'#practice'}})};
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">مراجعة اليوم</h1><p style="margin:0">عندك <b>${n}</b> عنصر لازم يرجعوا اليوم (من أغلاطك السابقة). الجواب الصح بيأجّل العنصر لفترة أطول، والغلط بيرجّعه لبكرة.</p><div class="row"><button class="btn primary" id="go">ابدأ المراجعة</button></div></div></div>`;$('#go').onclick=start;
 }
 
@@ -8322,19 +8344,19 @@ let spU=0;
 
 /* ===== محادثة مع Claude ===== */
 const SCEN=[
- {k:'mercado',ar:'بالسوبرماركت',ic:'🛒',role:'You are a cashier at a supermarket in Curitiba. The learner is a customer.'},
- {k:'padaria',ar:'بالمخبز',ic:'🥖',role:'You work at a bakery (padaria) in Curitiba. The learner wants to buy bread and coffee.'},
- {k:'ubs',ar:'بالمركز الصحي',ic:'🩺',role:'You are a receptionist and then a doctor at a public health clinic (UBS) in Curitiba. The learner has a sick child.'},
- {k:'aluguel',ar:'استئجار شقة',ic:'🔑',role:'You are a landlord showing an apartment in Curitiba. The learner wants to rent it and asks about price, condomínio and guarantees.'},
+ {k:'mercado',ar:'بالسوبرماركت',ic:'🛒',role:'You are a cashier at a supermarket in Brazil. The learner is a customer.'},
+ {k:'padaria',ar:'بالمخبز',ic:'🥖',role:'You work at a bakery (padaria) in Brazil. The learner wants to buy bread and coffee.'},
+ {k:'ubs',ar:'بالمركز الصحي',ic:'🩺',role:'You are a receptionist and then a doctor at a public health clinic (UBS) in Brazil. The learner has a sick child.'},
+ {k:'aluguel',ar:'استئجار شقة',ic:'🔑',role:'You are a landlord showing an apartment in Brazil. The learner wants to rent it and asks about price, condomínio and guarantees.'},
  {k:'entrevista',ar:'مقابلة عمل',ic:'💼',role:'You are a recruiter at a marketing agency interviewing the learner for a photographer/designer job.'},
  {k:'escola',ar:'بمدرسة الأولاد',ic:'🏫',role:'You are a teacher at a public school. The learner is a parent asking about their child.'},
- {k:'uber',ar:'بالأوبر',ic:'🚕',role:'You are a friendly Uber driver in Curitiba making small talk with the learner (the passenger).'},
+ {k:'uber',ar:'بالأوبر',ic:'🚕',role:'You are a friendly Uber driver in Brazil making small talk with the learner (the passenger).'},
  {k:'vizinho',ar:'مع الجار',ic:'🏘️',role:'You are a friendly neighbor meeting the learner in the building hallway.'},
  {k:'cliente',ar:'مع عميل تصوير',ic:'📸',role:'You are a potential client who wants to hire the learner for event photography and you negotiate price and deadline.'},
- {k:'livre',ar:'حكي حر',ic:'💬',role:'You are a friendly Brazilian friend from Curitiba chatting about everyday life.'}
+ {k:'livre',ar:'حكي حر',ic:'💬',role:'You are a friendly Brazilian friend from São Paulo chatting about everyday life.'}
 ];
 let chatSt=null;
-function chatSystem(sc,lv){return `You are a Brazilian Portuguese conversation partner for an Arabic-speaking learner who lives in Curitiba, Brazil.
+function chatSystem(sc,lv){return `You are a Brazilian Portuguese conversation partner for an Arabic-speaking learner who lives in Brazil, Brazil.
 Role-play: ${sc.role}
 Learner level: ${lv} (CEFR). Adapt your Portuguese: A1 = very short simple present-tense sentences (max 10 words); A2 = short everyday sentences; B1 = natural conversation; B2/C1 = rich natural Brazilian Portuguese with idioms.
 Rules: write "reply" ONLY in natural Brazilian Portuguese (never European Portuguese), 1 to 3 short sentences, and end by inviting the learner to answer. Stay in the role.
@@ -8407,7 +8429,7 @@ function vStory(id){
     $('#sq').onclick=quiz};
   const quiz=()=>{app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#story-${id}">→ ${esc(st.pt)}</a></div><div id="qb"></div>`;
     const passage=st.L.map(x=>st.sp[x.who==='A'?0:1]+': '+x.pt).join(' ');
-    runQuiz($('#qb'),st.q.map(([q,c,...w])=>Q.mc(q,c,w,{passage})),{title:st.pt,retry:quiz,onDone:p=>{S.st=S.st||{};if(S.st[id]==null||p>S.st[id]){S.st[id]=p;save()}},next:{label:'للقصص ←',href:'#stories'}})};
+    runQuiz($('#qb'),st.q.map(([q,c,...w])=>Q.mc(q,c,w,{passage})),{title:st.pt,retry:quiz,onDone:p=>{S.st=S.st||{};if(S.st[id]==null||p>S.st[id]){S.st[id]=p;save()}},next:{label:'الرجوع إلى القصص',href:'#stories'}})};
   show();
 }
 
@@ -8419,7 +8441,7 @@ function vSounds(){
   <p class="muted" style="font-size:13px;margin:0">ملاحظة: دقة هالفروق بتعتمد على صوت جهازك. صوت Claude أو صوت برازيلي محسّن بيطلّع الفرق أوضح.</p></div>`;
   $('#sq').onclick=()=>{app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#sounds">→ الأصوات</a></div><div id="qb"></div>`;
     const all=PAIRS.flatMap(g=>g.p);const qs=pick(all,12).map(([a,b,ma,mb])=>{const pickA=Math.random()<.5;const t=pickA?a:b;const o=shuffle([a,b]);return{t:'mcq',lab:'شو الكلمة اللي سمعتها؟',listen:true,say:t,o,a:o.indexOf(t),reveal:pickA?`${a} = ${ma}`:`${b} = ${mb}`}});
-    runQuiz($('#qb'),qs,{title:'امتحن أذنك',retry:vSounds,next:{label:'للأصوات ←',href:'#sounds'}})};
+    runQuiz($('#qb'),qs,{title:'امتحن أذنك',retry:vSounds,next:{label:'الرجوع إلى الأصوات',href:'#sounds'}})};
 }
 
 /* ===== امتحان تحديد المستوى ===== */
