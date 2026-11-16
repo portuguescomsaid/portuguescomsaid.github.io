@@ -6746,7 +6746,7 @@ Estou aqui.|إستو أكي|أنا هون`},
 Minha amiga era professora aqui.|مينيا أميغا إيرا پروفيسورا أكي|صاحبتي كانت معلمة هون`},
 38:{w:``,s:`Os pronomes possessivos são usados quando queremos falar que alguém é dono de alguma coisa.|أوس پرونوميس پوسيسيڤوس ساو أوزادوس كواندو كيريموس فالار كي ألغيم إيه دونو دجي ألغوما كويزا|ضمائر الملكية بنستخدمها لما نحكي إن حدا بملك إشي`},
 };
-Object.entries(EXTRA).forEach(([id,e])=>{const c=CH[id-1];if(!c)return;const hw=new Set(c.W.map(x=>x.pt)),hs=new Set(c.S.map(x=>x.pt));lines(e.w).forEach(([pt,pron,ar])=>{if(pt&&!hw.has(pt))c.W.push({pt,pron,ar,ch:c.id,key:'w|'+pt,x:1})});lines(e.s).forEach(([pt,pron,ar])=>{if(pt&&!hs.has(pt))c.S.push({pt,pron,ar,ch:c.id,key:'s|'+pt,x:1})})});
+Object.entries(EXTRA).forEach(([id,e])=>{const c=CH[id-1];if(!c)return;const byLen=a=>a.sort((x,y)=>x[0].length-y[0].length);e={w:byLen(lines(e.w)).map(x=>x.join('|')).join('\n'),s:byLen(lines(e.s)).map(x=>x.join('|')).join('\n')};const hw=new Set(c.W.map(x=>x.pt)),hs=new Set(c.S.map(x=>x.pt));lines(e.w).forEach(([pt,pron,ar])=>{if(pt&&!hw.has(pt))c.W.push({pt,pron,ar,ch:c.id,key:'w|'+pt,x:1})});lines(e.s).forEach(([pt,pron,ar])=>{if(pt&&!hs.has(pt))c.S.push({pt,pron,ar,ch:c.id,key:'s|'+pt,x:1})})});
 
 /* ===== حوار لكل فصل (المستوى الأول) =====
    كل سطر: المتكلم|البرتغالي|النطق|المعنى  ·  q: [السؤال, الجواب الصح, خطأ, خطأ] */
@@ -7211,7 +7211,8 @@ const lvReady=n=>unitsOf(n).length>0;
 const canSkip=()=>IS_OWNER;
 const lvOpen=n=>n===1||canSkip()||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
 const isFinal=k=>/^f\d$/.test(String(k));
-function chOpen(id){const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip())return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
+const PREVIEW=3;
+function chOpen(id){if(id<=PREVIEW)return true;const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip())return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
 const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||EXAMS[k].chs.every(chDone))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+k;
@@ -7517,7 +7518,8 @@ function vExam(k){
   intro();
 }
 
-/* ===== Nossa Casa ===== */
+/* ===== reference tabs ===== */
+let wU=0,wQ='',wHide=false,sU=0,sQ='',gU=0;
 function unitPills(sel,id){return `<div class="pager" id="${id}"><button class="pill${sel===0?' on':''}" data-u="0">الكل</button>${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<button class="pill${sel===L.n?' on':''}" data-u="${L.n}">${L.tag}</button>`).join('')}</div>`}
 const chLv=c=>lvOf(unitOf(c.id));
 const match=(q,...f)=>{if(!q)return true;const n=norm(q),a=q.trim();return f.some(x=>norm(x).includes(n)||String(x).includes(a))};
