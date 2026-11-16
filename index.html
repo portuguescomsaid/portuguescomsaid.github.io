@@ -10334,7 +10334,7 @@ async function initCloud(){
     cloudOK=true;
     if(d&&d.updated&&d.updated>(S.updated||0)){S=Object.assign(defState(),d);migrate();try{buildMaps()}catch(e){}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
     else if(S.updated)push();
-    hdr();const h=(location.hash||'#path').slice(1);if(['path','words','sentences','games','basics','settings',''].includes(h)||h.startsWith('admin'))route();
+    hdr();const h=(location.hash||'#path').slice(1);if(['path','words','sentences','games','basics','settings','kids','practice',''].includes(h)||h.startsWith('admin')||/^kids-[a-z_]+$/.test(h))route();
     const sc=$('#sync');if(sc)sc.textContent='التقدّم محفوظ بحسابك وبيظهر على كل أجهزتك.';
     return true;
   }catch(e){return false}
