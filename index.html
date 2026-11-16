@@ -547,6 +547,8 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .goal-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}.goal-o{display:grid;justify-items:center;gap:2px;padding:14px 8px;border-radius:16px;border:2px solid var(--line);background:var(--card);cursor:pointer;font:inherit;color:inherit}.goal-o span{font-size:28px}.goal-o.on{border-color:var(--green);background:var(--green-soft)}
 .lg-list{display:grid;gap:6px}.lg-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:var(--paper)}.lg-row.me{background:var(--green-soft);outline:2px solid var(--green)}.lg-n{width:32px;text-align:center;font-weight:800;font-size:18px}.lg-nm{flex:1}.lg-x{color:var(--green)}
 .ring.sm b{width:44px;height:44px;font-size:16px}
+
+.stars{color:#f5b301;letter-spacing:1px;margin-inline-end:4px;font-size:12px}.stars i{font-style:normal;color:var(--line,#ccc)}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -10259,7 +10261,7 @@ const kStars=id=>((S.kids||{})[id]||0);
 const KPREV=3;
 const kLearned=key=>!!((S.kidW||{})[key]);
 const kDone=k=>kStars(k.id)>=2&&(!k.F.length||kStars(k.id+'_f')>=2);
-const kOpen=k=>k.ord<=KPREV||canSkip()||kDone(k)||(()=>{const p=KIDS.find(x=>x.ord===k.ord-1);return !p||kDone(p)})();
+const kOpen=k=>{if(canSkip()||kDone(k))return true;let free=KPREV;for(const x of KIDS.slice().sort((a,b)=>a.ord-b.ord)){if(kDone(x))continue;if(x===k)return true;if(--free<=0)return false}return false};
 const kPct=k=>{const all=k.L.concat(k.F);return all.length?Math.round(all.filter(x=>kLearned(x.key)).length/all.length*100):0};
 const KCHEER=['Ótimo!','Isso!','Perfeito!','Muito bem!','Parabéns!','Mandou bem!'];
 const KCHEER_AR={'Ótimo!':'أوتشيمو! ممتاز!','Isso!':'إيسو! هيك!','Perfeito!':'بيرفيتو! مزبوط!','Muito bem!':'موينتو بين! برافو!','Parabéns!':'باراباينس! مبروك!','Mandou bem!':'ماندو بين! عملتها صح!'};
@@ -10514,7 +10516,7 @@ let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add
 const unitOf=id=>UNITS.find(u=>u.chs.includes(id));
 const chDone=id=>!!(S.ch[id]&&S.ch[id].quiz>=70);
 const exKey=k=>String(k);
-const exDone=k=>!!(S.ex[exKey(k)]&&S.ex[exKey(k)].total>=70);
+const EXPASS=90;const exDone=k=>{const e=S.ex[exKey(k)];return !!(e&&(e.total>=EXPASS||(e.total>=70&&!e.v)))};
 const LEVELS=[
  {n:1,tag:'A1',name:'المستوى الأول',sub:'أساسيات الحياة اليومية بالبرازيل'},
  {n:2,tag:'A2',name:'المستوى الثاني',sub:'الماضي، المعاملات، المدرسة، العمل، الطوارئ'},
@@ -10532,12 +10534,16 @@ const lvFree=n=>(ROLE.openTo||0)>=n||(S.placeLv||1)>n;
 const lvOpen=n=>n===1||n<=(S.placeLv||1)||canSkip()||lvFree(n)||(IS_OWNER&&n<=(S.openTo||1))||exDone('f'+(n-1));
 const isFinal=k=>/^f\d$/.test(String(k));
 const PREVIEW=3;
-function chOpen(id){if(id<=PREVIEW)return true;const u=unitOf(id),L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L))return true;const i=u.chs.indexOf(id);if(i>0)return chDone(u.chs[i-1]);const us=unitsOf(L),j=us.indexOf(u);return j===0||exDone(us[j-1].n)}
+const WIN=3;
+function chOpen(id){const u=unitOf(id);if(!u)return false;const L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L)||chDone(id))return true;
+  let free=WIN;for(const uu of unitsOf(L)){for(const c of uu.chs){if(chDone(c))continue;if(c===id)return true;if(--free<=0)return false}if(!exDone(uu.n))return false}return false}
 const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||lvFree(n)||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||lvFree(lvOf(u))||EXAMS[k].chs.every(chDone))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(L.n<(S.placeLv||1))continue;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+UN(k);
 const STEPS=[['lesson','الدرس'],['words','الكلمات'],['sents','الجمل'],['drills','القواعد'],['game','لعبة'],['quiz','الاختبار']];
 const stepsOf=id=>{const c=CH[id-1];return c&&c.DL?[STEPS[0],['dialog','الحوار'],...STEPS.slice(1)]:STEPS};
+const chStars=id=>{const q=(S.ch[id]||{}).quiz||0;return q>=100?3:q>=90?2:q>=70?1:0};
+const starsH=n=>n?'<span class="stars">'+'★'.repeat(n)+'<i>'+'★'.repeat(3-n)+'</i></span>':'';
 const stepDone=(id,k)=>{const s=S.ch[id]||{};return k==='quiz'?s.quiz>=70:!!s[k]};
 function mark(id,k,v){S.ch[id]=S.ch[id]||{};S.ch[id][k]=v;S.last={id,k,ts:Date.now()};touch();save();try{pushStats(true)}catch(e){}}
 const allWords=()=>CH.flatMap(c=>c.W),allSents=()=>CH.flatMap(c=>c.S);
@@ -10648,7 +10654,7 @@ $$('[data-ac]',el).forEach(b=>b.onclick=()=>{const s=tin.selectionStart??tin.val
   };
   const end=()=>{
     if(o.raw){save();return o.raw(score,log)}
-    const pct=Math.round(score/qs.length*100),pass=pct>=(o.pass||70);
+    const pct=Math.round(score/qs.length*100),pass=pct>=(o.pass||70);if(o.onLog)try{o.onLog(log)}catch(e){}
     const secs={};qs.forEach((q,k)=>{if(!q.sec)return;secs[q.sec]=secs[q.sec]||{s:0,n:0};secs[q.sec].n++;secs[q.sec].s+=log[k].credit});
     const sp={};for(const k in secs)sp[k]=Math.round(secs[k].s/secs[k].n*100);
     addXP(score*(o.xp||10));
@@ -10657,12 +10663,12 @@ $$('[data-ac]',el).forEach(b=>b.onclick=()=>{const s=tin.selectionStart??tin.val
     const qtext=q=>q.t==='fill'?P(q.sent):q.t==='tf'?bidi(q.stmt)+(q.pt?' · '+P(q.pt):''):q.pt?P(q.pt):q.ar?bidi(q.ar):bidi(q.lab);
     const rtext=l=>l.q.t==='fill'?P(l.q.full):isPt(l.right)?P(l.right):bidi(l.right);
     el.innerHTML=`<div class="result"><div class="ring" style="--p:${pct};--c:${pass?'var(--ok)':'var(--bad)'}"><b>${pct}%</b></div>
-      <h2>${pass?'برافو! نجحت':'لسا ما وصلت 70%'}</h2><p class="muted" style="margin:0">${pass?`أخدت ${Math.round(score*(o.xp||10))} نقطة XP.`:'راجع أغلاطك تحت وجرّب مرة ثانية. الأسئلة بتتغير كل مرة.'}</p>
+      <h2>${pass?(o.okTitle||'برافو! نجحت'):'لسا ما وصلت '+(o.pass||70)+'%'}</h2><p class="muted" style="margin:0">${pass?`أخدت ${Math.round(score*(o.xp||10))} نقطة XP.`:(o.failMsg||'راجع أغلاطك تحت وجرّب مرة ثانية. الأسئلة بتتغير كل مرة.')}</p>
       ${Object.keys(sp).length?`<div class="secbars">${Object.keys(sp).map(k=>`<div class="secbar"><span>${SEC[k]}</span><span class="tr"><i style="width:${sp[k]}%;background:${sp[k]>=70?'var(--ok)':'var(--bad)'}"></i></span><span>${sp[k]}%</span></div>`).join('')}</div>`:''}
       ${extra}
-      <div class="row" style="justify-content:center"><button class="btn ${pass?'':'primary'}" id="retry">جرّب مرة ثانية</button>${pass&&o.next?`<a class="btn primary" href="${o.next.href}" id="gonext">${esc(o.next.label)}</a>`:''}</div>
+      <div class="row" style="justify-content:center">${o.fixBtn&&wrong.length?`<button class="btn ${pass?'':'primary'}" id="fixw">🎯 راجع أخطاءك (${wrong.length})</button>`:''}<button class="btn ${pass&&!o.fixBtn?'':(o.fixBtn&&wrong.length?'':'primary')}" id="retry">${o.retryLabel||'جرّب مرة ثانية'}</button>${pass&&o.next?`<a class="btn primary" href="${o.next.href}" id="gonext">${esc(o.next.label)}</a>`:''}</div>
       ${wrong.length?`<div class="review"><h3>راجع أغلاطك (${wrong.length})</h3>${wrong.map(l=>`<div><span class="muted">${bidi(l.q.lab)}</span><br>${qtext(l.q)}<br><b>الصح:</b> ${rtext(l)}${l.q.reveal?' · '+P(l.q.reveal):''}${l.q.t==='type'||l.q.t==='scr'?`<br><span class="muted">إنت كتبت: ${P(l.your)}</span>`:''}</div>`).join('')}</div>`:''}</div>`;
-    $('#retry',el).onclick=()=>o.retry(log.filter(l=>l.credit<1).map(l=>l.q));
+    $('#retry',el).onclick=()=>o.retry(log.filter(l=>l.credit<1).map(l=>l.q));const fw=$('#fixw',el);if(fw)fw.onclick=()=>o.fixBtn(log.filter(l=>l.credit<1).map(l=>l.q));
     const g=$('#gonext',el);if(g&&o.next&&o.next.click)g.onclick=e=>{e.preventDefault();o.next.click()};
     window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+scrollY-120)});
   };
@@ -10755,7 +10761,7 @@ function vHome(){
   if(!nx){const last=LEVELS.filter(L=>lvReady(L.n)).pop();cont=`<div class="continue"><span class="eyebrow">خلّصت كل المستويات الجاهزة</span><span class="big pt" lang="pt-BR" dir="ltr">Parabéns!</span><span>${esc(last.name)} مكتمل.</span></div>`}
   else if(nx.t==='ch'){const c=CH[nx.id-1],u=unitOf(c.id),n=stepsOf(c.id).filter(([k])=>stepDone(c.id,k)).length,N=stepsOf(c.id).length;cont=`<a class="continue" href="#ch-${c.id}"><span class="eyebrow">كمّل من هون · ${esc(LEVELS[lvOf(u)-1].name)} · الدرس ${CN(c.id)}</span><span class="big pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</span><span>${esc(c.ar)} · ${n} من ${N} خطوات</span><span class="bar"><i style="width:${n/N*100}%"></i></span><span class="cta">${n?'كمّل':'ابدأ'} الدرس ←</span></a>`}
   else cont=`<a class="continue" href="#exam-${nx.id}"><span class="eyebrow">${esc(examName(nx.id))}</span><span class="big">قراءة · استماع · قواعد · مفردات · كتابة</span><span class="cta">ابدأ الاختبار ←</span></a>`;
-  const node=id=>{const c=CH[id-1],d=chDone(id),op=chOpen(id),n=stepsOf(id).filter(([k])=>stepDone(id,k)).length;const cls=d?'done':op?'open':'locked';const st=d?`${S.ch[id].quiz}%`:op?(n?`${n}/${stepsOf(id).length}`:'متاح'):'مقفل';
+  const node=id=>{const c=CH[id-1],d=chDone(id),op=chOpen(id),n=stepsOf(id).filter(([k])=>stepDone(id,k)).length;const cls=d?'done':op?'open':'locked';const st=d?`${starsH(chStars(id))}${S.ch[id].quiz}%`:op?(n?`${n}/${stepsOf(id).length}`:'متاح'):'مقفل';
     const inner=`<span class="num">${d?'✓':CN(id)}</span><span class="t">${P(c.pt)}<small>${esc(c.ar)}</small></span><span class="st">${st}</span>`;
     return op?`<a class="node ${cls}" href="#ch-${id}">${inner}</a>`:`<div class="node ${cls}" aria-disabled="true">${inner}</div>`};
   const enode=(k,label)=>{const d=exDone(k),op=exOpen(k);const cls='exam '+(d?'done':op?'open':'locked');const st=d?`${S.ex[exKey(k)].total}%`:op?'متاح':'بعد الدروس';
@@ -10815,7 +10821,7 @@ function vSettings(){
 let chState={id:0,step:null};
 function vChapter(id){
   const c=CH[id-1];if(!c)return vHome();
-  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">بينفتح لما تخلّص اللي قبله بالترتيب: كل درس لازم تنجح باختباره بـ 70% أو أكثر، وأول درس بكل وحدة بينفتح بعد ما تنجح باختبار الوحدة اللي قبلها.</p></div>`;return}
+  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">دايمًا عندك 3 دروس مفتوحة قدامك: كل ما تنجح بدرس (70% أو أكثر) بينفتح اللي بعده. وأول درس بكل وحدة بينفتح بعد ما تنجح باختبار الوحدة اللي قبلها بـ 90%.</p></div>`;return}
   if(chState.id!==id){chState={id,step:(stepsOf(id).find(([k])=>!stepDone(id,k))||STEPS[0])[0]}}
   const st=chState.step;
   app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${UN(c.u)} · الدرس ${CN(id)}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
@@ -10840,10 +10846,18 @@ function vChapter(id){
   if(st==='game'){body.innerHTML=`<p class="muted" style="margin:0 0 10px">العب أي لعبة بكلمات هالدرس. بعد أول لعبة انتقل إلى الاختبار.</p><div id="g"></div><div class="row" style="margin-top:14px"><button class="btn" id="toq">التالي: اختبار الدرس ←</button></div>`;$('#toq',body).onclick=()=>go('quiz');
     gameMenu($('#g',body),c.W,c.S,()=>{if(!stepDone(id,'game')){mark(id,'game',true);const s=$$('.step')[stepsOf(id).findIndex(([k])=>k==='game')];if(s){s.classList.add('ok');s.querySelector('i').textContent='✓'}}})}
   if(st==='quiz'){
-    const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${CN(id)}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}%</p>`:''}<div class="row"><button class="btn primary" id="startq">ابدأ الاختبار</button></div></div>`;$('#startq',body).onclick=quiz};
+    const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${CN(id)}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}% ${starsH(chStars(id))}</p>`:''}<div class="row">${best!=null&&best<100&&getW().length?`<button class="btn primary" id="fixq">🎯 راجع أخطاءك (${getW().length})</button>`:''}<button class="btn ${best!=null&&best<100&&getW().length?'':'primary'}" id="startq">${best!=null?'أعد الاختبار':'ابدأ الاختبار'}</button></div></div>`;$('#startq',body).onclick=quiz;const fq=$('#fixq',body);if(fq)fq.onclick=()=>fix()};
     const u=unitOf(id),last=u.chs[u.chs.length-1]===id;
     const nxt=last?{label:`التالي: اختبار الوحدة ${UN(u.n)} ←`,href:'#exam-'+u.n}:(()=>{const nid=u.chs[u.chs.indexOf(id)+1]||id+1;return {label:`التالي: الدرس ${CN(nid)} ←`,href:'#ch-'+nid}})();
-    const quiz=()=>runQuiz(body,quizChapter(c),{title:'اختبار الدرس '+CN(id),retry:quiz,onDone:p=>{const prev=(S.ch[id]&&S.ch[id].quiz)||0;if(p>prev)mark(id,'quiz',p)},next:nxt});
+    const WK='wrongq-'+id,getW=()=>{try{return JSON.parse(localStorage.getItem(WK)||'[]')}catch(e){return[]}},setW=a=>{try{a.length?localStorage.setItem(WK,JSON.stringify(a)):localStorage.removeItem(WK)}catch(e){}};
+    const fix=qs=>{qs=(qs&&qs.length?qs:getW());if(!qs.length)return quiz();const n0=qs.length;
+      runQuiz(body,qs,{title:'راجع أخطاءك · الدرس '+CN(id),pass:100,xp:5,okTitle:'برافو! صلّحت كل أخطائك',retry:()=>fix(),retryLabel:'كمّل تصليح',failMsg:'شوف الصح تحت، وكبسة «كمّل تصليح» بتعيدلك بس الأسئلة اللي لسا غلط.',
+        onLog:log=>{const left=log.filter(l=>l.credit<1).map(l=>l.q),fixed=n0-left.length;setW(left);const prev=(S.ch[id]&&S.ch[id].quiz)||0;
+          const np=left.length?Math.min(99,Math.round(prev+(100-prev)*fixed/n0)):100;if(np>prev)mark(id,'quiz',np)},
+        onDone:()=>{const q=(S.ch[id]||{}).quiz||0;return `<p style="margin:0">نتيجة الدرس صارت <b>${q}%</b> ${starsH(chStars(id))}</p>`},next:nxt})};
+    const quiz=()=>runQuiz(body,quizChapter(c),{title:'اختبار الدرس '+CN(id),retry:quiz,fixBtn:fix,
+      onLog:log=>{const w=log.filter(l=>l.credit<1).map(l=>l.q);try{JSON.stringify(w)}catch(e){return}const prev=(S.ch[id]&&S.ch[id].quiz)||0,p=Math.round(log.reduce((a,l)=>a+l.credit,0)/log.length*100);if(p>=prev)setW(w)},
+      onDone:p=>{const prev=(S.ch[id]&&S.ch[id].quiz)||0;if(p>prev)mark(id,'quiz',p);const q=(S.ch[id]||{}).quiz||0;return q>=70?`<p style="margin:0">${starsH(chStars(id))} ${q>=100?'علامة كاملة!':'صلّح أخطاءك عشان توصل 100% ⭐⭐⭐'}</p>`:''},next:nxt});
     intro();}
 }
 const uIcon=id=>UNIT_ICON[(unitOf(id)||{}).n]||'';
@@ -10860,12 +10874,12 @@ function vExam(k){
   if(u){const sib=unitsOf(lvOf(u));const i=sib.indexOf(u);next=i<sib.length-1?{label:`التالي: الوحدة ${UN(sib[i+1].n)} ←`,href:'#ch-'+sib[i+1].chs[0]}:{label:'التالي: الامتحان النهائي ←',href:'#exam-f'+lvOf(u)}}
   const intro=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${u?'الوحدة '+UN(k)+': '+esc(u.ar):'كل وحدات '+esc(LEVELS[+String(k).slice(1)-1].name)}</span><h1>${name}</h1></div>
     <div class="card stack"><div class="nodes">${['r','l','g','v','w'].map((s,i)=>`<div class="node"><span class="num">${i+1}</span><span class="t"><b>${SEC[s]}</b><small>${cnt(s)} سؤال</small></span><span></span></div>`).join('')}</div>
-    <p style="margin:0">المجموع ${n.length} سؤال. النجاح بـ <b>70%</b>. استعمل سماعة لقسم الاستماع.${audioOK()?'':' <b>الصوت مش متاح هون،</b> فالاستماع رح يصير قراءة.'}</p>
+    <p style="margin:0">المجموع ${n.length} سؤال. النجاح بـ <b>${EXPASS}%</b>. استعمل سماعة لقسم الاستماع.${audioOK()?'':' <b>الصوت مش متاح هون،</b> فالاستماع رح يصير قراءة.'}</p>
     ${isFinal(k)?'<p class="muted" style="margin:0">النجاح بهالامتحان بيفتح المستوى اللي بعده.</p>':''}
     ${prev?`<p class="muted" style="margin:0">آخر نتيجة: ${prev.total}%</p>`:''}
     <div class="row"><button class="btn sun" id="startx">ابدأ الامتحان</button></div></div></div>`;$('#startx').onclick=start};
   const start=()=>{app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#path">→ المسار</a></div><div id="xb"></div>`;
-    runQuiz($('#xb'),quizExam(k),{title:name,xp:15,retry:start,onDone:(p,pass,sp)=>{const old=S.ex[exKey(k)];if(!old||p>=old.total)S.ex[exKey(k)]=Object.assign({total:p,date:today()},sp);save();return pass?`<p style="margin:0">${isFinal(k)?'برافو! انفتح المستوى اللي بعده.':'برافو! كمّل.'}</p>${isFinal(k)?`<a class="btn sun" href="#cert-${String(k).slice(1)}">🎓 شهادتك</a>`:''}`:''},next})};
+    runQuiz($('#xb'),quizExam(k),{title:name,xp:15,pass:EXPASS,retry:start,onDone:(p,pass,sp)=>{const old=S.ex[exKey(k)];if(!old||p>=old.total||(old.v==null&&p>=EXPASS))S.ex[exKey(k)]=Object.assign({total:p,date:today(),v:2},sp);save();return pass?`<p style="margin:0">${isFinal(k)?'برافو! انفتح المستوى اللي بعده.':'برافو! كمّل.'}</p>${isFinal(k)?`<a class="btn sun" href="#cert-${String(k).slice(1)}">🎓 شهادتك</a>`:''}`:''},next})};
   intro();
 }
 
@@ -11512,7 +11526,7 @@ function certCanvas(name,L,score,date){
 }
 function vCert(n){
   const L=LEVELS[n-1];const ex=S.ex['f'+n];
-  if(!L||!ex||ex.total<70){app.innerHTML=`<div class="card"><a class="back" href="#practice">→ التدريب</a><h2>ما في شهادة لسا</h2><p class="muted">الشهادة بتنفتح لما تنجح بالامتحان النهائي لـ${L?esc(L.name):'المستوى'} بـ 70% أو أكثر.</p></div>`;return}
+  if(!L||!ex||!exDone('f'+n)){app.innerHTML=`<div class="card"><a class="back" href="#practice">→ التدريب</a><h2>ما في شهادة لسا</h2><p class="muted">الشهادة بتنفتح لما تنجح بالامتحان النهائي لـ${L?esc(L.name):'المستوى'} بـ 70% أو أكثر.</p></div>`;return}
   const draw=()=>{const c=certCanvas(S.name||'',L,ex.total,ex.date||today());const url=c.toDataURL('image/png');
     app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><h1 style="font-size:22px">شهادة ${esc(L.name)}</h1>
      <label for="nm">الاسم على الشهادة</label><input class="search" id="nm" value="${esc(S.name||'')}" placeholder="اكتب اسمك بالحروف اللاتينية" dir="ltr">
