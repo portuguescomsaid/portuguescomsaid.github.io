@@ -10535,9 +10535,11 @@ const lvOpen=n=>n===1||n<=(S.placeLv||1)||canSkip()||lvFree(n)||(IS_OWNER&&n<=(S
 const isFinal=k=>/^f\d$/.test(String(k));
 const PREVIEW=3;
 const WIN=3;
-function chOpen(id){const u=unitOf(id);if(!u)return false;const L=lvOf(u);if(!lvOpen(L))return false;if(canSkip()||lvFree(L)||chDone(id))return true;
-  let free=WIN;for(const uu of unitsOf(L)){for(const c of uu.chs){if(chDone(c))continue;if(c===id)return true;if(--free<=0)return false}}return false}
-const exOpen=k=>{if(isFinal(k)){const n=+String(k).slice(1);return lvOpen(n)&&(canSkip()||lvFree(n)||unitsOf(n).every(u=>exDone(u.n)))}const u=UNITS.find(x=>x.n===k);return lvOpen(lvOf(u))&&(canSkip()||lvFree(lvOf(u))||EXAMS[k].chs.every(chDone))};
+/* المسار بالترتيب: دروس الوحدة ← اختبارها ← الوحدة اللي بعدها … ← الامتحان النهائي. دايمًا أول 3 عناصر مش مخلّصة مفتوحين، والاختبار المش مخلّص بيوقّف اللي بعده */
+function lvSeq(L){const a=[];unitsOf(L).forEach(u=>{u.chs.forEach(c=>a.push(['ch',c]));if(EXAMS[u.n])a.push(['ex',u.n])});if(EXAMS['f'+L])a.push(['ex','f'+L]);return a}
+function inWin(t,id,L){let free=WIN;for(const [tt,x] of lvSeq(L)){if(tt==='ch'?chDone(x):exDone(x))continue;if(tt===t&&x===id)return true;if(--free<=0||tt==='ex')return false}return false}
+function chOpen(id){const u=unitOf(id);if(!u)return false;const L=lvOf(u);if(!lvOpen(L))return false;return canSkip()||lvFree(L)||chDone(id)||inWin('ch',id,L)}
+const exOpen=k=>{const L=isFinal(k)?+String(k).slice(1):lvOf(UNITS.find(x=>x.n===k));return lvOpen(L)&&(canSkip()||lvFree(L)||exDone(k)||inWin('ex',k,L))};
 function nextItem(){for(const L of LEVELS){if(!lvReady(L.n))break;if(L.n<(S.placeLv||1))continue;if(!lvOpen(L.n))return null;for(const u of unitsOf(L.n)){for(const id of u.chs)if(!chDone(id))return{t:'ch',id};if(!exDone(u.n))return{t:'ex',id:u.n}}if(!exDone('f'+L.n))return{t:'ex',id:'f'+L.n}}return null}
 const examName=k=>isFinal(k)?'الامتحان النهائي لـ'+LEVELS[+String(k).slice(1)-1].name:'اختبار الوحدة '+UN(k);
 const STEPS=[['lesson','الدرس'],['words','الكلمات'],['sents','الجمل'],['drills','القواعد'],['game','لعبة'],['quiz','الاختبار']];
@@ -10821,7 +10823,7 @@ function vSettings(){
 let chState={id:0,step:null};
 function vChapter(id){
   const c=CH[id-1];if(!c)return vHome();
-  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">دايمًا عندك 3 دروس مفتوحة قدامك: كل ما تنجح بدرس (70% أو أكثر) بينفتح اللي بعده. والترتيب بيكمّل من وحدة للي بعدها.</p></div>`;return}
+  if(!chOpen(id)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">هالدرس مقفل</h2><p class="muted">دايمًا عندك 3 دروس مفتوحة قدامك: كل ما تنجح بدرس (70% أو أكثر) بينفتح اللي بعده. واختبار الوحدة بيجي بدوره بعد دروسها، ولازم تنجح فيه بـ 90% عشان تكمّل للوحدة اللي بعدها.</p></div>`;return}
   if(chState.id!==id){chState={id,step:(stepsOf(id).find(([k])=>!stepDone(id,k))||STEPS[0])[0]}}
   const st=chState.step;
   app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${UN(c.u)} · الدرس ${CN(id)}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
@@ -10867,7 +10869,7 @@ const sitem=s=>`<div class="sitem">${sayBtn(s.pt)}<div class="s-t">${P(s.pt)}${S
 function vExam(k){
   const E=EXAMS[k];if(!E)return vHome();
   const name=examName(k);
-  if(!exOpen(k)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">${name} مقفل</h2><p class="muted">${isFinal(k)?'بينفتح لما تنجح بكل اختبارات وحدات المستوى.':'بينفتح لما تنجح باختبارات كل دروس الوحدة.'}</p></div>`;return}
+  if(!exOpen(k)){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">${name} مقفل</h2><p class="muted">بينفتح لما يصير دوره: دايمًا عندك 3 عناصر مفتوحة قدامك بالترتيب.</p></div>`;return}
   const prev=S.ex[exKey(k)];const n=quizExam(k);const cnt=s=>n.filter(q=>q.sec===s).length;
   const u=isFinal(k)?null:UNITS.find(x=>x.n===k);
   let next={label:'الرجوع إلى المسار',href:'#path'};
