@@ -478,6 +478,12 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .kdone{text-align:center;padding:24px;border-radius:var(--kr);background:var(--kb)}.kd-st{font-size:56px}.kdone h1{color:var(--kf);margin:6px 0}
 .kcredit{font-size:12px;text-align:center}
 .kcat .kc-ic{font-size:44px;color:inherit}
+.bgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:640px){.bgrid{grid-template-columns:repeat(3,1fr)}}
+.bcard{position:relative;display:flex;flex-direction:column;gap:3px;padding:14px 12px;border-radius:16px;background:var(--card);border:1.5px solid var(--line);text-decoration:none;color:var(--ink)}
+.bcard.done{background:var(--ok-soft);border-color:var(--ok)}
+.b-n{position:absolute;top:10px;left:12px;font-size:12px;color:var(--muted);font-weight:700}
+.b-ic{font-size:30px}.bcard b{font-size:16px}.bcard small{color:var(--muted);font-size:13px}
+.b-st{position:absolute;bottom:10px;left:12px;font-size:12px;font-weight:700;color:var(--ok)}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -7475,58 +7481,267 @@ q:[['شو بتعمل الوكالة؟','فيديو ومحتوى بالعربي �
 
 Object.entries(DIALOGS).forEach(([id,d])=>{const c=CH[id-1];if(!c)return;c.SP=d.sp;c.DL=lines(d.l).map(([s,pt,pron,ar])=>({s:s==='A'?0:1,pt,pron,ar,key:'s|'+pt}));c.DQ=d.q});
 
-const BASICS=
-`<div class="card lesson">${H('جمل النجاة: احفظها أول إشي')}${X(`Não entendi.|ناو إينتيندجي.|ما فهمت.
+/* ===== الأساسيات: أبواب مرتبة، كل باب فيه شرح وأمثلة بصوت وتمرين ===== */
+const BT=[
+{id:'sobrevivencia',ic:'🆘',t:'جمل النجاة',s:'أول جمل لازم تحفظها',intro:'هاي الجمل بتنقذك بأي موقف: لما ما تفهم، أو بدك حدا يعيد، أو بدك تسأل عن كلمة.',r:`Não entendi.|ناو إينتيندجي.|ما فهمت.
 Pode repetir, por favor?|بودجي هيبيتشير، بور فاڤور؟|ممكن تعيد لو سمحت؟
 Pode falar mais devagar?|بودجي فالار مايس دجيڤاغار؟|ممكن تحكي أبطأ؟
 Como se diz isso em português?|كومو سي دجيز إيسو إين بورتوغيس؟|كيف بتقولوا هاد بالبرتغالي؟
 O que significa isso?|أو كي سيغنيفيكا إيسو؟|شو يعني هاد؟
 Com licença.|كون ليسينسا.|عن إذنك.
-Estou aprendendo português.|إستو أبريندندو بورتوغيس.|عم بتعلم برتغالي.
-Eu falo árabe.|إيو فالو أرابي.|بحكي عربي.`)}</div>
-<div class="card lesson">${H('قواعد النطق باختصار')}${X(`dia · cidade|دجيا · سيدادجي|de / di = دجي
+Desculpa.|دجيسكولبا.|آسف.
+Estou aprendendo português.|إيستو أبريندندو بورتوغيس.|عم بتعلم برتغالي.
+Eu falo árabe.|إيو فالو آرابي.|بحكي عربي.
+Você fala inglês?|ڤوسي فالا إينغليس؟|بتحكي إنجليزي؟
+Preciso de ajuda.|بريسيزو دجي أجودا.|بحتاج مساعدة.
+Onde fica o banheiro?|أوندجي فيكا أو بانييرو؟|وين الحمام؟`},
+{id:'pronuncia',ic:'🗣️',t:'قواعد النطق',s:'كيف تقرأ أي كلمة صح',intro:'البرتغالي البرازيلي مش دايمًا بينقرأ زي ما بينكتب. هاي أهم القواعد باختصار.',r:`dia · cidade|دجيا · سيدادجي|de / di = دجي
 noite · gente|نويتشي · جينتشي|te / ti = تشي
-rua · carro|هوا · كاهّو|R بالأول و rr = هـ
+rua · carro|هوا · كاهو|R بالأول و rr = هـ
+caro · porta|كارو · بورتا|r بين حرفين = ر خفيفة
 trabalho · filho|تراباليو · فيليو|lh = لي
 banheiro · cozinha|بانييرو · كوزينيا|nh = ني
 pão · irmão|باو · إيرماو|ão = او من الأنف
+mãe · bem|ماين · بين|ãe و em = صوت أنفي
 açúcar|أسوكار|ç = س
 chave|شاڤي|ch = ش
 casa · mesa|كازا · ميزا|s بين حرفين علة = ز
 Brasil · mil|برازيو · ميو|l بالآخر = و
 nome · leite|نومي · ليتشي|e بالآخر = ي
+carro · todo|كاهو · تودو|o بالآخر = و
 hoje · hora|أوجي · أورا|h ما بتنلفظ
-você · uva|ڤوسيه · أوڤا|v = ڤ
-está · estou|إستا · إستو|s عادية مش ش`)}</div>
-<div class="card lesson">${H('كلمات السؤال')}${X(`O que?|أو كي؟|شو؟
+você · uva|ڤوسي · أوڤا|v = ڤ
+está · estou|إيستا · إيستو|s عادية مش ش`,tip:'الحروف العربية تقريب للتعلم. دايمًا اسمع الصوت وقلّده.'},
+{id:'alfabeto',ic:'🔤',t:'الحروف (الأبجدية)',s:'أسماء الحروف للتهجئة',intro:'بتحتاجها لما حدا يطلب منك تهجّي اسمك أو إيميلك: «Como se escreve?».',r:`A|آ|a
+B|بيه|b
+C|سيه|c
+D|دجيه|d
+E|إيه|e
+F|إيفي|f
+G|جيه|g
+H|أغا|h
+I|إي|i
+J|جوتا|j
+K|كا|k
+L|إيلي|l
+M|إيمي|m
+N|إيني|n
+O|أو|o
+P|بيه|p
+Q|كيه|q
+R|إيهي|r
+S|إيسي|s
+T|تيه|t
+U|أو|u
+V|ڤيه|v
+W|دابليو|w
+X|شيس|x
+Y|إيبسيلون|y
+Z|زيه|z`,tip:'«Como se escreve o seu nome?» = كيف بينكتب اسمك؟ وبتجاوب بأسماء الحروف.'},
+{id:'cumprimentos',ic:'👋',t:'التحيات والوداع',s:'من الصبح للمسا',intro:'التحية مهمة كتير بالبرازيل. حتى بالمحل أو الباص، الناس بتسلّم.',r:`Oi!|أوي!|هاي!
+Olá!|أولا!|مرحبا!
+Bom dia!|بون دجيا!|صباح الخير!
+Boa tarde!|بوا تاردجي!|مساء الخير (العصر)!
+Boa noite!|بوا نويتشي!|مساء الخير / تصبح على خير!
+Tudo bem?|تودو بين؟|كيف الحال؟
+Tudo bem, e você?|تودو بين، إي ڤوسي؟|منيح، وإنت؟
+Muito prazer!|مويتو برازير!|تشرفنا!
+Tchau!|تشاو!|مع السلامة!
+Até logo!|أتيه لوغو!|لنشوفك!
+Até amanhã!|أتيه أمانيا!|لبكرة!
+Obrigado / Obrigada.|أوبريغادو / أوبريغادا.|شكرًا (رجل / امرأة).
+De nada.|دجي نادا.|العفو.`,tip:'الرجل بيقول obrigado والمرأة بتقول obrigada، حسب مين اللي بيشكر.'},
+{id:'numeros',ic:'🔢',t:'الأرقام',s:'من 0 لـ 1000',intro:'الأرقام بتحتاجها للأسعار، والتلفون، والعمر، والعناوين.',r:`zero|زيرو|0
+um / uma|أون / أوما|1
+dois / duas|دويس / دواس|2
+três|تريس|3
+quatro|كواترو|4
+cinco|سينكو|5
+seis|سييس|6
+sete|سيتشي|7
+oito|أويتو|8
+nove|نوڤي|9
+dez|ديز|10
+onze|أونزي|11
+doze|دوزي|12
+treze|تريزي|13
+catorze|كاتورزي|14
+quinze|كينزي|15
+dezesseis|دجيزيسييس|16
+dezessete|دجيزيسيتشي|17
+dezoito|دجيزويتو|18
+dezenove|دجيزينوڤي|19
+vinte|ڤينتشي|20
+trinta|ترينتا|30
+quarenta|كوارينتا|40
+cinquenta|سينكوينتا|50
+sessenta|سيسينتا|60
+setenta|سيتينتا|70
+oitenta|أويتينتا|80
+noventa|نوڤينتا|90
+cem|سين|100
+duzentos|دوزينتوس|200
+quinhentos|كينيينتوس|500
+mil|ميو|1000`,tip:'بين العشرات والآحاد بنحط e: vinte e um (21)، trinta e cinco (35). وبالتلفون كتير بيقولوا «meia» بدل seis.'},
+{id:'tempo',ic:'📅',t:'الأيام والشهور',s:'الأسبوع والسنة',intro:'أيام الأسبوع من الإتنين للجمعة بتنتهي بـ feira، وبالحكي كتير بيشيلوها.',r:`segunda-feira|سيغوندا فيرا|الإتنين
+terça-feira|تيرسا فيرا|التلاتا
+quarta-feira|كوارتا فيرا|الأربعا
+quinta-feira|كينتا فيرا|الخميس
+sexta-feira|سيستا فيرا|الجمعة
+sábado|سابادو|السبت
+domingo|دومينغو|الأحد
+janeiro|جانيرو|يناير
+fevereiro|فيڤيريرو|فبراير
+março|مارسو|مارس
+abril|أبريو|أبريل
+maio|مايو|مايو
+junho|جونيو|يونيو
+julho|جوليو|يوليو
+agosto|أغوستو|أغسطس
+setembro|سيتيمبرو|سبتمبر
+outubro|أوتوبرو|أكتوبر
+novembro|نوڤيمبرو|نوفمبر
+dezembro|ديزيمبرو|ديسمبر
+hoje · ontem · amanhã|أوجي · أونتين · أمانيا|اليوم · مبارح · بكرة`,tip:'التاريخ بالبرازيل: اليوم/الشهر/السنة. «Hoje é dia 15 de novembro.» = اليوم 15 نوفمبر.'},
+{id:'horas',ic:'🕐',t:'الساعة',s:'كم الساعة؟',intro:'بالبرازيل بيستعملوا نظام 24 ساعة بالمواعيد الرسمية، وبالحكي نظام 12 ساعة.',r:`Que horas são?|كي أوراس ساو؟|كم الساعة؟
+É uma hora.|إيه أوما أورا.|الساعة وحدة.
+São duas horas.|ساو دواس أوراس.|الساعة تنتين.
+São três e meia.|ساو تريس إي ميا.|تلاتة ونص.
+São quatro e quinze.|ساو كواترو إي كينزي.|أربعة وربع.
+São quinze para as cinco.|ساو كينزي بارا آس سينكو.|خمسة إلا ربع.
+É meio-dia.|إيه ميو دجيا.|الساعة 12 الضهر.
+É meia-noite.|إيه ميا نويتشي.|الساعة 12 بالليل.
+de manhã|دجي مانيا|الصبح
+à tarde|آ تاردجي|العصر / بعد الضهر
+à noite|آ نويتشي|بالليل
+A que horas?|آ كي أوراس؟|الساعة كم (الموعد)؟`},
+{id:'pronomes',ic:'🧑',t:'الضمائر والملكية',s:'أنا، إنت، هو… وتاعي وتاعك',intro:'بالبرازيل «você» أشهر من «tu»، و«a gente» كتير بتنقال بدل «nós».',r:`eu|إيو|أنا
+você|ڤوسي|إنت / إنتِ
+ele / ela|إيلي / إيلا|هو / هي
+nós · a gente|نوس · آ جينتشي|إحنا
+vocês|ڤوسيس|إنتو
+eles / elas|إيليس / إيلاس|هم / هن
+meu / minha|ميو / مينيا|تاعي (مذكر / مؤنث)
+seu / sua|سيو / سوا|تاعك
+dele / dela|ديلي / ديلا|تاعه / تاعها
+nosso / nossa|نوسو / نوسا|تاعنا
+o senhor / a senhora|أو سينيور / آ سينيورا|حضرتك (احترام)`,tip:'meu/minha حسب الشي اللي بتملكه، مش حسب الشخص: minha casa (بيتي) حتى لو المالك رجل.'},
+{id:'perguntas',ic:'❓',t:'أدوات السؤال',s:'شو، مين، وين، إيمتى…',intro:'مع هاي الكلمات بتقدر تسأل عن أي اشي.',r:`O que?|أو كي؟|شو؟
 Quem?|كين؟|مين؟
 Onde?|أوندجي؟|وين؟
+Aonde?|أوندجي؟|لوين؟
+De onde?|دجي أوندجي؟|من وين؟
 Quando?|كواندو؟|إيمتى؟
 Como?|كومو؟|كيف؟
 Por que?|بور كي؟|ليش؟
 Quanto? Quantos?|كوانتو؟ كوانتوس؟|قديش؟ كم؟
-Qual?|كوال؟|أي؟ شو؟`)}</div>
-<div class="card lesson">${H('أهم 5 أفعال')}${TB(`ser|sou · é · somos · são
-estar|estou · está · estamos · estão
-ter|tenho · tem · temos · têm
-ir|vou · vai · vamos · vão
-fazer|faço · faz · fazemos · fazem`,['الفعل','eu · ele/você · nós · eles'])}
-${H('SER ولا ESTAR؟')}${Pp('<b>ser</b> للثابت: الهوية، الأصل، المهنة، الطبع. <b>estar</b> للمؤقت: الحالة، الشعور، المكان.')}${X(`Eu sou palestino.|إيو سو باليستشينو.|أنا فلسطيني (ثابت).
-Eu estou cansado.|إيو إستو كانسادو.|أنا تعبان (هلأ).
-Porto Alegre é fria.|بورتو أليغري إيه فريا.|بورتو أليغري باردة (بشكل عام).
-Hoje está frio.|أوجي إستا فريو.|اليوم بارد (اليوم بس).`)}</div>
-<div class="card lesson">${H('الدمج مع الأدوات')}${TB(`do / da|de + o / de + a: من الـ
-no / na|em + o / em + a: في الـ
-ao / à|a + o / a + a: إلى الـ
-pelo / pela|por + o / por + a: عن طريق الـ`)}${X(`Eu sou do Brasil.|إيو سو دو برازيو.|أنا من البرازيل.
+Qual? Quais?|كواو؟ كوايس؟|أي؟ شو؟
+Quanto custa?|كوانتو كوستا؟|بكم؟
+Quantos anos você tem?|كوانتوس آنوس ڤوسي تين؟|قديش عمرك؟`},
+{id:'verbos',ic:'⚡',t:'أهم 12 فعل',s:'بالمضارع مع eu وvocê',intro:'هاي الأفعال بتغطي معظم الحكي اليومي. اتعلم شكل eu (أنا) وele/você (هو/إنت) أول.',r:`ser: sou · é|سير: سو · إيه|يكون (ثابت): أنا · هو
+estar: estou · está|إيستار: إيستو · إيستا|يكون (حالة): أنا · هو
+ter: tenho · tem|تير: تينيو · تين|يملك: عندي · عنده
+ir: vou · vai|إير: ڤو · ڤاي|يروح: بروح · بيروح
+fazer: faço · faz|فازير: فاسو · فاز|يعمل: بعمل · بيعمل
+querer: quero · quer|كيرير: كيرو · كير|يريد: بدي · بده
+poder: posso · pode|بودير: بوسو · بودجي|يقدر: بقدر · بيقدر
+falar: falo · fala|فالار: فالو · فالا|يحكي
+comer: como · come|كومير: كومو · كومي|ياكل
+morar: moro · mora|مورار: مورو · مورا|يسكن
+trabalhar: trabalho · trabalha|تراباليار: تراباليو · تراباليا|يشتغل
+precisar: preciso · precisa|بريسيزار: بريسيزو · بريسيزا|يحتاج`,tip:'عشان تنفي حط não قبل الفعل: Eu não falo inglês. وعشان تحكي عن المستقبل القريب: vou + فعل: Vou comer.'},
+{id:'serestar',ic:'⚖️',t:'SER ولا ESTAR؟',s:'الفرق بين «يكون» و«يكون»',intro:'ser للثابت: الهوية، الأصل، المهنة، الطبع. estar للمؤقت: الحالة، الشعور، المكان.',r:`Eu sou palestino.|إيو سو باليستشينو.|أنا فلسطيني (ثابت).
+Eu estou cansado.|إيو إيستو كانسادو.|أنا تعبان (هلأ).
+Ela é professora.|إيلا إيه بروفيسورا.|هي معلمة (مهنة).
+Ela está em casa.|إيلا إيستا إين كازا.|هي بالبيت (مكان).
+O café é bom.|أو كافيه إيه بون.|القهوة منيحة (بشكل عام).
+O café está frio.|أو كافيه إيستا فريو.|القهوة بردت (هلأ).`,tip:'سؤال سريع: هل هاد الشي بيتغير قريب؟ إذا آه: estar. إذا لأ: ser.'},
+{id:'artigos',ic:'🔗',t:'الأدوات والدمج',s:'o، a، do، na…',intro:'كل اسم إله جنس: مذكر (o) أو مؤنث (a). والأدوات بتندمج مع حروف الجر.',r:`o livro · a mesa|أو ليڤرو · آ ميزا|الكتاب · الطاولة
+os livros · as mesas|أوس ليڤروس · آس ميزاس|الكتب · الطاولات
+um carro · uma casa|أون كاهو · أوما كازا|سيارة · بيت
+do / da|دو / دا|من الـ (de + o / a)
+no / na|نو / نا|في الـ (em + o / a)
+ao / à|آو / آ|إلى الـ (a + o / a)
+pelo / pela|بيلو / بيلا|عن طريق الـ
+Eu sou do Brasil.|إيو سو دو برازيو.|أنا من البرازيل.
 Eu moro na rua principal.|إيو مورو نا هوا برينسيباو.|ساكن بالشارع الرئيسي.
-Vou ao mercado.|ڤو آو ميركادو.|رايح عالسوبرماركت.`)}</div>
-<div class="card lesson">${H('رسمي، عادي، وشارع')}${TB(`estou → tô|أنا (حكي)
-está → tá|هو / هي (حكي)
-você → cê|إنت (حكي سريع)
-para → pra|لـ / عشان
-vamos embora → bora|يلا
-a gente|إحنا (بدل nós)`)}${TIP('بالامتحان والكتابة استعمل الشكل الكامل (estou، está، para). بالشارع والواتساب بتسمع الأشكال القصيرة.')}</div>`;
+Vou ao mercado.|ڤو آو ميركادو.|رايح عالسوق.`},
+{id:'lugares',ic:'📍',t:'الأماكن والاتجاهات',s:'وين؟ قريب، بعيد، يمين…',intro:'بتحتاجها بالشارع، وبالسوبرماركت، ولما تسأل عن عنوان.',r:`aqui · ali · lá|أكي · آلي · لا|هون · هناك · هنااك
+perto · longe|بيرتو · لونجي|قريب · بعيد
+à direita · à esquerda|آ دجيريتا · آ إيسكيردا|يمين · شمال
+em frente|إين فرينتشي|دغري / قدّام
+atrás|أتراس|ورا
+em cima · embaixo|إين سيما · إينبايشو|فوق · تحت
+dentro · fora|دينترو · فورا|جوّا · برّا
+a farmácia|آ فارماسيا|الصيدلية
+o mercado|أو ميركادو|السوبرماركت
+o ponto de ônibus|أو بونتو دجي أونيبوس|موقف الباص
+o hospital|أو أوسبيتاو|المستشفى
+a escola|آ إيسكولا|المدرسة`},
+{id:'adjetivos',ic:'🎭',t:'الصفات الأساسية',s:'كبير، صغير، منيح…',intro:'الصفة بتيجي بعد الاسم عادة، وبتتغير حسب المذكر والمؤنث: carro novo، casa nova.',r:`grande · pequeno|غرانجي · بيكينو|كبير · صغير
+bom · ruim|بون · هوين|منيح · مش منيح
+novo · velho|نوڤو · ڤيليو|جديد · قديم
+bonito · feio|بونيتو · فيو|حلو · بشع
+caro · barato|كارو · باراتو|غالي · رخيص
+quente · frio|كينتشي · فريو|سخن · بارد
+fácil · difícil|فاسيو · دجيفيسيو|سهل · صعب
+cheio · vazio|شييو · ڤازيو|مليان · فاضي
+rápido · devagar|هابيدو · دجيڤاغار|سريع · بطيء
+feliz · triste|فيليز · تريستشي|مبسوط · زعلان
+cansado|كانسادو|تعبان
+ocupado · livre|أوكوبادو · ليڤري|مشغول · فاضي`},
+{id:'cores',ic:'🎨',t:'الألوان',s:'لون كل اشي',intro:'الألوان صفات، فبتتغير مع الجنس أحيانًا: carro vermelho، bolsa vermelha.',r:`vermelho|ڤيرميليو|أحمر
+azul|أزوو|أزرق
+amarelo|أماريلو|أصفر
+verde|ڤيردجي|أخضر
+laranja|لارانجا|برتقالي
+roxo|هوشو|بنفسجي
+rosa|هوزا|زهري
+preto|بريتو|أسود
+branco|برانكو|أبيض
+cinza|سينزا|رمادي
+marrom|ماهون|بني
+Qual é a sua cor favorita?|كواو إيه آ سوا كور فاڤوريتا؟|شو لونك المفضل؟`},
+{id:'conectores',ic:'🪢',t:'كلمات الربط',s:'و، بس، لأنه، بعدين…',intro:'هاي الكلمات بتخلي حكيك يمشي ويطلع طبيعي بدل جمل مقطّعة.',r:`e|إي|و
+mas|ماس|بس / لكن
+ou|أو|أو
+porque|بوركي|لأنه
+então|إينتاو|إذن / يعني
+também|تامبين|كمان
+depois|ديبويس|بعدين
+antes|أنتشيس|قبل
+agora|أغورا|هلأ
+sempre · nunca|سيمبري · نونكا|دايمًا · أبدًا
+às vezes|آس ڤيزيس|أحيانًا
+ainda|آيندا|لسا`},
+{id:'registro',ic:'💬',t:'رسمي، عادي، وشارع',s:'كيف بيحكوا فعلًا',intro:'بالكتابة والامتحانات استعمل الشكل الكامل. بالشارع والواتساب بتسمع الأشكال القصيرة.',r:`estou → tô|إيستو → تو|أنا (حكي)
+está → tá|إيستا → تا|هو / هي (حكي)
+você → cê|ڤوسي → سي|إنت (حكي سريع)
+para → pra|بارا → برا|لـ / عشان
+vamos embora → bora|ڤاموس إينبورا → بورا|يلا
+a gente|آ جينتشي|إحنا (بدل nós)
+Beleza?|بيليزا؟|تمام؟ (عامي)
+Valeu!|ڤاليو!|يسلمو! (عامي)
+Com certeza.|كون سيرتيزا.|أكيد.
+Tá bom.|تا بون.|ماشي.`},
+];
+BT.forEach(t=>{t.R=lines(t.r).map(([pt,pron,ar])=>({pt,pron,ar,key:'b|'+pt}))});
+function vBasics(){
+  const done=S.bs||{};
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الأساسيات</h1><p class="muted" style="margin:4px 0 0">${BT.length} باب مرتّب من الأسهل للأصعب. كل باب فيه شرح، وأمثلة بصوت، وتمرين قصير.</p></div>
+   <div class="bgrid">${BT.map((t,i)=>`<a class="bcard${done[t.id]>=70?' done':''}" href="#basic-${t.id}"><span class="b-n">${i+1}</span><span class="b-ic">${t.ic}</span><b>${esc(t.t)}</b><small>${esc(t.s)}</small>${done[t.id]!=null?`<span class="b-st">${done[t.id]}%</span>`:''}</a>`).join('')}</div></div>`;
+}
+function vBasic(id){
+  const i=BT.findIndex(x=>x.id===id),t=BT[i];if(!t)return vBasics();
+  const nx=BT[i+1];
+  const show=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><span class="eyebrow">الأساسيات · الباب ${i+1} من ${BT.length}</span><h1 style="font-size:24px">${t.ic} ${esc(t.t)}</h1><span class="muted">${esc(t.s)}</span></div>
+   <div class="card lesson">${Pp(t.intro)}${X(t.r)}${t.tip?TIP(t.tip):''}</div>
+   <div class="row"><button class="btn primary" id="bq">تمرين: ${Math.min(8,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
+    $('#bq').onclick=quiz};
+  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=shuffle(pool).slice(0,Math.min(8,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
+    runQuiz($('#qb'),qs,{title:t.t,retry:quiz,onDone:p=>{S.bs=S.bs||{};if(S.bs[id]==null||p>S.bs[id]){S.bs[id]=p;save()}},next:nx?{label:'التالي: '+nx.t+' ←',href:'#basic-'+nx.id}:{label:'الرجوع إلى الأساسيات',href:'#basics'}})};
+  show();
+}
 
 /* ===== قصص وحوارات مسموعة: واحدة لكل وحدة ===== */
 const STORIES=[
@@ -8126,19 +8341,19 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
-  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^kids-([a-z]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
+  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
   else if((m=h.match(/^ch-(\d+)$/)))vChapter(+m[1]);else if((m=h.match(/^exam-(\d+|f\d)$/)))vExam(/^\d+$/.test(m[1])?+m[1]:m[1]);else vHome();
   const bb=$('#backbar');if(bb)bb.hidden=TOP.includes(h);
-  const tab=h.startsWith('ch-')||h.startsWith('exam-')||h==='settings'||h.startsWith('admin')?'path':/^(games|review|speak|chat|stories|story-|sounds|placement|cert-)/.test(h)?'practice':/^kids/.test(h)?'kids':h;$$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r===tab));
+  const tab=h.startsWith('ch-')||h.startsWith('exam-')||h==='settings'||h.startsWith('admin')?'path':/^(games|review|speak|chat|stories|story-|sounds|placement|cert-)/.test(h)?'practice':/^kids/.test(h)?'kids':/^basic-/.test(h)?'basics':h;$$('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.r===tab));
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',()=>{if(!navBack)navDepth++;navBack=false;route()});
 const TOP=['path','words','sentences','practice','basics','kids',''];
 let navDepth=0,navBack=false;
-function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h))return '#admin';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';return '#practice'}
+function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h))return '#admin';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
 function goBack(){
   const h=(location.hash||'#path').slice(1);
   const m=h.match(/^ch-(\d+)$/);
@@ -8312,7 +8527,6 @@ function vGames(){
   if(ws.length<5){$('#g').innerHTML='<p class="muted">افتح دروس أكثر بهالوحدة عشان تلعب.</p>';return}
   gameMenu($('#g'),ws,ss);
 }
-function vBasics(){app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الأساسيات</h1><p class="muted" style="margin:4px 0 0">مرجع ترجعله أي وقت. اضغط أي كلمة خضرا عشان تسمعها.</p></div>${BASICS}</div>`}
 
 
 /* ===== حوار الفصل ===== */
