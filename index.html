@@ -559,6 +559,41 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .mrep-box summary{cursor:pointer;font-weight:600;color:var(--brand,#1f5c3f);padding:6px 0}
 .mrep-box .row{margin-top:6px}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .b-adm{background:#1f4a35;color:#e6f5ec}}
+
+.fixbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;width:100%;padding:12px 14px;border-radius:14px;border:2px solid #f5b301;background:#fff8e1;color:#5a4300;font:inherit;cursor:pointer;text-align:start}.fixbar b{font-size:15px}
+[data-theme=dark] .fixbar{background:#3a3110;color:#ffe9a8}
+
+.hero-chat{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;border:2px solid var(--brand,#1f5c3f)}.hero-chat .gi{grid-row:span 2}.hero-chat h3{margin:0}.hero-chat p{margin:2px 0 0}
+.set2{border-radius:18px;padding:18px;gap:12px;scroll-margin-top:90px}
+.set2 h2{display:flex;align-items:center;gap:10px;font-size:20px;margin:0 0 4px}
+.set-ic{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;font-size:22px;flex:none}
+[data-theme=dark] .set-ic{filter:brightness(.6)}
+.set-hero{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px}
+.set-hero b{font-size:18px}
+.set-av{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--brand,#1f5c3f);color:#fff;font-size:24px;font-weight:700;flex:none}
+.set-nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.set-nav a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:14px;background:var(--card,#fff);border:1px solid var(--line,#ddd);text-decoration:none;color:inherit;font-weight:600;font-size:14px}
+.set-nav a span{font-size:22px}
+.onb{position:fixed;inset:0;z-index:999;background:rgba(10,30,20,.55);display:grid;place-items:center;padding:16px;backdrop-filter:blur(3px)}
+.onb-card{position:relative;width:min(440px,100%);max-height:92vh;overflow:auto;background:var(--card,#fff);border-radius:24px;padding:26px 20px 22px;text-align:center;display:flex;flex-direction:column;gap:12px;animation:onbIn .35s ease}
+@keyframes onbIn{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.onb-ic{font-size:54px;line-height:1}
+.onb-card h2{margin:0;font-size:23px}.onb-card p{margin:0}
+.onb-ul{list-style:none;padding:0;margin:4px 0;text-align:start;display:grid;gap:8px;font-size:16px}
+.onb-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.onb-opts.one{grid-template-columns:1fr}
+.onb-o{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 8px;border-radius:16px;border:2px solid var(--line,#ddd);background:transparent;color:inherit;font:inherit;font-weight:600;cursor:pointer}
+.onb-o span{font-size:28px;font-weight:800}.onb-o small{font-weight:400;opacity:.75}
+.onb-o.on{border-color:var(--brand,#1f5c3f);background:#e3f5ea}
+[data-theme=dark] .onb-o.on{background:#1f4a35}
+.btn.big{padding:14px;font-size:17px;width:100%}
+.onb-dots{display:flex;justify-content:center;gap:6px}.onb-dots i{width:8px;height:8px;border-radius:5px;background:var(--line,#ccc)}.onb-dots i.on{width:22px;background:var(--brand,#1f5c3f)}
+.onb-back{position:absolute;top:14px;right:16px;border:0;background:none;font-size:22px;cursor:pointer;color:inherit}
+
+.bexp h4{margin:16px 0 6px;font-size:17px;color:var(--brand,#1f5c3f)}.bexp h4:first-child{margin-top:0}
+[data-theme=dark] .bexp h4{color:#8fd3ac}
+.bexp p{margin:0 0 6px;line-height:1.9}.bexp ul,.bexp ol{margin:0 0 6px;padding-inline-start:20px;line-height:1.9}.bexp li{margin:2px 0}
+.bexp em{font-style:normal;font-weight:700;direction:ltr;unicode-bidi:isolate;color:var(--brand,#1f5c3f)}
+[data-theme=dark] .bexp em{color:#8fd3ac}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -9825,6 +9860,244 @@ Ela é a mais alta ___ turma.|بالصف (de + a)|da|na|do`},
 /* دمج: بيضيف السطور الجديدة بدون تكرار */
 function _bmerge(a,b){if(!b)return a;const have=new Set(lines(a||'').map(x=>x[0]));const add=lines(b).filter(x=>!have.has(x[0])).map(x=>x.join('|'));return add.length?(a?a+'\n':'')+add.join('\n'):a}
 
+/* ===== شرح مفصّل وبسيط لكل أبواب الأساسيات والقواعد ===== */
+const _BH=(t)=>`<h4>${t}</h4>`;
+const BEXP={
+/* ---------- الأساسيات ---------- */
+sobrevivencia:`${_BH('💡 ليش هالباب أول باب؟')}<p>بأول أسابيعك بالبرازيل رح تسمع كلام كتير ما بتفهمه، وهاد طبيعي. هالجمل هي «طوق النجاة»: بتخليك تكمّل الحديث بدل ما تسكت أو تهرب منه.</p>
+${_BH('🛠️ كيف تستعملها؟')}<ul><li>ما فهمت؟ قول <em>Não entendi</em> (ناو إينتيندجي).</li><li>حكى بسرعة؟ قول <em>Pode falar mais devagar?</em> (بودجي فالار مايس دجيڤاغار؟) يعني «ممكن تحكي أبطأ؟».</li><li>بدك تعرف كلمة؟ أشّر على الشي وقول <em>Como se diz isso em português?</em></li><li>دايمًا زيد <em>por favor</em> (لو سمحت) و<em>obrigado</em> (شكرًا). البرازيليين بيحبوا اللطف وبيساعدوا أكتر.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>الرجل بيقول <em>obrigado</em>، والمرة بتقول <em>obrigada</em>.</li><li>للطوارئ: الإسعاف <b>192</b>، الشرطة <b>190</b>، الإطفاء <b>193</b>.</li></ul>`,
+
+pronuncia:`${_BH('💡 الفكرة ببساطة')}<p>البرتغالي البرازيلي ما بينقرأ دايمًا زي ما بينكتب. في شوية قواعد ثابتة، إذا حفظتها بتقدر تقرأ أي كلمة جديدة صح من أول مرة.</p>
+${_BH('🛠️ أهم 5 قواعد')}<ul><li><b>de / di</b> بتنلفظ «دجي»: <em>dia</em> = دجيا (يوم).</li><li><b>te / ti</b> بتنلفظ «تشي»: <em>noite</em> = نويتشي (ليل).</li><li><b>R</b> بأول الكلمة و<b>rr</b> بتنلفظ «هـ»: <em>rua</em> = هوا، <em>carro</em> = كاهو. أما <b>r</b> بين حرفين علة فهي ر خفيفة: <em>caro</em> = كارو.</li><li><b>e</b> بآخر الكلمة = «ي»، و<b>o</b> بآخر الكلمة = «و»: <em>leite</em> = ليتشي.</li><li><b>l</b> بآخر المقطع = «و»: <em>Brasil</em> = برازيو.</li></ul>
+${_BH('🔊 الأصوات الأنفية')}<p><em>ão</em> و<em>ãe</em> و<em>em</em> بتطلع من الأنف، زي ما تقول «او» وإنت مسكّر طرف أنفك شوي. اسمع <em>pão</em> (خبز) وقلّده كذا مرة.</p>
+${_BH('⚠️ انتبه')}<ul><li><em>h</em> بأول الكلمة ما بتنلفظ: <em>hoje</em> = أوجي.</li><li><em>s</em> عادية مش «ش»: <em>está</em> = إيستا (مش إشتا، هاي برتغالي البرتغال).</li></ul>`,
+
+alfabeto:`${_BH('💡 ليش بتحتاج الحروف؟')}<p>بالبرازيل كتير بيطلبوا منك <b>تهجّي</b> اسمك أو إيميلك: بالبنك، عند الدكتور، بالتلفون. السؤال: <em>Como se escreve?</em> (كومو سي إيسكريڤي؟) يعني «كيف بينكتب؟».</p>
+${_BH('🛠️ كيف تتهجّى؟')}<ul><li>قول اسم كل حرف لحاله: أحمد = <em>A - H - M - E - D</em> (آ، أغا، إيمي، إيه، دجيه).</li><li>الإيميل: <em>@</em> اسمها <em>arroba</em> (أهوبا)، والنقطة <em>ponto</em> (بونتو).</li><li>إذا في حرفين متشابهين قول <em>dois</em>: «ss» = <em>dois esses</em>.</li></ul>
+${_BH('⚠️ حروف بتلخبط')}<ul><li><b>E</b> = «إيه» و<b>I</b> = «إي»: سهل تخلط بينهم.</li><li><b>G</b> = «جيه» و<b>J</b> = «جوتا».</li><li><b>H</b> = «أغا»، و<b>R</b> = «إيهي».</li></ul>`,
+
+cumprimentos:`${_BH('💡 الفكرة ببساطة')}<p>البرازيليين ودودين كتير، والتحية عندهم مهمة. حتى مع الكاشير أو سواق الباص بيقولوا «صباح الخير، كيفك؟».</p>
+${_BH('🛠️ حسب الوقت')}<ul><li>من الصبح للظهر: <em>Bom dia</em> (بون دجيا).</li><li>من الظهر للمغرب: <em>Boa tarde</em> (بوا تاردجي).</li><li>بالليل، وكمان للوداع بالليل: <em>Boa noite</em> (بوا نويتشي).</li></ul>
+${_BH('💬 الحوار المعتاد')}<p>— <em>Oi, tudo bem?</em> (أهلًا، كيفك؟)<br>— <em>Tudo bem, e você?</em> (تمام، وإنت؟)<br>— <em>Tudo ótimo!</em> (كله ممتاز!)</p>
+${_BH('⚠️ انتبه')}<ul><li><em>Tudo bem?</em> سؤال وجواب بنفس الوقت: بتجاوب عليه بـ <em>Tudo bem</em> كمان.</li><li>بالوداع بيقولوا كتير <em>Tchau</em> (تشاو) و<em>Até logo</em> (أتي لوغو).</li></ul>`,
+
+apresentacao:`${_BH('💡 الفكرة ببساطة')}<p>أول ما تتعرف على حدا رح يسألك نفس الأسئلة تقريبًا: اسمك، من وين، من قديش بالبرازيل، شو بتشتغل. جهّز جوابك من هلأ وبتحكي بثقة.</p>
+${_BH('🛠️ القالب الجاهز')}<ul><li>الاسم: <em>Meu nome é ...</em> أو <em>Eu me chamo ...</em></li><li>البلد: <em>Sou do/da ...</em> (<em>do</em> للبلد المذكر: <em>do Líbano</em>، و<em>da</em> للمؤنث: <em>da Síria</em>).</li><li>المدة: <em>Moro no Brasil há ... anos</em> (ساكن بالبرازيل من ... سنين).</li><li>الشغل: <em>Trabalho como ...</em> أو <em>Sou ...</em> بدون «a/um»: <em>Sou engenheiro</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>العمر بفعل <em>ter</em>: <em>Tenho 30 anos</em> (حرفيًا: عندي 30 سنة). غلط تقول <em>Sou 30</em>.</li><li>الصفة بتتغيّر للمرة: <em>casado → casada</em>، <em>sírio → síria</em>.</li></ul>`,
+
+numeros:`${_BH('💡 الفكرة ببساطة')}<p>الأرقام بتحتاجها كل يوم: الأسعار، التلفون، العنوان، العمر. لو حفظت من 1 لـ 20 والعشرات، بتقدر تركّب أي رقم.</p>
+${_BH('🛠️ كيف تركّب الرقم؟')}<ul><li>بين العشرات والآحاد بتحط <em>e</em> (و): 25 = <em>vinte e cinco</em>.</li><li>المية: 100 = <em>cem</em>، بس 101 وما فوق = <em>cento e ...</em>: 102 = <em>cento e dois</em>.</li><li>الألف: <em>mil</em>، و1500 = <em>mil e quinhentos</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>1 و2 إلهم مذكر ومؤنث: <em>um/uma</em>، <em>dois/duas</em>: <em>duas pessoas</em>.</li><li>بالتلفون بيقولوا للستة <em>meia</em> بدل <em>seis</em> عشان ما تتلخبط مع <em>três</em>.</li><li>بالأسعار الفاصلة بدل النقطة: R$ 12,50 = <em>doze e cinquenta</em>.</li></ul>`,
+
+tempo:`${_BH('💡 الفكرة ببساطة')}<p>أيام الأسبوع بالبرتغالي غريبة شوي: من الإتنين للجمعة أسماءهم أرقام! <em>segunda</em> (التاني)، <em>terça</em> (التالت)… لأن الأحد هو اليوم الأول.</p>
+${_BH('🛠️ كيف تحفظها؟')}<ul><li><em>segunda-feira</em> = الإتنين (اليوم التاني)، <em>terça</em> = التلاتا، <em>quarta</em> = الأربعا، <em>quinta</em> = الخميس، <em>sexta</em> = الجمعة.</li><li><em>sábado</em> = السبت، <em>domingo</em> = الأحد.</li><li>بالحكي بيحذفوا <em>-feira</em>: <em>Te vejo na sexta</em> (بشوفك الجمعة).</li></ul>
+${_BH('📅 التاريخ')}<p>بيحكوا اليوم أول وبعدين الشهر: 10/05 = <em>dez de maio</em>. وأول الشهر: <em>primeiro de maio</em>.</p>
+${_BH('⚠️ انتبه')}<ul><li>الأيام والشهور بتنكتب بحرف صغير: <em>maio</em> مش <em>Maio</em>.</li><li>«يوم الإتنين» = <em>na segunda</em>، و«كل إتنين» = <em>às segundas</em>.</li></ul>`,
+
+clima:`${_BH('💡 الفكرة ببساطة')}<p>لما تحكي عن الطقس بتستعمل فعل <em>estar</em> لأنه حالة بتتغيّر: <em>Está frio</em> (برد). وللحرارة بالدرجات بتستعمل <em>fazer</em>: <em>Faz 30 graus</em>.</p>
+${_BH('🛠️ أهم القوالب')}<ul><li><em>Está</em> + صفة: <em>Está quente / frio / nublado</em>.</li><li><em>Está</em> + فعل بـ -ndo لما شي عم يصير هلأ: <em>Está chovendo</em> (عم تشتي).</li><li>للمستقبل: <em>Vai chover</em> (رح تشتي)، <em>Vai fazer frio</em> (رح يبرد).</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>الطقس بجنوب البرازيل بيتغيّر كتير بنفس اليوم، فالبرازيليين بيحكوا عنه كتير. سؤال <em>Que frio, né?</em> (شو هالبرد، صح؟) بداية حديث ممتازة.</li><li>«الطقس» = <em>o tempo</em>، ونفس الكلمة بتعني «الوقت».</li></ul>`,
+
+horas:`${_BH('💡 الفكرة ببساطة')}<p>لتسأل عن الساعة: <em>Que horas são?</em> (كي أوراس ساو؟). والجواب: <em>São</em> + الرقم + <em>horas</em>. بس الساعة وحدة بتقول <em>É uma hora</em>.</p>
+${_BH('🛠️ كيف تقرأ الساعة؟')}<ul><li>ونص: <em>e meia</em>: 2:30 = <em>duas e meia</em>.</li><li>وربع: <em>e quinze</em>: 3:15 = <em>três e quinze</em>.</li><li>إلا ربع: <em>quinze para as</em> + الساعة الجاية: 3:45 = <em>quinze para as quatro</em>.</li><li>12 الظهر: <em>meio-dia</em>، و12 بالليل: <em>meia-noite</em>.</li></ul>
+${_BH('🕗 نظام 24 ساعة')}<p>بالمواعيد الرسمية والمحلات بيستعملوا نظام 24 ساعة: 18h = <em>dezoito horas</em> يعني 6 المسا.</p>
+${_BH('⚠️ انتبه')}<p>«الساعة كم؟» (سؤال عن الوقت الحالي) = <em>Que horas são?</em>، أما «على أي ساعة؟» (موعد) = <em>A que horas?</em> والجواب: <em>às oito</em> (عالساعة 8).</p>`,
+
+pronomes:`${_BH('💡 الفكرة ببساطة')}<p>الضمائر هي «أنا، إنت، هو…». بالبرازيل في شغلة مهمة: «إنت» = <em>você</em> (ڤوسي)، والفعل معها بيتصرّف زي «هو». وهاد بيسهّل عليك كتير.</p>
+${_BH('🛠️ الضمائر')}<ul><li><em>eu</em> أنا · <em>você</em> إنت · <em>ele</em> هو · <em>ela</em> هي</li><li><em>nós</em> أو <em>a gente</em> إحنا · <em>vocês</em> إنتو · <em>eles</em> هم (ذكور أو مختلط) · <em>elas</em> هنّ</li></ul>
+${_BH('🏷️ الملكية')}<ul><li><em>meu/minha</em> = تبعي، <em>seu/sua</em> = تبعك.</li><li>«تبعه / تبعها» الأوضح: <em>dele</em> / <em>dela</em> بعد الاسم: <em>o carro dele</em> (سيارته).</li></ul>
+${_BH('⚠️ انتبه')}<ul><li><em>a gente</em> معناها «إحنا» بس الفعل معها مفرد: <em>a gente vai</em> (مش <em>vamos</em>). البرازيليين بيستعملوها أكتر من <em>nós</em> بالحكي.</li><li>الملكية بتطابق الشي المملوك مش صاحبه: «سيارتي» = <em>meu carro</em> سواء كنت رجل أو مرة.</li></ul>`,
+
+familia:`${_BH('💡 الفكرة ببساطة')}<p>أسماء العيلة سهلة: المذكر غالبًا بـ <em>-o</em> والمؤنث بـ <em>-a</em>: <em>filho / filha</em>، <em>tio / tia</em>.</p>
+${_BH('🛠️ كيف تحكي عن عيلتك؟')}<ul><li>العدد: <em>Tenho dois filhos e uma filha</em>.</li><li>أكبر / أصغر: <em>mais velho</em> (أكبر) و<em>mais novo</em> (أصغر): <em>meu irmão mais velho</em>.</li><li>السؤال: <em>Quantos filhos você tem?</em> (كم ولد عندك؟)</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>لما تجمع ولاد وبنات بتستعمل المذكر: <em>filhos</em> = الولاد (بنات وصبيان)، و<em>irmãos</em> = إخوة وأخوات.</li><li><em>os pais</em> = الأب والأم، مش «الآباء».</li><li><em>parentes</em> = القرايب، و<em>pais</em> = الأهل. كلمتين بيتلخبطوا.</li></ul>`,
+
+perguntas:`${_BH('💡 الفكرة ببساطة')}<p>أدوات السؤال بتيجي بأول الجملة، وبعدها الجملة عادي. وبالحكي كتير بيكفي ترفع نبرة صوتك بالآخر.</p>
+${_BH('🛠️ الأدوات وأمثلتها')}<ul><li><em>O que?</em> شو؟ · <em>Quem?</em> مين؟ · <em>Onde?</em> وين؟</li><li><em>Quando?</em> إيمتى؟ · <em>Como?</em> كيف؟ · <em>Por que?</em> ليش؟</li><li><em>Quanto?</em> قديش؟ (<em>quanto/quanta/quantos/quantas</em> حسب الاسم: <em>Quantas horas?</em>)</li><li><em>Qual?</em> أي واحد؟ وبتستعمله كمان لـ«شو» قبل الاسم: <em>Qual é o seu nome?</em></li></ul>
+${_BH('⚠️ انتبه')}<ul><li><em>Por que</em> (ليش) منفصلة وبسؤال، و<em>porque</em> (لأنه) متصلة وبالجواب.</li><li>«شو اسمك» = <em>Qual é o seu nome?</em> مش <em>O que é...</em></li></ul>`,
+
+verbos:`${_BH('💡 الفكرة ببساطة')}<p>هدول أكتر 12 فعل بيستعملهم البرازيليين. لو حفظت شكلهم مع «أنا» و«إنت/هو» بتقدر تعمل مئات الجمل.</p>
+${_BH('🛠️ القالب الذهبي')}<ul><li>فعل + اسم: <em>Quero um café</em> (بدي قهوة).</li><li>فعل + فعل بالمصدر: <em>Posso entrar?</em> (بقدر أفوت؟) <em>Preciso trabalhar</em> (لازم أشتغل).</li><li>كل فعل إله شكل لـ«أنا» (بيخلص غالبًا بـ <em>-o</em>) وشكل لـ«إنت/هو» (بيخلص بـ <em>-a</em> أو <em>-e</em>): <em>eu falo / você fala</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>بعض الأفعال شاذة مع «أنا»: <em>ter → tenho</em>، <em>ir → vou</em>، <em>fazer → faço</em>، <em>poder → posso</em>.</li><li>البرتغالي ما بيحتاج «أنا» دايمًا: <em>Quero</em> لحالها يعني «بدي».</li></ul>`,
+
+rotina:`${_BH('💡 الفكرة ببساطة')}<p>لما تحكي عن روتينك اليومي بتستعمل <b>الحاضر البسيط</b>: <em>Acordo às seis</em> (بصحى الساعة 6). نفس الزمن بيعني «كل يوم».</p>
+${_BH('🛠️ كيف تربط يومك؟')}<ul><li>بالترتيب: <em>primeiro</em> (أول اشي) ← <em>depois</em> (بعدين) ← <em>no fim</em> (بالآخر).</li><li>الوقت: <em>de manhã</em> (الصبح)، <em>à tarde</em> (بعد الظهر)، <em>à noite</em> (بالليل).</li><li>الساعة: <em>às sete</em> (الساعة 7).</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>بعض أفعال الروتين بتيجي مع <em>me</em>: <em>Eu me levanto</em> (بقوم)، <em>me visto</em> (بلبس). شوف باب «أفعال مع se» بالقواعد.</li><li>«يتحمم» = <em>tomar banho</em>، و«يفطر» = <em>tomar café da manhã</em>: فعل <em>tomar</em> مستعمل كتير.</li></ul>`,
+
+serestar:`${_BH('💡 الفكرة ببساطة')}<p>بالعربي عنا «يكون» وحدة، بالبرتغالي في اتنين: <em>ser</em> و<em>estar</em>. القاعدة السهلة:<br><b>ser</b> = شي ثابت أو هوية (مين إنت؟ شو إنت؟).<br><b>estar</b> = حالة مؤقتة أو مكان (كيفك هلأ؟ وينك؟).</p>
+${_BH('🛠️ متى SER؟')}<ul><li>الاسم والجنسية والمهنة: <em>Sou médico</em>، <em>Sou do Egito</em>.</li><li>الصفات الدايمة: <em>Ela é alta</em>.</li><li>الوقت والتاريخ: <em>São três horas</em>، <em>Hoje é sábado</em>.</li></ul>
+${_BH('🛠️ متى ESTAR؟')}<ul><li>الشعور والحالة: <em>Estou cansado</em>، <em>Estou com fome</em>.</li><li>مكان الأشخاص والأشياء: <em>Estou em casa</em>.</li><li>الطقس: <em>Está frio</em>، والشي اللي عم يصير: <em>Estou trabalhando</em>.</li></ul>
+${_BH('⚠️ انتبه')}<p>نفس الصفة بتغيّر معناها: <em>Ele é chato</em> = هو شخص ثقيل (دايمًا)، أما <em>Ele está chato</em> = هو مزعج اليوم (مؤقت).</p>`,
+
+artigos:`${_BH('💡 الفكرة ببساطة')}<p>«الـ» بالبرتغالي إلها 4 أشكال: <em>o</em> (مذكر)، <em>a</em> (مؤنث)، <em>os</em> و<em>as</em> (جمع). وبتلتصق بحروف الجر الصغيرة وبتصير كلمة وحدة.</p>
+${_BH('🛠️ الدمج الأهم')}<ul><li><em>em + o = no</em>، <em>em + a = na</em>: <em>no mercado</em> (بالسوق)، <em>na escola</em> (بالمدرسة).</li><li><em>de + o = do</em>، <em>de + a = da</em>: <em>do Brasil</em> (من البرازيل).</li><li><em>a + o = ao</em>، <em>a + a = à</em>: <em>ao médico</em>، <em>à praia</em>.</li><li><em>por + o = pelo</em>، <em>por + a = pela</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>الدمج إجباري: غلط تقول <em>em o mercado</em>.</li><li>البرازيليين كتير بيحطوا «الـ» قبل أسماء الناس: <em>o João</em>، <em>a Ana</em>. هاد طبيعي.</li><li>المدن غالبًا بدون «الـ»: <em>em São Paulo</em>، بس <em>no Rio</em>.</li></ul>`,
+
+lugares:`${_BH('💡 الفكرة ببساطة')}<p>عشان تسأل عن مكان: <em>Onde fica ...?</em> (وين موجود ...؟). وعشان توصف المكان بتستعمل كلمات المكان + <em>de</em>.</p>
+${_BH('🛠️ كلمات المكان')}<ul><li><em>perto de</em> قريب من · <em>longe de</em> بعيد عن</li><li><em>ao lado de</em> جنب · <em>em frente a</em> قبال · <em>atrás de</em> ورا</li><li><em>entre</em> بين · <em>na esquina</em> عالزاوية</li></ul>
+${_BH('🧭 الاتجاهات')}<ul><li><em>à direita</em> يمين · <em>à esquerda</em> شمال · <em>em frente</em> دغري.</li><li><em>Vire</em> (لف)، <em>Siga</em> (كمّل)، <em>Desça</em> (انزل).</li></ul>
+${_BH('⚠️ انتبه')}<p><em>de</em> بتندمج مع «الـ»: <em>perto do banco</em> (de + o)، <em>atrás da igreja</em> (de + a).</p>`,
+
+comida:`${_BH('💡 الفكرة ببساطة')}<p>بالمطعم أو المخبز أهم كلمة: <em>Eu queria ...</em> (بدي ... بطريقة مؤدبة). وأهم سؤال: <em>Quanto é?</em> (قديش؟).</p>
+${_BH('🛠️ كيف تطلب؟')}<ul><li><em>Eu queria um suco, por favor</em>: أحلى من <em>Quero</em>.</li><li>كمان بتقدر تقول <em>Me vê um café</em> (عطيني قهوة)، بالحكي اليومي.</li><li>جوعان/عطشان بفعل <em>estar com</em>: <em>Estou com fome / sede</em>.</li><li>أكل محلي: <em>para comer aqui</em>، وسفري: <em>para viagem</em> أو <em>para levar</em>.</li></ul>
+${_BH('🍽️ الوجبات بالبرازيل')}<p>الغدا (<em>almoço</em>) هو الوجبة الأساسية، والوجبة الشعبية: رز وفاصوليا (<em>arroz e feijão</em>) مع لحمة وسلطة. كتير مطاعم بتبيع بالكيلو (<em>por quilo</em>).</p>
+${_BH('⚠️ انتبه')}<p>سأل عن لحم الخنزير: <em>Tem carne de porco?</em>. منتجات زي <em>linguiça</em> و<em>bacon</em> و<em>presunto</em> غالبًا خنزير.</p>`,
+
+compras:`${_BH('💡 الفكرة ببساطة')}<p>بالمحلات بتحتاج 3 أشياء: تسأل عن السعر، تختار، وتدفع. والدفع بالبرازيل إله كلمات خاصة لازم تعرفها.</p>
+${_BH('💳 طرق الدفع')}<ul><li><em>Pix</em>: تحويل فوري من تطبيق البنك، الأكتر استعمال.</li><li><em>débito</em>: بطاقة بتسحب من رصيدك مباشرة.</li><li><em>crédito</em>: بطاقة ائتمان، وبيسألوك <em>à vista ou parcelado?</em> (دفعة وحدة ولا تقسيط؟).</li><li><em>dinheiro</em>: كاش.</li></ul>
+${_BH('🧾 أسئلة الكاشير')}<ul><li><em>CPF na nota?</em>: بدك رقمك عالفاتورة؟</li><li><em>Quer sacola?</em>: بدك كيس؟ (غالبًا بتندفع حقه)</li><li><em>Débito ou crédito?</em></li></ul>
+${_BH('⚠️ انتبه')}<p><em>Só estou olhando</em> (بس عم اتفرّج) جملة مهمة لما البياع يلحقك. و<em>Posso trocar?</em> اسألها قبل ما تشتري الأواعي.</p>`,
+
+adjetivos:`${_BH('💡 الفكرة ببساطة')}<p>الصفة بالبرتغالي غالبًا بتيجي <b>بعد</b> الاسم (زي العربي)، وبتطابقه بالجنس والعدد: <em>a casa bonita</em>، <em>os carros novos</em>.</p>
+${_BH('🛠️ كيف تطابق؟')}<ul><li>مذكر <em>-o</em> ← مؤنث <em>-a</em>: <em>bonito → bonita</em>.</li><li>الجمع: زيد <em>-s</em>: <em>bonitos، bonitas</em>.</li><li>الصفات اللي بتخلص بـ <em>-e</em> أو حرف ساكن غالبًا ما بتتغيّر بالمؤنث: <em>grande، feliz، fácil</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>مع <em>ser</em> الصفة دايمة: <em>A rua é perigosa</em>. ومع <em>estar</em> مؤقتة: <em>O ônibus está cheio</em>.</li><li>«كتير» قبل الصفة = <em>muito</em> وما بتتغيّر: <em>muito bonita</em>.</li></ul>`,
+
+corpo:`${_BH('💡 الفكرة ببساطة')}<p>عند الدكتور أهم قالب: <em>Estou com dor de</em> + المكان = «بيوجعني ...». مثلًا <em>Estou com dor de cabeça</em> (راسي بيوجعني).</p>
+${_BH('🛠️ قوالب الصحة')}<ul><li>الوجع: <em>Estou com dor de ...</em> أو <em>Dói o/a ...</em> (بيوجع الـ...).</li><li>الأعراض: <em>Estou com febre / tosse</em> (معي حرارة / سعلة).</li><li>المدة: <em>Desde ontem</em> (من مبارح)، <em>há três dias</em> (من 3 أيام).</li><li>الحساسية: <em>Tenho alergia a ...</em></li></ul>
+${_BH('🏥 بالبرازيل')}<p>المراكز الصحية الحكومية اسمها <em>UBS</em> (أو-بيه-إيسي)، والطوارئ <em>UPA</em> أو <em>pronto-socorro</em>. خود معك <em>cartão do SUS</em> (بطاقة الصحة).</p>
+${_BH('⚠️ انتبه')}<p>الصيدلية = <em>farmácia</em>، والوصفة = <em>receita</em>. بعض الأدوية ما بتنباع بدون وصفة.</p>`,
+
+cores:`${_BH('💡 الفكرة ببساطة')}<p>الألوان صفات، فبتيجي بعد الاسم وبتطابقه: <em>o carro branco</em>، <em>a camisa branca</em>.</p>
+${_BH('🛠️ المطابقة')}<ul><li>الألوان بـ <em>-o</em> بتتغيّر: <em>preto/preta</em>، <em>vermelho/vermelha</em>، <em>amarelo/amarela</em>.</li><li>الألوان بـ <em>-e</em> أو حرف ساكن ثابتة: <em>verde</em>، <em>azul</em>، <em>marrom</em>.</li><li>الجمع: <em>verdes</em>، <em>azuis</em> (الـ <em>-l</em> بتصير <em>-is</em>)، <em>marrons</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>فاتح وغامق: <em>azul-claro</em>، <em>verde-escuro</em>.</li><li><em>rosa</em> (زهري) و<em>laranja</em> (برتقاني) ما بيتغيّروا: <em>camisas rosa</em>.</li></ul>`,
+
+conectores:`${_BH('💡 الفكرة ببساطة')}<p>كلمات الربط بتحوّل الجمل القصيرة لكلام طبيعي. بدل «بدي أروح. أنا تعبان.» بتقول «بدي أروح <b>بس</b> أنا تعبان».</p>
+${_BH('🛠️ أهمها')}<ul><li><em>e</em> و · <em>mas</em> بس / لكن · <em>ou</em> أو / ولا</li><li><em>porque</em> لأنه · <em>então</em> فـ / عشان هيك</li><li><em>quando</em> لما · <em>se</em> إذا</li><li><em>depois</em> بعدين · <em>também</em> كمان · <em>apesar de</em> رغم</li></ul>
+${_BH('⚠️ انتبه')}<ul><li><em>então</em> كتير بتنسمع بأول الكلام بمعنى «طيب / يعني»: <em>Então, ...</em></li><li>«أنا كمان لا» = <em>eu também não</em>.</li></ul>`,
+
+expressoes:`${_BH('💡 الفكرة ببساطة')}<p>هاي ردود قصيرة بتسمعها عشرات المرات باليوم. ما بتحتاج قواعد، بس احفظها متل ما هي، واستعملها بمكانها.</p>
+${_BH('🛠️ متى تستعمل شو؟')}<ul><li>حدا شكرك: <em>De nada</em> أو الأحلى <em>Imagina!</em></li><li>حدا عرض عليك شي ومش فارقة معك: <em>Tanto faz</em>.</li><li>خبر حلو: <em>Que bom!</em>، وخبر زعلان: <em>Que pena!</em></li><li>حدا مريض: <em>Melhoras!</em>، وحدا نجح: <em>Parabéns!</em></li><li>قبل الأكل: <em>Bom apetite!</em></li></ul>
+${_BH('⚠️ انتبه')}<p><em>Acho que sim</em> (بظن آه) طريقة مؤدبة وطبيعية بدل ما تقول <em>Sim</em> بقوّة.</p>`,
+
+registro:`${_BH('💡 الفكرة ببساطة')}<p>البرتغالي إله 3 مستويات: <b>رسمي</b> (إيميلات، دوائر حكومية، ناس كبار)، <b>عادي</b> (أغلب الحكي)، و<b>عامي</b> (صحاب وشارع).</p>
+${_BH('🛠️ الفرق بأمثلة')}<ul><li>رسمي: <em>O senhor / A senhora</em> بدل <em>você</em> (زي «حضرتك»).</li><li>عادي: <em>Você pode me ajudar?</em></li><li>عامي: <em>Cê</em> بدل <em>você</em>، <em>tô</em> بدل <em>estou</em>، <em>pra</em> بدل <em>para</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>بالإيميل الرسمي: ابدأ بـ <em>Prezado(a)</em> واختم بـ <em>Atenciosamente</em>.</li><li>العامي لازم تفهمه، بس استعمله بس مع الناس اللي بتعرفهم.</li></ul>`,
+
+/* ---------- القواعد ---------- */
+'g-genero':`${_BH('💡 الفكرة ببساطة')}<p>زي العربي، كل اسم بالبرتغالي إما <b>مذكر</b> أو <b>مؤنث</b>، حتى الأشياء: الطاولة مؤنث، الكتاب مذكر. والجنس بيحدد «الـ» والصفة اللي معه.</p>
+${_BH('🛠️ كيف تعرف الجنس؟')}<ul><li>غالبًا اللي بيخلص بـ <em>-o</em> مذكر: <em>o livro</em>.</li><li>غالبًا اللي بيخلص بـ <em>-a</em> مؤنث: <em>a mesa</em>.</li><li>دايمًا مؤنث: آخره <em>-dade</em> (<em>a cidade</em>)، <em>-ção</em> (<em>a informação</em>)، <em>-gem</em> (<em>a viagem</em>).</li><li>غالبًا مذكر: آخره <em>-ma</em> من أصل يوناني: <em>o problema، o sistema</em>.</li></ul>
+${_BH('⚠️ شواذ مهمة')}<p><em>o dia</em> (اليوم) و<em>o mapa</em> مذكر رغم <em>-a</em>. و<em>a mão</em> (الإيد) و<em>a foto</em> مؤنث. احفظ الكلمة دايمًا مع «الـ» تبعها: مش <em>dia</em>، بل <em>o dia</em>.</p>
+${_BH('🔁 للناس')}<p>كتير مهن بتتغيّر بـ <em>-a</em>: <em>professor → professora</em>. والمهن اللي بتخلص بـ <em>-e</em> غالبًا نفسها: <em>o/a estudante</em>.</p>`,
+
+'g-plural':`${_BH('💡 الفكرة ببساطة')}<p>«واحد» = <em>um</em> (مذكر) و<em>uma</em> (مؤنث). والجمع بأغلب الكلمات بس بتزيد <em>-s</em>: <em>carro → carros</em>. و«الـ» بالجمع: <em>os / as</em>.</p>
+${_BH('🛠️ القواعد حسب آخر الكلمة')}<ul><li>حرف علة: زيد <em>-s</em>: <em>casa → casas</em>.</li><li><em>-r / -z / -s</em>: زيد <em>-es</em>: <em>flor → flores</em>، <em>mês → meses</em>.</li><li><em>-m</em> بتصير <em>-ns</em>: <em>homem → homens</em>.</li><li><em>-l</em> بتصير <em>-is</em>: <em>animal → animais</em>، <em>hotel → hotéis</em>.</li><li><em>-ão</em> غالبًا <em>-ões</em>: <em>avião → aviões</em>، بس في <em>pães</em> و<em>mãos</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>كل الجملة بتتجمع: <em>os carros novos</em>، مش <em>os carro novo</em>.</li><li><em>uns / umas</em> = «شوية / كم واحد»: <em>umas maçãs</em>.</li><li>كلمات بـ <em>-s</em> وما عليها ضغط ما بتتغيّر: <em>o lápis → os lápis</em>.</li></ul>`,
+
+'g-ar':`${_BH('💡 الفكرة ببساطة')}<p>أغلب الأفعال البرتغالية بتخلص بـ <em>-ar</em> (زي <em>falar</em>: يحكي). عشان تصرّفها بالحاضر: شيل <em>-ar</em> وحط النهاية حسب الشخص. وهالقاعدة بتنطبق على مئات الأفعال!</p>
+${_BH('🛠️ مثال: falar (يحكي)')}<ul><li><em>eu falo</em> أنا بحكي (<b>-o</b>)</li><li><em>você / ele / ela / a gente fala</em> (<b>-a</b>)</li><li><em>nós falamos</em> إحنا (<b>-amos</b>)</li><li><em>vocês / eles / elas falam</em> (<b>-am</b>)</li></ul>
+${_BH('💡 سر بيسهّلها')}<p>بالحكي البرازيلي فعليًا بتحتاج 3 أشكال بس: <em>falo</em> (أنا)، <em>fala</em> (إنت/هو/إحنا بـ a gente)، <em>falam</em> (هم/إنتو).</p>
+${_BH('⚠️ انتبه')}<p>الحاضر البرتغالي بيعني كمان «عادة»: <em>Trabalho de segunda a sexta</em> = بشتغل (كل أسبوع) من الإتنين للجمعة.</p>`,
+
+'g-er-ir':`${_BH('💡 الفكرة ببساطة')}<p>المجموعة التانية والتالتة من الأفعال بتخلص بـ <em>-er</em> (<em>comer</em> ياكل) و<em>-ir</em> (<em>abrir</em> يفتح). نفس فكرة <em>-ar</em>: شيل النهاية وحط نهاية الشخص، بس حرف العلة بيصير <em>e</em> بدل <em>a</em>.</p>
+${_BH('🛠️ comer (ياكل)')}<ul><li><em>eu como</em> · <em>você come</em> · <em>nós comemos</em> · <em>eles comem</em></li></ul>
+${_BH('🛠️ abrir (يفتح)')}<ul><li><em>eu abro</em> · <em>você abre</em> · <em>nós abrimos</em> · <em>eles abrem</em></li></ul>
+${_BH('⚠️ الفرق الوحيد')}<p>بين <em>-er</em> و<em>-ir</em> الفرق بس مع «إحنا»: <em>comemos</em> بس <em>abrimos</em>. باقي الأشكال نفسها تمامًا.</p>`,
+
+'g-irreg':`${_BH('💡 الفكرة ببساطة')}<p>في أفعال ما بتمشي على القاعدة، ولسوء الحظ هي الأكتر استعمال! الخبر الحلو: أغلب شذوذها بس مع «أنا»، والباقي قريب من العادي.</p>
+${_BH('🛠️ أهم الشواذ مع «أنا»')}<ul><li><em>ser → sou</em> (أنا) · <em>estar → estou</em> · <em>ter → tenho</em> · <em>ir → vou</em></li><li><em>fazer → faço</em> · <em>dizer → digo</em> · <em>poder → posso</em> · <em>saber → sei</em></li><li><em>ver → vejo</em> · <em>vir → venho</em> · <em>pôr → ponho</em> · <em>dar → dou</em></li></ul>
+${_BH('🛠️ مع إنت/هو')}<p><em>é، está، tem، vai، faz، diz، pode، sabe، vê، vem، põe، dá</em></p>
+${_BH('⚠️ انتبه')}<p>احفظ هالأفعال كجمل جاهزة مش كجدول: <em>Não sei</em>، <em>Vou embora</em>، <em>Tenho que ir</em>. بالتكرار بتصير طبيعية.</p>`,
+
+'g-neg':`${_BH('💡 الفكرة ببساطة')}<p>النفي بالبرتغالي سهل جدًا: حط <em>não</em> <b>قبل الفعل</b> وخلص. <em>Eu falo</em> ← <em>Eu não falo</em>.</p>
+${_BH('🛠️ السؤال')}<p>ما في كلمة سؤال خاصة لـ«هل». نفس الجملة، بس بترفع صوتك بالآخر: <em>Você fala inglês?</em> = هل بتحكي إنجليزي؟ وبالجواب بيكرروا الفعل بدل «آه»: — <em>Fala?</em> — <em>Falo!</em></p>
+${_BH('🛠️ كلمات نفي تانية')}<ul><li><em>nunca</em> أبدًا · <em>nada</em> ولا اشي · <em>ninguém</em> ولا حدا · <em>ainda não</em> لسا لا.</li></ul>
+${_BH('⚠️ انتبه: النفي المزدوج')}<p>بالبرتغالي النفي المزدوج صح وضروري: <em>Não tem nada</em> (حرفيًا: ما في ولا اشي)، <em>Não vi ninguém</em>. وبالحكي كمان بيحطوا <em>não</em> بالآخر للتأكيد: <em>Não sei não</em>.</p>`,
+
+'g-prep':`${_BH('💡 الفكرة ببساطة')}<p>أهم حروف الجر 4: <em>em</em> (بـ/في)، <em>de</em> (من/تبع)، <em>para</em> (لـ/إلى)، <em>a</em> (لـ/إلى). وكلهم بيندمجوا مع «الـ».</p>
+${_BH('🛠️ متى بتستعمل كل واحد؟')}<ul><li><em>em</em>: المكان اللي إنت فيه: <em>Estou em casa</em>، <em>no Brasil</em>.</li><li><em>de</em>: من وين، أو ملكية، أو وسيلة النقل: <em>Sou da Síria</em>، <em>o carro do João</em>، <em>de ônibus</em>.</li><li><em>para</em>: الاتجاه أو الشخص: <em>Vou para o trabalho</em>، <em>para você</em>.</li></ul>
+${_BH('📦 أماكن الأشياء')}<p><em>em cima de</em> فوق · <em>debaixo de</em> تحت · <em>dentro de</em> جوّا · <em>fora de</em> برّا.</p>
+${_BH('⚠️ انتبه')}<p>بعض الأفعال بتيجي دايمًا مع حرف جر، احفظها مع بعض: <em>gostar de</em> (يحب)، <em>precisar de</em> (يحتاج)، <em>morar em</em> (يسكن بـ).</p>`,
+
+'g-posse':`${_BH('💡 الفكرة ببساطة')}<p>«تبعي / تبعك» بالبرتغالي بتيجي <b>قبل</b> الاسم، وبتطابق <b>الشي المملوك</b> مش صاحبه: <em>meu carro</em> (سيارتي)، <em>minha casa</em> (بيتي).</p>
+${_BH('🛠️ الأشكال')}<ul><li>تبعي: <em>meu / minha / meus / minhas</em></li><li>تبعك: <em>seu / sua / seus / suas</em></li><li>تبعنا: <em>nosso / nossa / nossos / nossas</em></li><li>تبعه / تبعها / تبعهم: <em>dele / dela / deles</em> <b>بعد</b> الاسم: <em>o carro dele</em>.</li></ul>
+${_BH('⚠️ انتبه')}<ul><li><em>seu</em> ممكن تعني «تبعك» أو «تبعه»، فالبرازيليين بيستعملوا <em>dele/dela</em> عشان يكون واضح.</li><li>كتير بيحطوا «الـ» قبلها: <em>o meu carro</em> و<em>meu carro</em> الاتنين صح.</li></ul>`,
+
+'g-adj':`${_BH('💡 الفكرة ببساطة')}<p>الصفة غالبًا بعد الاسم وبتطابقه بالجنس والعدد: <em>uma mulher alta</em>، <em>dois carros novos</em>.</p>
+${_BH('🛠️ قبل الاسم؟')}<p>شوية صفات قصيرة بتيجي قبل الاسم: <em>bom/boa</em> (منيح)، <em>mau/má</em> (سيء)، <em>grande</em>، <em>primeiro</em>، <em>último</em>: <em>um bom dia</em>، <em>uma boa ideia</em>.</p>
+${_BH('⚠️ المعنى بيتغيّر!')}<ul><li><em>um grande amigo</em> = صاحب عزيز / عظيم، أما <em>um amigo grande</em> = صاحب ضخم.</li><li><em>um velho amigo</em> = صاحب قديم، أما <em>um amigo velho</em> = صاحب كبير بالعمر.</li></ul>
+${_BH('⚠️ ولا تخلط')}<p><em>bom</em> صفة (منيح) بتوصف اسم، و<em>bem</em> ظرف (منيح) بيوصف فعل: <em>um bom aluno</em> بس <em>Ele fala bem</em>.</p>`,
+
+'g-futuro':`${_BH('💡 الفكرة ببساطة')}<p>أسهل طريقة تحكي عن المستقبل، وهي الطريقة اللي بيستعملها البرازيليين بالحكي اليومي: فعل <em>ir</em> (يروح) + الفعل التاني بالمصدر. بالضبط زي «رايح أسافر».</p>
+${_BH('🛠️ القالب')}<ul><li><em>eu vou</em> + فعل: <em>Vou viajar</em> (رح أسافر)</li><li><em>você / ele / a gente vai</em> + فعل: <em>Vai chover</em> (رح تشتي)</li><li><em>nós vamos</em> + فعل · <em>eles vão</em> + فعل</li></ul>
+${_BH('⚠️ انتبه')}<ul><li>الفعل التاني ما بيتصرّف أبدًا، بيضل بالمصدر (<em>-ar، -er، -ir</em>).</li><li>النفي قبل <em>vou</em>: <em>Não vou sair</em>.</li><li>«رح أروح» بتكفي فيها <em>Vou</em> لحالها: <em>Vou ao mercado amanhã</em>. (بتسمع كمان <em>vou ir</em> بالحكي، بس الأشيع <em>vou</em>.)</li></ul>`,
+
+'g-passado':`${_BH('💡 الفكرة ببساطة')}<p>الماضي البسيط لشي صار <b>وخلص</b>: «اشتغلت، أكلت، رحت». وبيتكوّن من نهايات ثابتة.</p>
+${_BH('🛠️ النهايات مع «أنا» و«هو/إنت»')}<ul><li><em>-ar</em>: <em>trabalhei</em> (اشتغلت) / <em>trabalhou</em> (اشتغل)</li><li><em>-er</em>: <em>comi</em> / <em>comeu</em></li><li><em>-ir</em>: <em>saí</em> / <em>saiu</em></li><li>إحنا: <em>-amos / -emos / -imos</em> (نفس شكل الحاضر بأفعال -ar و-ir).</li><li>هم: <em>-aram / -eram / -iram</em>.</li></ul>
+${_BH('⚠️ شواذ مهمة')}<p><em>ir</em> و<em>ser</em> نفس الماضي: <em>fui / foi</em> (رحت/كنت). <em>fazer → fiz / fez</em>، <em>ter → tive / teve</em>، <em>estar → estive / esteve</em>.</p>
+${_BH('🕐 كلمات بتساعدك')}<p><em>ontem</em> (مبارح)، <em>semana passada</em> (الأسبوع الماضي)، <em>já</em> (صار / قبل): <em>Você já comeu?</em> (أكلت؟)</p>`,
+
+'g-gerundio':`${_BH('💡 الفكرة ببساطة')}<p>عشان تقول «عم + فعل» (شي عم يصير هلأ): <em>estar</em> + الفعل بنهاية <em>-ndo</em>. <em>Estou trabalhando</em> = عم بشتغل.</p>
+${_BH('🛠️ كيف تعمل -ndo؟')}<ul><li><em>-ar → -ando</em>: <em>falar → falando</em></li><li><em>-er → -endo</em>: <em>comer → comendo</em></li><li><em>-ir → -indo</em>: <em>dormir → dormindo</em></li></ul>
+${_BH('🛠️ estar بيتصرّف حسب الشخص')}<p><em>estou</em> (أنا)، <em>está</em> (إنت/هو)، <em>estamos</em> (إحنا)، <em>estão</em> (هم).</p>
+${_BH('⚠️ انتبه')}<p>البرازيليين بيستعملوا هالشكل كتير، حتى للطقس: <em>Está chovendo</em>. وما في شواذ تقريبًا، القاعدة ماشية على كل الأفعال.</p>`,
+
+'g-gostar':`${_BH('💡 الفكرة ببساطة')}<p>3 أفعال بتستعملهم كل يوم، وكل واحد إله «طريقة» خاصة:</p>
+${_BH('🛠️ gostar de = يحب')}<p>دايمًا مع <em>de</em>: <em>Gosto de café</em>. ومع «الـ» بتندمج: <em>Gosto do Brasil</em>، <em>Gosto da praia</em>. ومع فعل: <em>Gosto de cozinhar</em>.</p>
+${_BH('🛠️ precisar = يحتاج / لازم')}<p>مع اسم: <em>precisar de</em>: <em>Preciso de ajuda</em>. ومع فعل <b>بدون</b> <em>de</em>: <em>Preciso trabalhar</em>.</p>
+${_BH('🛠️ querer = بدّه')}<p>بدون حرف جر: <em>Quero água</em>، <em>Quero dormir</em>. وللطلب المؤدب استعمل <em>queria</em>: <em>Queria um café</em> (ودّي قهوة لو سمحت).</p>
+${_BH('⚠️ غلطة شائعة')}<p>«بحب القهوة» = <em>Gosto de café</em> مش <em>Gosto café</em>. لا تنسى <em>de</em>!</p>`,
+
+'g-compar':`${_BH('💡 الفكرة ببساطة')}<p>للمقارنة بين شيئين: <em>mais</em> (أكتر) + صفة + <em>que</em> (من). <em>Ele é mais alto que eu</em> = هو أطول مني.</p>
+${_BH('🛠️ التلات أشكال')}<ul><li>أكتر: <em>mais ... que</em>: <em>mais caro que</em> (أغلى من)</li><li>أقل: <em>menos ... que</em>: <em>menos caro que</em> (أرخص / أقل غلاء)</li><li>متل: <em>tão ... quanto</em>: <em>tão alto quanto</em> (طويل متله)</li></ul>
+${_BH('⚠️ شواذ لازم تحفظها')}<ul><li><em>bom → melhor</em> (أحسن)، مش <em>mais bom</em>.</li><li><em>ruim/mau → pior</em> (أسوأ).</li><li><em>grande → maior</em> (أكبر)، <em>pequeno → menor</em> (أصغر).</li><li>بالعمر: <em>mais velho</em> (أكبر)، <em>mais novo</em> (أصغر).</li></ul>`,
+
+'g-ha':`${_BH('💡 الفكرة ببساطة')}<p>«في» بمعنى «يوجد» بالبرازيل = <em>tem</em> بالحكي اليومي. <em>Tem pão?</em> = في خبز؟ وبالكتابة الرسمية بيستعملوا <em>há</em> (آ).</p>
+${_BH('🛠️ القالب')}<ul><li><em>Tem</em> + الشي: <em>Tem um mercado aqui perto</em>.</li><li>النفي: <em>Não tem</em> + الشي: <em>Não tem lugar</em> (ما في مكان).</li><li>الماضي: <em>tinha</em> (كان في). المستقبل: <em>vai ter</em> (رح يكون في).</li></ul>
+${_BH('⚠️ انتبه')}<ul><li><em>tem</em> ما بتتجمع بهالمعنى: <em>Tem muitas pessoas</em> (في ناس كتير)، مش <em>têm</em>.</li><li><em>há</em> كمان بمعنى «من / قبل» للوقت: <em>há dois anos</em> = من سنتين.</li></ul>`,
+
+'g-ter-que':`${_BH('💡 الفكرة ببساطة')}<p>«لازم» إلها 3 درجات بالبرتغالي:</p>
+${_BH('🛠️ ter que = لازم (إجباري)')}<p>الأكتر استعمال: <em>Tenho que trabalhar</em> (لازم أشتغل). و<em>ter</em> بيتصرّف: <em>tenho، tem، temos، têm</em>.</p>
+${_BH('🛠️ precisar = محتاج / لازم')}<p><em>Preciso ir ao banco</em>. وأهم استعمال: النفي <em>Não precisa</em> = «مش لازم / ما في داعي».</p>
+${_BH('🛠️ dever = المفروض (نصيحة)')}<p>أخف من التانيين: <em>Você deve descansar</em> (المفروض ترتاح).</p>
+${_BH('⚠️ انتبه')}<p>بالماضي «اضطريت» = <em>tive que</em>: <em>Tive que esperar</em>. و<em>É preciso</em> + فعل = «لازم» بشكل عام لكل الناس.</p>`,
+
+'g-poder':`${_BH('💡 الفكرة ببساطة')}<p>بالعربي بنقول «بقدر» لكل شي، بس بالبرتغالي في 3 أفعال، وكل واحد إله معنى:</p>
+${_BH('🛠️ poder = مسموح / ممكن')}<p>للإذن والطلبات: <em>Posso entrar?</em> (بقدر أفوت؟)، <em>Pode me ajudar?</em>. ونفيه = ممنوع: <em>Aqui não pode fumar</em>.</p>
+${_BH('🛠️ saber = بعرف (مهارة)')}<p>لشي تعلّمته: <em>Sei nadar</em> (بعرف أسبح)، <em>Sei dirigir</em> (بعرف أسوق).</p>
+${_BH('🛠️ conseguir = قادر / نجحت')}<p>لما الموضوع فيه جهد أو ظروف: <em>Não consigo dormir</em> (مش قادر أنام)، <em>Consegui!</em> (قدرت / نجحت!).</p>
+${_BH('⚠️ غلطة شائعة')}<p>«بعرف أحكي برتغالي» = <em>Sei falar português</em>، مش <em>Posso falar</em> (هاي معناها «مسموحلي أحكي»).</p>`,
+
+'g-frequencia':`${_BH('💡 الفكرة ببساطة')}<p>هالكلمات بتقول «قديش» بتعمل الشي، وبتيجي غالبًا <b>قبل الفعل</b>: <em>Eu sempre tomo café</em>.</p>
+${_BH('🛠️ من الأكتر للأقل')}<ul><li><em>sempre</em> دايمًا</li><li><em>geralmente / normalmente</em> عادةً</li><li><em>às vezes</em> أحيانًا · <em>de vez em quando</em> من فترة لفترة</li><li><em>raramente</em> نادرًا</li><li><em>nunca</em> أبدًا</li></ul>
+${_BH('🛠️ العدد بالضبط')}<p><em>uma vez</em> مرة، <em>duas vezes</em> مرتين + <em>por</em> + الفترة: <em>duas vezes por semana</em> (مرتين بالأسبوع). و«كل يوم» = <em>todo dia</em>.</p>
+${_BH('⚠️ انتبه')}<p><em>nunca</em> قبل الفعل ما بتحتاج <em>não</em>: <em>Nunca bebo</em>. بس إذا بعد الفعل: <em>Não bebo nunca</em>.</p>`,
+
+'g-imperativo':`${_BH('💡 الفكرة ببساطة')}<p>الأمر لما تطلب من حدا يعمل شي: «احكي، استنى، تعال». وبتشوفه كتير على اللافتات والتعليمات.</p>
+${_BH('🛠️ كيف تعمله (للـ você)؟')}<ol><li>خود فعل «أنا» بالحاضر: <em>falo</em>، <em>como</em>، <em>abro</em>.</li><li>شيل الـ <em>-o</em>.</li><li>اعكس الحرف: أفعال <em>-ar</em> بتاخد <em>-e</em> (<em>fale</em>)، وأفعال <em>-er/-ir</em> بتاخد <em>-a</em> (<em>coma، abra</em>).</li></ol>
+${_BH('🗣️ بالحكي اليومي')}<p>كتير برازيليين (خصوصًا بالشمال وساو باولو والريو) بيستعملوا شكل الحاضر: <em>Fala!</em> <em>Olha!</em> <em>Vem cá!</em>. الاتنين صح.</p>
+${_BH('⚠️ انتبه')}<ul><li>النفي: <em>Não</em> قبل: <em>Não esqueça!</em></li><li>زيد <em>por favor</em> عشان ما يطلع الكلام قاسي.</li></ul>`,
+
+'g-objeto':`${_BH('💡 الفكرة ببساطة')}<p>ضمائر المفعول هي «ـني، ـك، ـه» بالعربي (ساعدني، بحبك، شفته). بالبرازيل الحكي اليومي أبسط من الكتابة الرسمية.</p>
+${_BH('🛠️ بالحكي اليومي')}<ul><li>ـني = <em>me</em> قبل الفعل: <em>Me ajuda?</em> (بتساعدني؟)</li><li>ـك = <em>te</em>: <em>Te amo</em> (بحبك)، <em>Te ligo amanhã</em> (بتصل فيك بكرة).</li><li>ـه / ـها = <em>ele / ela</em> بعد الفعل: <em>Vi ele</em> (شفته).</li><li>إله / إلها = <em>para ele / para ela</em>: <em>Dei para ela</em>.</li></ul>
+${_BH('📝 بالرسمي والكتابة')}<p>ـه/ـها = <em>o / a</em>: <em>Eu o vi</em>. وإله/إلها = <em>lhe</em>: <em>Eu lhe disse</em>.</p>
+${_BH('⚠️ انتبه')}<p>بعد حرف جر بتستعمل <em>mim</em> بدل <em>me</em>: <em>para mim</em> (إلي)، <em>de mim</em> (عني). ومع <em>com</em> بتصير <em>comigo</em> (معي).</p>`,
+
+'g-reflexivos':`${_BH('💡 الفكرة ببساطة')}<p>في أفعال الفاعل بيعملها على حاله: «بيقوم»، «بيلبس»، «بيتذكر». هالأفعال بتيجي مع ضمير صغير: <em>me</em> (أنا)، <em>se</em> (إنت/هو/هم)، <em>nos</em> (إحنا).</p>
+${_BH('🛠️ مثال: chamar-se (اسمه)')}<ul><li><em>Eu me chamo</em> = اسمي (حرفيًا: بسمّي حالي)</li><li><em>Você se chama</em> / <em>Ele se chama</em></li><li><em>Nós nos chamamos</em> · <em>Eles se chamam</em></li></ul>
+${_BH('🛠️ أهم الأفعال')}<p><em>levantar-se</em> يقوم · <em>sentar-se</em> يقعد · <em>vestir-se</em> يلبس · <em>lembrar-se de</em> يتذكر · <em>preocupar-se</em> يقلق · <em>acostumar-se</em> يتعوّد · <em>casar-se</em> يتجوز.</p>
+${_BH('⚠️ انتبه')}<p>بالبرازيل الضمير بيجي <b>قبل</b> الفعل بالحكي: <em>Eu me levanto</em>. بالكتابة الرسمية ممكن تشوفه بعد الفعل بشرطة: <em>Levanto-me</em>.</p>`,
+
+'g-por-para':`${_BH('💡 الفكرة ببساطة')}<p>الاتنين ممكن يترجموا «لـ / عشان»، بس فكّر فيهم هيك:<br><b>para</b> = لوين رايح؟ (هدف، اتجاه، شخص).<br><b>por</b> = ليش؟ ومن وين مرّيت؟ (سبب، طريق، مقابل).</p>
+${_BH('🛠️ para')}<ul><li>الاتجاه: <em>Vou para casa</em>.</li><li>الشخص: <em>É para você</em>.</li><li>الهدف (عشان): <em>Estudo para trabalhar</em>.</li><li>الموعد النهائي: <em>para amanhã</em>.</li></ul>
+${_BH('🛠️ por')}<ul><li>السبب / الشكر: <em>Obrigado por tudo</em>.</li><li>المرور: <em>Passei pelo centro</em>.</li><li>«بالـ / لكل»: <em>mil reais por mês</em>.</li><li>المقابل: <em>Troquei por um novo</em>.</li></ul>
+${_BH('⚠️ انتبه')}<p>بالحكي <em>para</em> بتصير <em>pra</em>، و<em>por</em> بتندمج: <em>pelo / pela</em>.</p>`,
+
+'g-acabar':`${_BH('💡 الفكرة ببساطة')}<p>في أفعال بتحطها قبل فعل تاني عشان تغيّر معناه: «هلأ عملت»، «بلّشت أعمل»، «بطّلت أعمل». الفعل التاني دايمًا بالمصدر.</p>
+${_BH('🛠️ أهمها')}<ul><li><em>acabar de</em> + فعل = للتو / هلأ: <em>Acabei de chegar</em> (هلأ وصلت).</li><li><em>começar a</em> + فعل = بلّش: <em>Começou a chover</em>.</li><li><em>parar de</em> + فعل = بطّل / وقّف: <em>Parei de fumar</em>.</li><li><em>voltar a</em> + فعل = رجع يعمل: <em>Voltei a estudar</em>.</li><li><em>continuar</em> + -ndo = ضل / لسا: <em>Continua chovendo</em>.</li></ul>
+${_BH('⚠️ انتبه')}<p>كل فعل إله حرف جر ثابت: <em>acabar <b>de</b></em>، <em>começar <b>a</b></em>، <em>parar <b>de</b></em>، <em>voltar <b>a</b></em>. احفظهم كقطعة وحدة.</p>`,
+
+'g-imperfeito':`${_BH('💡 الفكرة ببساطة')}<p>في ماضيين بالبرتغالي:<br><b>الماضي البسيط</b> (<em>trabalhei</em>): شي صار مرة وخلص.<br><b>الماضي المستمر</b> (<em>trabalhava</em>): «كنت أعمل»، عادة قديمة، أو وصف، أو شي كان عم يصير.</p>
+${_BH('🛠️ كيف تعمله؟')}<ul><li><em>-ar → -ava</em>: <em>eu falava</em> (كنت أحكي)، <em>nós falávamos</em>، <em>eles falavam</em>.</li><li><em>-er/-ir → -ia</em>: <em>eu comia</em>، <em>eu dormia</em>، <em>nós comíamos</em>، <em>eles comiam</em>.</li><li>شواذ (4 بس!): <em>era</em> (كان)، <em>tinha</em> (كان عنده)، <em>ia</em> (كان يروح)، <em>vinha</em> (كان ييجي).</li></ul>
+${_BH('🛠️ متى تستعمله؟')}<ul><li>عادة بالماضي: <em>Quando era criança, eu jogava futebol</em>.</li><li>وصف: <em>A casa era pequena</em>، <em>Fazia frio</em>.</li><li>شي كان عم يصير لما صار شي تاني: <em>Eu dormia quando você ligou</em>.</li></ul>
+${_BH('⚠️ انتبه')}<p>كلمات زي <em>sempre</em>، <em>todo dia</em>، <em>antigamente</em> (زمان) بتدلّك إنه بدك الماضي المستمر.</p>`,
+
+'g-superl':`${_BH('💡 الفكرة ببساطة')}<p>«الأكبر، الأحسن، الأرخص»: <em>o/a mais</em> + صفة. <em>o mais barato</em> = الأرخص. وبعدها <em>de</em> للمجموعة: <em>o mais barato <b>da</b> loja</em>.</p>
+${_BH('🛠️ شواذ')}<p><em>o melhor</em> (الأحسن) · <em>o pior</em> (الأسوأ) · <em>o maior</em> (الأكبر) · <em>o menor</em> (الأصغر).</p>
+${_BH('🛠️ «كتير كتير»: -íssimo')}<ul><li>صفة بتخلص بحرف علة: شيله وزيد <em>-íssimo</em>: <em>caro → caríssimo</em>، <em>lindo → lindíssimo</em>.</li><li>بيطابق الاسم: <em>caríssima</em>، <em>lindíssimas</em>.</li><li>بالحكي اليومي أسهل: <em>super</em> + صفة: <em>super caro</em>.</li></ul>
+${_BH('⚠️ انتبه')}<p>«أحسن مطعم» = <em>o melhor restaurante</em>، مش <em>o mais bom</em>.</p>`,
+};
+
 /* ===== الأساسيات: أبواب مرتبة، كل باب فيه شرح وأمثلة بصوت وتمرين ===== */
 const BT=[
 {id:'sobrevivencia',ic:'🆘',t:'جمل النجاة',s:'أول جمل لازم تحفظها',intro:'هاي الجمل بتنقذك بأي موقف: لما ما تفهم، أو بدك حدا يعيد، أو بدك تسأل عن كلمة.',r:`Não entendi.|ناو إينتيندجي.|ما فهمت.
@@ -10085,7 +10358,7 @@ function vBasic(id){
   const LST=BG.some(x=>x.id===id)?BG:BT;const i=LST.findIndex(x=>x.id===id),t=LST[i];if(!t)return vBasics();
   const nx=LST[i+1]||(LST===BT?BG[0]:null);const gram=LST===BG;
   const show=()=>{app.innerHTML=`<div class="stack"><div class="ch-head"><span class="eyebrow">${gram?'القواعد الأساسية':'الأساسيات'} · الباب ${i+1} من ${LST.length}</span><h1 style="font-size:24px">${t.ic} ${esc(t.t)}</h1><span class="muted">${esc(t.s)}</span></div>
-   <div class="card lesson">${Pp(t.intro)}${X(t.r)}${t.tip?TIP(t.tip):''}</div>
+   <div class="card lesson">${typeof BEXP!=='undefined'&&BEXP[t.id]?'<div class="bexp">'+BEXP[t.id]+'</div>':Pp(t.intro)}${X(t.r)}${t.tip?TIP(t.tip):''}</div>
    <div class="row"><button class="btn primary" id="bq">تمرين: ${gram?Math.min(10,t.D.length)+2:Math.min(10,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
     $('#bq').onclick=quiz};
   const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=gram?shuffle(shuffle(t.D).slice(0,10).map(drillQ).concat(shuffle(pool).slice(0,2).map((w,n)=>n?qListen(w,pool):qPt2Ar(w,pool)))):shuffle(pool).slice(0,Math.min(10,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
@@ -10894,7 +11167,7 @@ const kStars=id=>((S.kids||{})[id]||0);
 const KPREV=3;
 const kLearned=key=>!!((S.kidW||{})[key]);
 const kDone=k=>kStars(k.id)>=2&&(!k.F.length||kStars(k.id+'_f')>=2);
-const kOpen=k=>{if(canSkip()||kDone(k))return true;let free=KPREV;for(const x of KIDS.slice().sort((a,b)=>a.ord-b.ord)){if(kDone(x))continue;if(x===k)return true;if(--free<=0)return false}return false};
+const kOpen=k=>{if(canSkip()||ROLE.kidsAll||kDone(k))return true;let free=KPREV;for(const x of KIDS.slice().sort((a,b)=>a.ord-b.ord)){if(kDone(x))continue;if(x===k)return true;if(--free<=0)return false}return false};
 const kPct=k=>{const all=k.L.concat(k.F);return all.length?Math.round(all.filter(x=>kLearned(x.key)).length/all.length*100):0};
 const KCHEER=['Ótimo!','Isso!','Perfeito!','Muito bem!','Parabéns!','Mandou bem!'];
 const KCHEER_AR={'Ótimo!':'أوتشيمو! ممتاز!','Isso!':'إيسو! هيك!','Perfeito!':'بيرفيتو! مزبوط!','Muito bem!':'موينتو بين! برافو!','Parabéns!':'باراباينس! مبروك!','Mandou bem!':'ماندو بين! عملتها صح!'};
@@ -11414,7 +11687,7 @@ function vHome(){
   app.innerHTML=`<div class="stack">
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
    ${loginNote()}
-   ${goalCard()}
+   ${goalCard()}${typeof leagueMini==='function'?leagueMini():''}
    ${srsDue().length?`<a class="exam-cd" href="#review" style="background:var(--green-soft);border-color:var(--green)"><span class="cd-n">${srsDue().length}</span><span class="cd-t"><b>مراجعة اليوم</b><small>أغلاط سابقة لازم ترجعلها اليوم</small></span><span class="cd-go">راجع ←</span></a>`:''}
    <div class="stats"><div class="stat"><b>${S.xp}</b><span>نقاط XP</span></div><div class="stat"><b>${streakNow()}</b><span>أيام ورا بعض</span></div><div class="stat"><b>${nd}<small>/${CH.length}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${ne}<small>/${UNITS.length}</small></b><span>اختبارات وحدات</span></div></div>
    ${cont}
@@ -11462,8 +11735,10 @@ function vChapter(id){
   if(chState.id!==id){chState={id,step:(stepsOf(id).find(([k])=>!stepDone(id,k))||STEPS[0])[0]}}
   const st=chState.step;
   app.innerHTML=`<div class="stack"><div class="ch-head"><a class="back" href="#path">→ المسار</a><span class="eyebrow">${esc(LEVELS[lvOf(unitOf(id))-1].name)} · الوحدة ${UN(c.u)} · الدرس ${CN(id)}</span><h1 class="pt" lang="pt-BR" dir="ltr">${esc(c.pt)}</h1><span class="muted">${esc(c.ar)}</span></div>
+   ${(()=>{const q=(S.ch[id]||{}).quiz;return q>=70&&q<100?`<button class="fixbar" id="fixbar"><span>${starsH(chStars(id))} نتيجتك ${q}%</span><b>🎯 صلّح أخطاءك ووصّلها 100% ←</b></button>`:''})()}
    <div class="steps" role="tablist">${stepsOf(id).map(([k,l],n)=>`<button class="step${k===st?' on':''}${stepDone(id,k)?' ok':''}" data-st="${k}" role="tab" aria-selected="${k===st}"><i>${stepDone(id,k)?'✓':n+1}</i>${l}</button>`).join('')}</div>
    <div id="body"></div></div>`;
+  const fb=$('#fixbar');if(fb)fb.onclick=()=>{clearTimers();stopAudio();chState.step='quiz';chState.autofix=1;vChapter(id)};
   $$('.step').forEach(b=>b.onclick=()=>{clearTimers();stopAudio();chState.step=b.dataset.st;vChapter(id)});
   const body=$('#body');const go=k=>{chState.step=k;vChapter(id);window.scrollTo(0,0)};
   if(st==='lesson'){body.innerHTML=`<div class="card lesson">${c.lesson}</div><div class="row" style="margin-top:14px"><button class="btn primary" id="gonx">التالي: ${c.DL?'الحوار':'الكلمات'} ←</button></div>`;$('#gonx',body).onclick=()=>{mark(id,'lesson',true);go(c.DL?'dialog':'words')}}
@@ -11483,11 +11758,11 @@ function vChapter(id){
   if(st==='game'){body.innerHTML=`<p class="muted" style="margin:0 0 10px">العب أي لعبة بكلمات هالدرس. بعد أول لعبة انتقل إلى الاختبار.</p><div id="g"></div><div class="row" style="margin-top:14px"><button class="btn" id="toq">التالي: اختبار الدرس ←</button></div>`;$('#toq',body).onclick=()=>go('quiz');
     gameMenu($('#g',body),c.W,c.S,()=>{if(!stepDone(id,'game')){mark(id,'game',true);const s=$$('.step')[stepsOf(id).findIndex(([k])=>k==='game')];if(s){s.classList.add('ok');s.querySelector('i').textContent='✓'}}})}
   if(st==='quiz'){
-    const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${CN(id)}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}% ${starsH(chStars(id))}</p>`:''}<div class="row">${best!=null&&best<100&&getW().length?`<button class="btn primary" id="fixq">🎯 راجع أخطاءك (${getW().length})</button>`:''}<button class="btn ${best!=null&&best<100&&getW().length?'':'primary'}" id="startq">${best!=null?'أعد الاختبار':'ابدأ الاختبار'}</button></div></div>`;$('#startq',body).onclick=quiz;const fq=$('#fixq',body);if(fq)fq.onclick=()=>fix()};
+    const intro=()=>{const best=S.ch[id]&&S.ch[id].quiz;body.innerHTML=`<div class="card stack"><h2 style="font-size:20px">اختبار الدرس ${CN(id)}</h2><p style="margin:0">15 سؤال منوّعين: قواعد، معاني، استماع، إملاء، ترتيب جمل، صح وغلط، وكتابة. بدك <b>70%</b> عشان ينفتح الدرس الجاي.</p>${best!=null?`<p class="muted" style="margin:0">أحسن نتيجة: ${best}% ${starsH(chStars(id))}</p>`:''}<div class="row">${best!=null&&best<100?`<button class="btn primary" id="fixq">🎯 صلّح أخطاءك${getW().length?' ('+getW().length+')':''}</button>`:''}<button class="btn ${best!=null&&best<100?'':'primary'}" id="startq">${best!=null?'أعد الاختبار':'ابدأ الاختبار'}</button></div></div>`;$('#startq',body).onclick=quiz;const fq=$('#fixq',body);if(fq)fq.onclick=()=>fix()};
     const u=unitOf(id),last=u.chs[u.chs.length-1]===id;
     const nxt=last?{label:`التالي: اختبار الوحدة ${UN(u.n)} ←`,href:'#exam-'+u.n}:(()=>{const nid=u.chs[u.chs.indexOf(id)+1]||id+1;return {label:`التالي: الدرس ${CN(nid)} ←`,href:'#ch-'+nid}})();
     const WK='wrongq-'+id,getW=()=>{try{return JSON.parse(localStorage.getItem(WK)||'[]')}catch(e){return[]}},setW=a=>{try{a.length?localStorage.setItem(WK,JSON.stringify(a)):localStorage.removeItem(WK)}catch(e){}};
-    const fix=qs=>{qs=(qs&&qs.length?qs:getW());if(!qs.length)return quiz();const n0=qs.length;
+    const fix=qs=>{qs=(qs&&qs.length?qs:getW());if(!qs.length){const b=(S.ch[id]||{}).quiz||0;const n=Math.max(2,Math.round((100-b)/100*15));qs=shuffle(quizChapter(c)).slice(0,n)}const n0=qs.length;
       runQuiz(body,qs,{title:'راجع أخطاءك · الدرس '+CN(id),pass:100,xp:5,okTitle:'برافو! صلّحت كل أخطائك',retry:()=>fix(),retryLabel:'كمّل تصليح',failMsg:'شوف الصح تحت، وكبسة «كمّل تصليح» بتعيدلك بس الأسئلة اللي لسا غلط.',
         onLog:log=>{const left=log.filter(l=>l.credit<1).map(l=>l.q),fixed=n0-left.length;setW(left);const prev=(S.ch[id]&&S.ch[id].quiz)||0;
           const np=left.length?Math.min(99,Math.round(prev+(100-prev)*fixed/n0)):100;if(np>prev)mark(id,'quiz',np)},
@@ -11495,7 +11770,7 @@ function vChapter(id){
     const quiz=()=>runQuiz(body,quizChapter(c),{title:'اختبار الدرس '+CN(id),retry:quiz,fixBtn:fix,
       onLog:log=>{const w=log.filter(l=>l.credit<1).map(l=>l.q);try{JSON.stringify(w)}catch(e){return}const prev=(S.ch[id]&&S.ch[id].quiz)||0,p=Math.round(log.reduce((a,l)=>a+l.credit,0)/log.length*100);if(p>=prev)setW(w)},
       onDone:p=>{const prev=(S.ch[id]&&S.ch[id].quiz)||0;if(p>prev)mark(id,'quiz',p);const q=(S.ch[id]||{}).quiz||0;return q>=70?`<p style="margin:0">${starsH(chStars(id))} ${q>=100?'علامة كاملة!':'صلّح أخطاءك عشان توصل 100% ⭐⭐⭐'}</p>`:''},next:nxt});
-    intro();}
+    if(chState.autofix){chState.autofix=0;fix()}else intro();}
 }
 const uIcon=id=>UNIT_ICON[(unitOf(id)||{}).n]||'';
 const wcard=w=>`<div class="wcard">${favBtn(w)}${PIC(w.pt,1,uIcon(w.ch))}<span class="w-t">${P(w.pt)}${SYL(w.pt)}<span class="pron">${esc(w.pron)}</span></span>${sayBtn(w.pt)}<span class="mean">${bidi(w.ar)}</span></div>`;
@@ -11521,8 +11796,12 @@ function vExam(k){
 }
 
 /* ===== reference tabs ===== */
-let wU=0,wQ='',wHide=false,sU=0,sQ='',gU=0;
-function unitPills(sel,id){return `<div class="pager" id="${id}"><button class="pill${sel===0?' on':''}" data-u="0">الكل</button>${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<button class="pill${sel===L.n?' on':''}" data-u="${L.n}">${L.tag}</button>`).join('')}</div>`}
+let wU=0,wQ='',wHide=false,sU=0,sQ='',gU=-1;
+function curLv(){const nx=nextItem();if(nx){if(nx.t==='ch')return lvOf(unitOf(nx.id));const k=nx.id;return isFinal(k)?+String(k).slice(1):lvOf(UNITS.find(x=>x.n===k))}const op=LEVELS.filter(L=>lvReady(L.n)&&lvOpen(L.n)).map(L=>L.n);return op.length?Math.max(...op):1}
+/* دروس مستوى معيّن: المخلّصة أول، وإذا قليلة بنزيد المفتوحة */
+function lvChs(L){const all=CH.filter(c=>chLv(c)===L&&chOpen(c.id));const done=all.filter(c=>chDone(c.id));return done.length>=3?done:all}
+const MAXW={1:6,2:8,3:11,4:14,5:18};
+function unitPills(sel,id,lv){return `<div class="pager" id="${id}">${lv?'':`<button class="pill${sel===0?' on':''}" data-u="0">الكل</button>`}${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<button class="pill${sel===L.n?' on':''}" data-u="${L.n}">${L.tag}</button>`).join('')}</div>`}
 const chLv=c=>lvOf(unitOf(c.id));
 const match=(q,...f)=>{if(!q)return true;const n=norm(q),a=q.trim();return f.some(x=>norm(x).includes(n)||String(x).includes(a))};
 function vWords(){
@@ -11559,9 +11838,9 @@ function vSents(){
   $$('#up .pill').forEach(b=>b.onclick=()=>{sU=+b.dataset.u;vSents()});
 }
 function vGames(){
-  const open=CH.filter(c=>chOpen(c.id)&&(!gU||chLv(c)===gU));
-  const ws=open.flatMap(c=>c.W),ss=open.flatMap(c=>c.S);
-  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الألعاب</h1><p class="muted" style="margin:4px 0 0">بتلعب بكلمات الدروس المفتوحة (${open.length} درس).</p></div>${unitPills(gU,'up')}<div id="g"></div></div>`;
+  if(gU<1)gU=curLv();const open=lvChs(gU);
+  const ws=open.flatMap(c=>c.W),ss=open.flatMap(c=>c.S).filter(s=>s.pt.split(' ').length<=MAXW[gU]+2);
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الألعاب</h1><p class="muted" style="margin:4px 0 0">بتلعب بكلمات مستواك ${LEVELS[gU-1].tag} (${open.length} درس). بتقدر تغيّر المستوى من تحت.</p></div>${unitPills(gU,'up',1)}<div id="g"></div></div>`;
   $$('#up .pill').forEach(b=>b.onclick=()=>{gU=+b.dataset.u;clearTimers();vGames()});
   if(ws.length<5){$('#g').innerHTML='<p class="muted">افتح دروس أكثر بهالوحدة عشان تلعب.</p>';return}
   gameMenu($('#g'),ws,ss);
@@ -11654,7 +11933,7 @@ async function loadAllStats(){
 }
 async function readDoc(p){try{const s=await DB.doc(p).get();let v=s;if(s&&typeof s.data==='function')v=s.data();else if(s&&s.data&&typeof s.data==='object')v=s.data;return v&&typeof v==='object'?v:null}catch(e){return null}}
 const ROLE_NAMES={student:'طالب',admin:'مساعد (أدمن)',blocked:'موقوف'};
-function roleBadges(r){const o=r.role||{},b=[];if(o.role==='admin')b.push('<i class="rb rb-a">👑 مساعد</i>');if(o.role==='blocked')b.push('<i class="rb rb-x">⛔ موقوف</i>');if(o.unlockAll)b.push('<i class="rb rb-o">🔓 كل الدروس</i>');else if(o.openTo>1)b.push(`<i class="rb rb-o">🔓 لحد ${LEVELS[o.openTo-1].tag}</i>`);return b.join('')}
+function roleBadges(r){const o=r.role||{},b=[];if(o.role==='admin')b.push('<i class="rb rb-a">👑 مساعد</i>');if(o.role==='blocked')b.push('<i class="rb rb-x">⛔ موقوف</i>');if(o.unlockAll)b.push('<i class="rb rb-o">🔓 كل الدروس</i>');else if(o.openTo>1)b.push(`<i class="rb rb-o">🔓 لحد ${LEVELS[o.openTo-1].tag}</i>`);if(o.kidsAll&&!o.unlockAll)b.push('<i class="rb rb-o">🧒 الأطفال مفتوح</i>');return b.join('')}
 function admGuard(){
   if(location.protocol==='file:'&&!DB)return 'test';
   if(!IS_OWNER&&!IS_ADMIN){app.innerHTML=`<div class="card"><a class="back" href="#path">→ المسار</a><h2 style="margin-top:8px">لوحة التحكم لصاحب التطبيق بس</h2></div>`;return false}
@@ -11760,16 +12039,19 @@ function permPanel(r){
      <option value="seq">بالترتيب (كل درس بعد ما ينجح باللي قبله)</option>
      ${LEVELS.slice(1).filter(L=>lvReady(L.n)).map(L=>`<option value="lv${L.n}">مفتوح لحد ${L.tag} (${esc(L.name)})</option>`).join('')}
      <option value="all">كل الدروس والامتحانات مفتوحة</option></select>
+   <label>قسم الأطفال</label><select id="pr-kids" class="sel" ${lock?'disabled':''}>
+     <option value="seq">بالترتيب (3 أقسام مفتوحة، وكل ما يخلّص قسم بينفتح اللي بعده)</option>
+     <option value="all">كل أقسام الأطفال وألعابهم مفتوحة</option></select>
    <label>ملاحظة خاصة (بتشوفها إنت والمساعدين بس)</label><textarea id="pr-note" class="sel" rows="2" ${lock?'disabled':''}>${esc(r.note||'')}</textarea>
    ${lock?'':'<div class="row"><button class="btn primary" id="pr-save">حفظ الصلاحيات</button></div>'}
    ${o.at?`<p class="muted" style="margin:0;font-size:13px">آخر تعديل: ${fmtAgo(o.at)}</p>`:''}</section>`;
 }
 function bindPerm(r){
   const o=r.role||{};const rs=$('#pr-role'),ac=$('#pr-acc');if(!rs)return;
-  rs.value=o.role||'student';if(!rs.value)rs.value='student';ac.value=o.unlockAll?'all':(o.openTo>1?'lv'+o.openTo:'seq');
+  rs.value=o.role||'student';if(!rs.value)rs.value='student';ac.value=o.unlockAll?'all':(o.openTo>1?'lv'+o.openTo:'seq');const kd=$('#pr-kids');if(kd)kd.value=(o.unlockAll||o.kidsAll)?'all':'seq';
   const sv=$('#pr-save');if(!sv)return;
   sv.onclick=async()=>{
-    const v=ac.value,nr={role:rs.value,unlockAll:v==='all',openTo:v.startsWith('lv')?+v.slice(2):0,at:Date.now(),by:MY_ID};
+    const v=ac.value,nr={role:rs.value,unlockAll:v==='all',openTo:v.startsWith('lv')?+v.slice(2):0,kidsAll:!!($('#pr-kids')&&$('#pr-kids').value==='all'),at:Date.now(),by:MY_ID};
     if(!IS_OWNER&&nr.role==='admin')return toast('بس صاحب التطبيق بيقدر يعيّن مساعد.');
     sv.disabled=true;sv.textContent='جاري الحفظ…';
     try{if(!DB&&location.protocol==='file:'){r.role=nr;r.note=$('#pr-note').value}else{await DB.doc('roles/'+r.id).set(nr);await DB.doc('notes/'+r.id).set({t:$('#pr-note').value,at:Date.now()});r.role=nr;r.note=$('#pr-note').value}
@@ -11935,14 +12217,14 @@ function speakPractice(el,items,title,back){
   show();
 }
 function vSpeak(){
-  const open=CH.filter(c=>chOpen(c.id)&&(!spU||chLv(c)===spU));
-  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">تمرين الحكي</h1><p class="muted" style="margin:4px 0 0">10 جمل عشوائية من دروسك المفتوحة. ${DICT?'التطبيق بيسمعك وبيقارن نطقك بالجملة.':'هون بيشتغل بالتقييم الذاتي. التسجيل بيشتغل بمتصفح Chrome.'}</p></div>${unitPills(spU,'up')}<div id="sp"></div></div>`;
+  if(spU<1)spU=curLv();const open=lvChs(spU);
+  app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div><h1 style="font-size:24px">تمرين الحكي</h1><p class="muted" style="margin:4px 0 0">10 جمل من مستواك (${LEVELS[spU-1].tag}). ${DICT?'التطبيق بيسمعك وبيقارن نطقك بالجملة.':'هون بيشتغل بالتقييم الذاتي. التسجيل بيشتغل بمتصفح Chrome.'}</p></div>${unitPills(spU,'up',1)}<div id="sp"></div></div>`;
   $$('#up .pill').forEach(b=>b.onclick=()=>{spU=+b.dataset.u;vSpeak()});
-  const items=pick(open.flatMap(c=>c.S),10);
+  const items=pick(open.flatMap(c=>c.S).filter(s=>!s.x&&s.pt.split(' ').length<=MAXW[spU]),10);
   if(!items.length){$('#sp').innerHTML='<p class="muted">ما في جمل بهالمستوى لسا.</p>';return}
   speakPractice($('#sp'),items,'تمرين الحكي','#practice');
 }
-let spU=0;
+let spU=-1;
 
 /* ===== محادثة مع Claude ===== */
 const SCEN=[
@@ -12107,20 +12389,20 @@ function placeQs(n){
   const us=unitsOf(n),chs=us.flatMap(u=>u.chs).map(i=>CH[i-1]).filter(Boolean);
   const W=chs.flatMap(c=>c.W.filter(w=>!w.x)),Sx=chs.flatMap(c=>c.S.filter(s=>!s.x)),D=chs.flatMap(c=>c.D);
   const ex=shuffle(us.map(u=>EXAMS[u.n]).filter(E=>E&&E.passage));const E=ex[0];
-  const R=E?shuffle(E.qs).slice(0,2).map(([q,c,...w])=>Q.mc(q,c,w,{sec:'r',passage:E.passage})).concat(shuffle(E.tf).slice(0,1).map(([st,tr])=>Q.tf('صح أو خطأ حسب النص',st,tr,{sec:'r',passage:E.passage}))):[];
+  const R=E?shuffle(E.qs).slice(0,3).map(([q,c,...w])=>Q.mc(q,c,w,{sec:'r',passage:E.passage})).concat(shuffle(E.tf).slice(0,1).map(([st,tr])=>Q.tf('صح أو خطأ حسب النص',st,tr,{sec:'r',passage:E.passage}))):[];
   const ss=shuffle(Sx),short=shuffle(Sx.filter(s=>s.pt.split(' ').length<=6&&s.pt.split(' ').length>=3));
-  const L=ss.slice(0,2).map(s=>({...qListen(s,Sx),sec:'l'})).concat(short.slice(0,1).map(s=>({...qDict(s),sec:'l',noTiles:true})));
-  const G=pick(D,3).map(d=>({...drillQ(d),sec:'g'}));
-  const V=pick(W,2).map((w,i)=>({...(i?qAr2Pt(w,W):qPt2Ar(w,W)),sec:'v'}));
-  const Wr=short.slice(1,3).map(s=>({...K(Q.type(s.ar,s.pt,'ترجم للبرتغالي (بدون مساعدة)'),s),sec:'w',noTiles:true}));
+  const L=ss.slice(0,2).map(s=>({...qListen(s,Sx),sec:'l'})).concat(short.slice(0,2).map(s=>({...qDict(s),sec:'l',noTiles:true})));
+  const G=pick(D,4).map(d=>({...drillQ(d),sec:'g'}));
+  const V=pick(W,3).map((w,i)=>({...(i?qAr2Pt(w,W):qPt2Ar(w,W)),sec:'v'}));
+  const Wr=short.slice(2,5).map(s=>({...K(Q.type(s.ar,s.pt,'ترجم للبرتغالي (بدون مساعدة)'),s),sec:'w',noTiles:true}));
   return R.concat(L,G,V,Wr);
 }
 function vPlacement(){
   const last=S.placeRes;
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="card stack"><h1 style="font-size:22px">🧭 امتحان تحديد المستوى</h1>
    <p style="margin:0">امتحان حقيقي بيقيس <b>5 مهارات</b> بكل مستوى: الاستماع، القراءة، القواعد، المفردات، والكتابة.</p>
-   <ul class="plain" style="margin:0;padding-inline-start:20px;line-height:1.9"><li>بتبدأ من A1، وكل ما تنجح بمستوى بتنتقل للي بعده.</li><li>عشان تنجح بمستوى لازم تجيب <b>70٪ أو أكتر</b>، وما تقل أي مهارة عن <b>50٪</b>.</li><li>بالكتابة ما في مساعدة: اكتب الجواب بنفسك.</li><li>بالنهاية <b>بينفتحلك المسار من مستواك الحقيقي</b> وبتكمل منه.</li></ul>
-   <p class="muted" style="margin:0">المدة: من 5 لـ 25 دقيقة (13 سؤال لكل مستوى). جاوب بصدق، بدون ترجمة خارجية، عشان تبدأ من المكان الصح.</p>
+   <ul class="plain" style="margin:0;padding-inline-start:20px;line-height:1.9"><li>بتبدأ من A1، وكل ما تنجح بمستوى بتنتقل للي بعده.</li><li>عشان تنجح بمستوى لازم تجيب <b>75٪ أو أكتر</b>، وما تقل أي مهارة عن <b>60٪</b>.</li><li>بالكتابة ما في مساعدة: اكتب الجواب بنفسك.</li><li>بالنهاية <b>بينفتحلك المسار من مستواك الحقيقي</b> وبتكمل منه.</li></ul>
+   <p class="muted" style="margin:0">المدة: من 5 لـ 25 دقيقة (حوالي 18 سؤال لكل مستوى). جاوب بصدق، بدون ترجمة خارجية، عشان تبدأ من المكان الصح.</p>
    ${last?`<p class="muted" style="margin:0">آخر نتيجة: <b>${esc(S.place||'')}</b></p>`:''}
    <div class="row"><button class="btn primary" id="go">ابدأ الامتحان</button></div></div></div>`;
   $('#go').onclick=()=>runLevel(1,[]);
@@ -12130,7 +12412,7 @@ function runLevel(n,res){
   app.innerHTML=`<div class="ch-head" style="margin-bottom:14px"><a class="back" href="#placement">→ تحديد المستوى</a><span class="eyebrow">المستوى ${LEVELS[n-1].tag} · ${esc(LEVELS[n-1].name)}</span></div><div id="qb"></div>`;
   runQuiz($('#qb'),qs,{title:'تحديد المستوى · '+LEVELS[n-1].tag,xp:2,raw:(score,log)=>{
     const sk={};qs.forEach((q,k)=>{sk[q.sec]=sk[q.sec]||{s:0,n:0};sk[q.sec].n++;sk[q.sec].s+=(log&&log[k]?log[k].credit:0)});
-    const p=score/qs.length,min=Math.min(...Object.values(sk).map(x=>x.s/x.n));const pass=p>=.7&&min>=.5;
+    const p=score/qs.length,min=Math.min(...Object.values(sk).map(x=>x.s/x.n));const pass=p>=.75&&min>=.6;
     res.push({n,p,pass,sk:Object.fromEntries(Object.entries(sk).map(([k,x])=>[k,x.s/x.n]))});
     if(pass&&n<5&&lvReady(n+1))levelGate(n,res);else placeResult(res)}});
 }
@@ -12144,9 +12426,9 @@ function placeResult(res){
   S.place=all?'C1 ✓':L.tag;S.placeRes=res.map(r=>({n:r.n,p:Math.round(r.p*100),pass:r.pass}));S.placeLv=Math.max(S.placeLv||1,lv);save();pushStats&&pushStats(true);
   app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><div class="result card"><div class="ring" style="--p:${lv*20};--c:var(--green)"><b>${all?'C1':L.tag}</b></div>
    <h2>${all?'مستواك متقدم جدًا! خلّصت كل المستويات 🏆':passed?`مستواك: ابدأ من ${esc(L.name)} (${L.tag})`:'ابدأ من البداية: المستوى الأول (A1)'}</h2>
-   ${res.map(r=>`<div class="pl-lv"><h3>${LEVELS[r.n-1].tag} ${r.pass?'✅':'❌'} <span class="muted">${Math.round(r.p*100)}%</span></h3><div class="secbars">${Object.entries(r.sk).map(([k,v])=>`<div class="secbar"><span>${PSEC[k]||k}</span><span class="tr"><i style="width:${Math.round(v*100)}%;background:${v>=.5?'var(--ok)':'var(--bad)'}"></i></span><span>${Math.round(v*100)}%</span></div>`).join('')}</div></div>`).join('')}
+   ${res.map(r=>`<div class="pl-lv"><h3>${LEVELS[r.n-1].tag} ${r.pass?'✅':'❌'} <span class="muted">${Math.round(r.p*100)}%</span></h3><div class="secbars">${Object.entries(r.sk).map(([k,v])=>`<div class="secbar"><span>${PSEC[k]||k}</span><span class="tr"><i style="width:${Math.round(v*100)}%;background:${v>=.6?'var(--ok)':'var(--bad)'}"></i></span><span>${Math.round(v*100)}%</span></div>`).join('')}</div></div>`).join('')}
    ${(()=>{const last=res[res.length-1];const weak=Object.entries(last.sk).filter(([k,v])=>v<.6).map(([k])=>PSEC[k]);return weak.length?`<p class="tip" style="margin:0">ركّز على: ${weak.join('، ')}</p>`:''})()}
-   ${passed?`<p style="margin:0">انفتحلك المسار لحد <b>${L.tag}</b>. المستويات اللي قبله مفتوحة إذا حبيت تراجع.</p>`:''}
+   ${passed?`<p style="margin:0">انفتحلك كل اللي قبل <b>${L.tag}</b>، وأول 3 دروس من ${L.tag}.</p>`:''}
    <div class="row" style="justify-content:center"><a class="btn primary" href="#path">ابدأ من مستواك</a><button class="btn" id="again">أعد الامتحان</button></div></div></div>`;
   $('#again').onclick=vPlacement;
 }
@@ -12186,18 +12468,15 @@ function vCert(n){
 function vPractice(){
   const n=srsDue().length;const certs=LEVELS.filter(L=>exDone('f'+L.n));
   const card=(href,ic,t,d,badge,c)=>`<a class="gcard" href="${href}"><span class="gi" style="background:${c}">${ic}</span><h3>${t}${badge?` <span class="badge">${badge}</span>`:''}</h3><p>${d}</p></a>`;
-  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">التدريب</h1><p class="muted" style="margin:4px 0 0">كل شي بيقوّيك برا الدروس.</p></div>
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">التدريب</h1><p class="muted" style="margin:4px 0 0">كل شي بيقوّيك برا الدروس، على قد مستواك (${LEVELS[curLv()-1].tag}).</p></div>
+   <a class="gcard hero-chat" href="#chat"><span class="gi" style="background:var(--blue-soft)">🤖</span><h3>تكلّم مع الذكاء الاصطناعي</h3><p>محادثة حقيقية خطوة بخطوة: بالسوبرماركت، الصيدلية، المقابلة… بصوتك أو كتابة، مع تصحيح فوري.</p></a>
    <div class="ggrid">
-   ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك بمواعيد ذكية لحد ما تثبت.',n||'', 'var(--sun-soft)')}
-   ${card('#league','🏆','الدوري الأسبوعي','نافس الباقيين بنقاط هالأسبوع.','', 'var(--sun-soft)')}
-   ${card('#pron','🎤','قيّم نطقك','قول الجملة والتطبيق بيقلك وين غلطت.','', 'var(--green-soft)')}
-   ${card('#mywords','⭐','دفتر كلماتي','الكلمات اللي حفظتها، مع مراجعة خاصة.',Object.keys(S.fav||{}).length||'', 'var(--blue-soft)')}
-   ${card('#goal','🎯','هدفي اليومي',''+(S.goal||10)+' دقايق باليوم، وتذكير على التقويم.','', 'var(--green-soft)')}
-   ${card('#speak','🎤','تمرين الحكي','قول الجمل بصوتك، وشوف شو انفهم.','','var(--green-soft)')}
-   ${card('#chat','🤖','تكلّم مع الذكاء الاصطناعي','احكي بصوتك أو اكتب، مع تصحيح فوري.','','var(--blue-soft)')}
+   ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك لحد ما تثبت.',n||'', 'var(--sun-soft)')}
+   ${card('#pron','🎤','النطق والحكي','قول جمل من مستواك، والتطبيق بيقلك وين غلطت.','', 'var(--green-soft)')}
+   ${card('#games','🎮','الألعاب','بكلمات مستواك: مطابقة، اسمع واختار، رتّب…','','var(--bad-soft)')}
    ${card('#stories','🎧','قصص مسموعة','حوار بصوتين لكل وحدة مع أسئلة.','','var(--green-soft)')}
    ${card('#sounds','👂','الأصوات المتشابهة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--blue-soft)')}
-   ${card('#games','🎮','الألعاب','مطابقة، اسمع واختار، رتّب، صح ولا غلط.','','var(--bad-soft)')}
+   ${card('#mywords','⭐','دفتر كلماتي','الكلمات اللي حفظتها، مع مراجعة خاصة.',Object.keys(S.fav||{}).length||'', 'var(--blue-soft)')}
    ${card('#placement','🧭','تحديد المستوى','اعرف من وين تبدأ.',S.place||'','var(--sun-soft)')}
    ${card(certs.length?'#cert-'+certs[certs.length-1].n:'#cert-1','🎓','شهاداتي',certs.length?certs.map(L=>L.tag).join(' · '):'بعد النجاح بامتحان نهائي.','','var(--green-soft)')}
    </div></div>`;
@@ -12235,13 +12514,16 @@ function makeWebDict(){
 }
 (function(){setTimeout(()=>{if(typeof DICT!=='undefined'&&!DICT){const d=makeWebDict();if(d){DICT=d;DICT.onPartial(e=>dictHandler&&dictHandler('partial',e));DICT.onFinal(e=>dictHandler&&dictHandler('final',e));DICT.onState(e=>dictHandler&&dictHandler('state',e))}}},2500)})();
 function ensureDict(){if(typeof DICT!=='undefined'&&!DICT){const d=makeWebDict();if(d){DICT=d;DICT.onPartial(e=>dictHandler&&dictHandler('partial',e));DICT.onFinal(e=>dictHandler&&dictHandler('final',e));DICT.onState(e=>dictHandler&&dictHandler('state',e))}}}
+var pnU=-1;
 function vPron(){
-  ensureDict();
-  const pool=CH.filter(c=>chOpen(c.id)).flatMap(c=>c.S.filter(s=>!s.x&&s.pt.split(' ').length<=8));
+  ensureDict();if(pnU<1)pnU=curLv();
+  const pool=lvChs(pnU).flatMap(c=>c.S.filter(s=>!s.x&&s.pt.split(' ').length<=MAXW[pnU]));
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🎤 قيّم نطقك</h1><p class="muted" style="margin:4px 0 0">اسمع الجملة، اضغط المايك وقولها. التطبيق بيسمعك وبيلوّن كل كلمة: <b style="color:var(--ok)">أخضر</b> انفهمت، <b style="color:var(--bad)">أحمر</b> لازم تتحسّن. اضغط على الكلمة الحمرا بتسمع نطقها.</p></div>
+   ${unitPills(pnU,'up',1)}
    ${DICT?'':'<p class="tip" style="margin:0">التسجيل مش متاح على هالمتصفح. جرّب Chrome أو Safari، واسمح للمايك.</p>'}
    <div id="sp"></div></div>`;
-  if(!pool.length){$('#sp').innerHTML='<p class="muted">افتح أول درس عشان تبلّش.</p>';return}
+  $$('#up .pill').forEach(b=>b.onclick=()=>{pnU=+b.dataset.u;vPron()});
+  if(!pool.length){$('#sp').innerHTML='<p class="muted">ما في جمل بهالمستوى لسا. افتح دروسه أول.</p>';return}
   speakPractice($('#sp'),pick(pool,10),'قيّم نطقك','#practice');
 }
 
@@ -12317,6 +12599,50 @@ if(typeof vSettings==='function'){const _vS2=vSettings;vSettings=function(){_vS2
     <section class="card settings"><h2>🎯 الهدف اليومي والتذكير</h2><p class="muted" style="margin:0">هدفك هلأ: <b>${goalMin()} دقايق</b> باليوم.</p><div class="row"><a class="btn" href="#goal">غيّر الهدف أو أضف تذكير</a></div></section>`);
   $$('#thm [data-t]').forEach(b=>b.onclick=()=>{S.theme=b.dataset.t;save();applyTheme();$$('#thm [data-t]').forEach(x=>x.classList.toggle('on',x===b))});
 }}
+
+function leagueMini(){const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;
+  return `<a class="goal-card" href="#league"><span class="ring sm" style="--p:100;--c:var(--sun)"><b>🏆</b></span><span><b>الدوري الأسبوعي</b><br><span class="muted">نقاطك هالأسبوع: ${x} XP · شوف ترتيبك</span></span><span class="gc-ed">←</span></a>`}
+
+/* ---------- إعدادات أوضح: بطاقة حساب فوق + أزرار تنقّل + أيقونات كبيرة لكل قسم ---------- */
+if(typeof vSettings==='function'){const _vS3=vSettings;vSettings=function(){_vS3.apply(this,arguments);
+  const ICON={'الصوت':['🔊','#e6f1ff'],'المظهر':['🌙','#efe9ff'],'الهدف':['🎯','#fff3d6'],'راسل':['✉️','#e3f5ea'],'التقدّم':['📈','#e3f5ea'],'نسخة':['💾','#f1f1ee'],'الحساب':['👤','#ffe9e6'],'تسجيل':['👤','#ffe9e6']};
+  const nav=[];
+  $$('section.settings',app).forEach((s,i)=>{const h=$('h2',s);if(!h)return;let t=h.textContent.replace(/^[^؀-ۿA-Za-z]+/,'').trim();const k=Object.keys(ICON).find(x=>t.startsWith(x)||t.includes(x));const [ic,bg]=k?ICON[k]:['⚙️','#f1f1ee'];
+    s.id=s.id||'st-'+i;s.classList.add('set2');h.innerHTML=`<span class="set-ic" style="background:${bg}">${ic}</span><span>${esc(t)}</span>`;nav.push([s.id,ic,({'راسل':'الرسائل','تسجيل':'الحساب','نسخة':'النسخة','الهدف':'الهدف'})[k]||t.split(' ')[0]])});
+  const head=$('.stack > div',app);const nm=(MY_NAME||S.name||'').trim();
+  if(head)head.insertAdjacentHTML('afterend',`<div class="card set-hero"><span class="set-av">${esc((nm||'؟').slice(0,1))}</span><div><b>${esc(nm||'حسابك')}</b><br><span class="muted">المستوى ${LEVELS[curLv()-1].tag} · ${S.xp||0} XP · ${(S.streak&&S.streak.n)||0} يوم</span></div></div>
+   <nav class="set-nav">${nav.map(([id,ic,l])=>`<a href="#" data-to="${id}"><span>${ic}</span>${esc(l)}</a>`).join('')}</nav>`);
+  $$('.set-nav a',app).forEach(a=>a.onclick=e=>{e.preventDefault();const t=document.getElementById(a.dataset.to);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
+}}
+
+/* ---------- 5) الترحيب لأول مرة: تعريف بسيط + سبب التعلّم + الهدف اليومي + من وين تبدأ ---------- */
+function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={why:'',goal:S.goal||10};
+  const W=[['🧭','حياتي اليومية بالبرازيل'],['💼','الشغل'],['🎓','الدراسة'],['👨‍👩‍👧','أعلّم ولادي'],['✈️','السفر'],['🌱','بس حابب أتعلّم']];
+  const box=document.createElement('div');box.id='onb';box.className='onb';document.body.appendChild(box);
+  const dots=()=>`<div class="onb-dots">${[0,1,2,3].map(i=>`<i class="${i===st?'on':''}"></i>`).join('')}</div>`;
+  const draw=()=>{let h='';
+    if(st===0)h=`<div class="onb-ic">🇧🇷</div><h2>أهلًا فيك ببرتغالي مع سعيد</h2><p class="muted">تعلّم البرتغالي البرازيلي من الصفر لحد ما تحكي بثقة، بالعربي وخطوة بخطوة.</p>
+      <ul class="onb-ul"><li>📚 دروس قصيرة بالترتيب من A1 لـ C1</li><li>🔊 كل كلمة وجملة بصوت برازيلي، ونطقها بالحروف العربية</li><li>🤖 محادثة مع الذكاء الاصطناعي بمواقف حقيقية</li><li>🧒 قسم خاص للأطفال بالصور والألعاب</li></ul>
+      <button class="btn primary big" data-n>يلا نبلّش ←</button>`;
+    if(st===1)h=`<div class="onb-ic">💭</div><h2>ليش بدك تتعلّم برتغالي؟</h2><p class="muted">اختار اللي بيناسبك.</p><div class="onb-opts">${W.map(([i,t])=>`<button class="onb-o${ans.why===t?' on':''}" data-w="${t}"><span>${i}</span>${t}</button>`).join('')}</div>
+      <button class="btn primary big" data-n ${ans.why?'':'disabled'}>التالي ←</button>`;
+    if(st===2)h=`<div class="onb-ic">🎯</div><h2>قديش وقت بدك تدرس باليوم؟</h2><p class="muted">بتقدر تغيّره بعدين من الإعدادات.</p><div class="onb-opts">${[[5,'خفيف'],[10,'عادي'],[15,'جدّي'],[20,'قوي']].map(([m,t])=>`<button class="onb-o${ans.goal===m?' on':''}" data-g="${m}"><span>${m}</span>دقايق · ${t}</button>`).join('')}</div>
+      <button class="btn primary big" data-n>التالي ←</button>`;
+    if(st===3)h=`<div class="onb-ic">🚀</div><h2>من وين بدك تبدأ؟</h2>
+      <div class="onb-opts one"><button class="onb-o" data-go="#path"><span>🌱</span><b>من الصفر</b><small>أول مرة بتتعلّم برتغالي</small></button>
+      <button class="onb-o" data-go="#placement"><span>🧭</span><b>حدّد مستواي</b><small>بتعرف شوية؟ اختبار قصير بيفتحلك الدروس على قد مستواك</small></button>
+      <button class="onb-o" data-go="#kids"><span>🧒</span><b>قسم الأطفال</b><small>لولادك: صور وأصوات وألعاب</small></button></div>`;
+    box.innerHTML=`<div class="onb-card">${st?'<button class="onb-back" data-b>→</button>':''}${dots()}${h}</div>`;
+    const n=$('[data-n]',box);if(n)n.onclick=()=>{st++;draw()};const b=$('[data-b]',box);if(b)b.onclick=()=>{st--;draw()};
+    $$('[data-w]',box).forEach(x=>x.onclick=()=>{ans.why=x.dataset.w;draw()});
+    $$('[data-g]',box).forEach(x=>x.onclick=()=>{ans.goal=+x.dataset.g;draw()});
+    $$('[data-go]',box).forEach(x=>x.onclick=()=>{S.why=ans.why;S.goal=ans.goal;S.onb=Date.now();save();box.remove();location.hash=x.dataset.go;if(x.dataset.go==='#path')toast('برافو! أول درس جاهز 🎉')})};
+  draw()}
+(function(){let k=0;const t=setInterval(()=>{k++;const ready=(typeof cloudOK!=="undefined"&&cloudOK)||k>4;if(!ready)return;clearInterval(t);
+  const fresh=!(S.xp>0)&&!Object.keys(S.ch||{}).length&&!S.place;if(!S.onb&&fresh&&!IS_OWNER)onbShow();else if(!S.onb&&!fresh){S.onb=1;save()}},1000)})();
+if(typeof vSettings==='function'){const _vS4=vSettings;vSettings=function(){_vS4.apply(this,arguments);if(!(IS_OWNER||IS_ADMIN))return;
+  const last=$$('section.settings',app).pop();if(last)last.insertAdjacentHTML('afterend',`<section class="card settings set2"><h2><span class="set-ic" style="background:#fff3d6">👋</span><span>شاشة الترحيب (للإدارة)</span></h2><p class="muted" style="margin:0">هاي اللي بتطلع لأي مستخدم جديد أول ما يسجّل دخول.</p><div class="row"><button class="btn" id="onbt">شوفها</button></div></section>`);
+  const b=$('#onbt');if(b)b.onclick=()=>onbShow()}}
 </script>
 </body>
 </html>
