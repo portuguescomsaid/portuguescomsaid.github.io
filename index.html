@@ -11298,7 +11298,9 @@ try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(defState(),JSON.parse
 function migrate(){if(S.ex&&S.ex.f&&!S.ex.f1){S.ex.f1=S.ex.f;delete S.ex.f}}migrate();
 let ROLE={},IS_ADMIN=false,MY_ID='',DB=null,STATS_REF=null,USER=null,IS_OWNER=false,MY_NAME='',dbRef=null,saving=false,again=false,saveT=null,cloudOK=false;
 function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(push,1200);hdr()}
-async function push(){if(!dbRef)return;if(saving){again=true;return}saving=true;try{await dbRef.set(JSON.parse(JSON.stringify(S)))}catch(e){}saving=false;if(again){again=false;push()}try{pushStats()}catch(e){}}
+async function push(){if(!dbRef)return;if(saving){again=true;return}saving=true;try{await dbRef.set(JSON.parse(JSON.stringify(S)))}catch(e){}
+  /* نسخة احتياطية يومية بالحساب (آخر 7 أيام) */
+  try{const t=today();if(S.bkDay!==t&&(S.xp>0||Object.keys(S.ch||{}).length)&&DB&&MY_ID){S.bkDay=t;await DB.doc('data/users/'+MY_ID+'/bk'+new Date().getDay()).set({j:JSON.stringify(S),t:Date.now(),xp:S.xp||0,n:Object.values(S.ch||{}).filter(x=>x&&x.quiz>=70).length})}}catch(e){}saving=false;if(again){again=false;push()}try{pushStats()}catch(e){}}
 async function waitClaude(){if(window.__authReady)await window.__authReady;return !!(window.claude&&window.claude.use)}
 function _dnum(s){const p=String(s||'').split('-').map(Number);return p.length===3?p[0]*1e4+p[1]*100+p[2]:0}
 function mergeSt(a,b){
@@ -12773,6 +12775,13 @@ async function installApp(){
     <button class="btn primary big">فهمت</button>${ios&&safari?'<div class="inst-arrow">⬇</div>':''}</div>`;
   document.body.appendChild(o);o.onclick=e=>{if(e.target===o||e.target.closest('.onb-back')||e.target.closest('.btn'))o.remove()}}
 if(typeof vSettings==='function'){const _vS6=vSettings;vSettings=function(){_vS6.apply(this,arguments);if(!canInstall())return;const ab=$('.about',app);if(ab)ab.insertAdjacentHTML('beforebegin',`<section class="card settings set2"><h2><span class="set-ic" style="background:#e3f5ea">📲</span><span>ثبّت التطبيق</span></h2><p class="muted" style="margin:0">حط أيقونة التطبيق على شاشة جوالك، وافتحه زي أي تطبيق.</p><div class="row"><button class="btn primary" onclick="installApp()">📲 ثبّت التطبيق</button></div></section>`)}}
+
+/* ---------- استرجاع من النسخ الاحتياطية اليومية (للإدارة على حسابها) ---------- */
+async function bkList(){const out=[];for(let i=0;i<7;i++){try{const v=await readDoc('data/users/'+MY_ID+'/bk'+i);if(v&&v.j)out.push({i,t:v.t,xp:v.xp,n:v.n,j:v.j})}catch(e){}}return out.sort((a,b)=>b.t-a.t)}
+if(typeof vSettings==='function'){const _vS7=vSettings;vSettings=function(){_vS7.apply(this,arguments);if(!(IS_OWNER||IS_ADMIN)||!DB||!MY_ID)return;
+  const ab=$('.about',app);if(!ab)return;ab.insertAdjacentHTML('beforebegin',`<section class="card settings set2" id="bksec"><h2><span class="set-ic" style="background:#f1f1ee">🛟</span><span>استرجاع التقدّم (للإدارة)</span></h2><p class="muted" style="margin:0">التطبيق بيحفظ نسخة من تقدّمك كل يوم بحسابك (آخر 7 أيام). الاسترجاع بيدمج النسخة مع تقدّمك الحالي، ما بيمسح اشي.</p><div id="bkl"><p class="muted" style="margin:0">جاري التحميل…</p></div></section>`);
+  bkList().then(L=>{const el=$('#bkl');if(!el)return;el.innerHTML=L.length?L.map(b=>`<div class="row" style="justify-content:space-between;align-items:center;border-top:1px solid var(--line,#ddd);padding-top:8px"><span>${new Date(b.t).toLocaleDateString('ar')} · ${b.xp} XP · ${b.n} درس</span><button class="btn" data-bk="${b.i}">استرجع</button></div>`).join(''):'<p class="muted" style="margin:0">لسا ما في نسخ. أول نسخة بتنحفظ اليوم.</p>';
+    $$('[data-bk]',el).forEach(btn=>btn.onclick=()=>{const b=L.find(x=>x.i==btn.dataset.bk);if(!b)return;try{const old=JSON.parse(b.j);S=Object.assign(defState(),mergeSt(S,old));S.updated=Date.now();migrate();buildMaps();save();toast('رجع التقدّم ✓');setTimeout(()=>{location.hash='#path'},600)}catch(e){toast('ما زبط الاسترجاع')}})})}}
 </script>
 </body>
 </html>
