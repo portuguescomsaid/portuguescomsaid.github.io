@@ -12488,16 +12488,16 @@ function vPractice(){
   const n=srsDue().length;const certs=LEVELS.filter(L=>exDone('f'+L.n));
   const card=(href,ic,t,d,badge,c)=>`<a class="gcard" href="${href}"><span class="gi" style="background:${c}">${ic}</span><h3>${t}${badge?` <span class="badge">${badge}</span>`:''}</h3><p>${d}</p></a>`;
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">التدريب</h1><p class="muted" style="margin:4px 0 0">كل شي بيقوّيك برا الدروس، على قد مستواك (${LEVELS[curLv()-1].tag}).</p></div>
-   <a class="gcard hero-chat" href="#chat"><span class="gi" style="background:var(--blue-soft)">🤖</span><h3>تكلّم مع الذكاء الاصطناعي</h3><p>محادثة حقيقية خطوة بخطوة: بالسوبرماركت، الصيدلية، المقابلة… بصوتك أو كتابة، مع تصحيح فوري.</p></a>
    <div class="ggrid">
+   ${card('#chat','🤖','تكلّم مع الذكاء الاصطناعي','محادثة خطوة بخطوة بمواقف حقيقية، بصوتك أو كتابة.','','var(--blue-soft)')}
+   ${card('#placement','🧭','تحديد المستوى','اعرف من وين تبدأ.',S.place||'','var(--sun-soft)')}
    ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك لحد ما تثبت.',n||'', 'var(--sun-soft)')}
    ${card('#pron','🎤','النطق والحكي','قول جمل من مستواك، والتطبيق بيقلك وين غلطت.','', 'var(--green-soft)')}
-   ${card('#dict','✍️','إملاء سريع','اسمع جملة واكتبها. 8 جمل من مستواك، 5 دقايق.','', 'var(--sun-soft)')}
+   ${card('#dict','✍️','إملاء سريع','اسمع جملة واكتبها. 8 جمل من مستواك.','', 'var(--sun-soft)')}
    ${card('#games','🎮','الألعاب','بكلمات مستواك: مطابقة، اسمع واختار، رتّب…','','var(--bad-soft)')}
    ${card('#stories','🎧','قصص مسموعة','حوار بصوتين لكل وحدة مع أسئلة.','','var(--green-soft)')}
    ${card('#sounds','👂','الأصوات المتشابهة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--blue-soft)')}
    ${card('#mywords','⭐','دفتر كلماتي','الكلمات اللي حفظتها، مع مراجعة خاصة.',Object.keys(S.fav||{}).length||'', 'var(--blue-soft)')}
-   ${card('#placement','🧭','تحديد المستوى','اعرف من وين تبدأ.',S.place||'','var(--sun-soft)')}
    ${card(certs.length?'#cert-'+certs[certs.length-1].n:'#cert-1','🎓','شهاداتي',certs.length?certs.map(L=>L.tag).join(' · '):'بعد النجاح بامتحان نهائي.','','var(--green-soft)')}
    </div></div>`;
 }
