@@ -12782,6 +12782,23 @@ if(typeof vSettings==='function'){const _vS7=vSettings;vSettings=function(){_vS7
   const ab=$('.about',app);if(!ab)return;ab.insertAdjacentHTML('beforebegin',`<section class="card settings set2" id="bksec"><h2><span class="set-ic" style="background:#f1f1ee">🛟</span><span>استرجاع التقدّم (للإدارة)</span></h2><p class="muted" style="margin:0">التطبيق بيحفظ نسخة من تقدّمك كل يوم بحسابك (آخر 7 أيام). الاسترجاع بيدمج النسخة مع تقدّمك الحالي، ما بيمسح اشي.</p><div id="bkl"><p class="muted" style="margin:0">جاري التحميل…</p></div></section>`);
   bkList().then(L=>{const el=$('#bkl');if(!el)return;el.innerHTML=L.length?L.map(b=>`<div class="row" style="justify-content:space-between;align-items:center;border-top:1px solid var(--line,#ddd);padding-top:8px"><span>${new Date(b.t).toLocaleDateString('ar')} · ${b.xp} XP · ${b.n} درس</span><button class="btn" data-bk="${b.i}">استرجع</button></div>`).join(''):'<p class="muted" style="margin:0">لسا ما في نسخ. أول نسخة بتنحفظ اليوم.</p>';
     $$('[data-bk]',el).forEach(btn=>btn.onclick=()=>{const b=L.find(x=>x.i==btn.dataset.bk);if(!b)return;try{const old=JSON.parse(b.j);S=Object.assign(defState(),mergeSt(S,old));S.updated=Date.now();migrate();buildMaps();save();toast('رجع التقدّم ✓');setTimeout(()=>{location.hash='#path'},600)}catch(e){toast('ما زبط الاسترجاع')}})})}}
+
+/* ---------- استرجاع يدوي (للإدارة على حسابها): من الإحصائيات أو بتحديد الدروس ---------- */
+if(typeof vSettings==='function'){const _vS8=vSettings;vSettings=function(){_vS8.apply(this,arguments);if(!(IS_OWNER||IS_ADMIN))return;const sec=$('#bksec');if(!sec)return;
+  sec.insertAdjacentHTML('beforeend',`<div class="stack" style="border-top:2px dashed var(--line,#ddd);padding-top:12px;margin-top:6px"><b>استرجاع يدوي</b>
+   <div id="stbk" class="muted" style="font-size:14px">بفحص الإحصائيات…</div>
+   <label>خلّصت لحد الدرس رقم</label><input type="number" id="mdone" class="sel" min="0" max="${CH.length}" placeholder="مثلًا 3" style="max-width:140px">
+   <label>العلامة لكل درس</label><input type="number" id="mq" class="sel" min="70" max="100" value="100" style="max-width:140px">
+   <label>نقاط XP</label><input type="number" id="mxp" class="sel" min="0" placeholder="مثلًا 1376" style="max-width:140px">
+   <div class="row"><button class="btn primary" id="mgo">رجّع التقدّم</button></div></div>`);
+  readDoc('stats/'+MY_ID).then(st=>{const el=$('#stbk');if(!el)return;const cur=CH.filter(c=>chDone(c.id)).length;
+    if(st&&(st.done>cur||(st.xp||0)>(S.xp||0))&&st.ch){el.innerHTML=`لقيت بالإحصائيات: <b>${st.done} درس</b> و<b>${st.xp} XP</b>. <button class="btn" id="stgo">رجّعها</button>`;
+      $('#stgo').onclick=()=>{Object.entries(st.ch).forEach(([id,v])=>{const s=S.ch[id]=S.ch[id]||{};if(v.q!=null)s.quiz=Math.max(s.quiz||0,v.q);if(v.n>=(v.N||0)){stepsOf(+id).forEach(([k])=>{if(k!=='quiz')s[k]=true})}});
+        Object.entries(st.ex||{}).forEach(([k,t])=>{const o=S.ex[k];if(!o||o.total<t)S.ex[k]={total:t,date:today()}});S.xp=Math.max(S.xp||0,st.xp||0);S.updated=Date.now();save();toast('رجع التقدّم من الإحصائيات ✓');location.hash='#path'}}
+    else el.textContent='الإحصائيات ما فيها تقدّم أكتر من الموجود. استعمل الاسترجاع اليدوي تحت.'});
+  $('#mgo').onclick=()=>{const n=+$('#mdone').value||0,q=Math.min(100,Math.max(70,+$('#mq').value||100)),xp=+$('#mxp').value||0;
+    const order=LEVELS.flatMap(L=>unitsOf(L.n).flatMap(u=>u.chs));order.slice(0,n).forEach(id=>{const s=S.ch[id]=S.ch[id]||{};stepsOf(id).forEach(([k])=>{if(k!=='quiz')s[k]=true});s.quiz=Math.max(s.quiz||0,q)});
+    if(xp)S.xp=Math.max(S.xp||0,xp);S.updated=Date.now();save();toast('تم ✓ رجع '+n+' درس');location.hash='#path'}}}
 </script>
 </body>
 </html>
