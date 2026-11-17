@@ -11327,10 +11327,11 @@ async function initCloud(){
     IS_ADMIN=!IS_OWNER&&ROLE.role==='admin';
     if(ROLE.role==='blocked'&&!IS_OWNER){app.innerHTML=`<div class="card stack" style="margin-top:20px"><h2 style="margin:0">الحساب موقوف</h2><p class="muted" style="margin:0">تم إيقاف هذا الحساب مؤقتًا. للاستفسار تواصل مع صاحب التطبيق.</p></div>`;window.BLOCKED=true;return false}
     const ac=$('#admchip');if(ac)ac.hidden=!(IS_OWNER||IS_ADMIN);
-    dbRef=db.doc('data/users/'+id+'/progress2');
-    STATS_REF=db.doc('stats/'+id);
-    const snap=await Promise.race([dbRef.get(),sleep(10000).then(()=>'timeout')]);
-    if(snap==='timeout'){dbRef=null;return false}
+    /* مهم: ما بنفعّل الحفظ بالحساب إلا بعد ما نقرأ نسخة الحساب وندمجها */
+    const ref=db.doc('data/users/'+id+'/progress2');
+    const snap=await Promise.race([ref.get(),sleep(10000).then(()=>'timeout')]);
+    if(snap==='timeout')return false;
+    dbRef=ref;STATS_REF=db.doc('stats/'+id);
     let d=snap;if(snap&&typeof snap.data==='function')d=snap.data();else if(snap&&snap.data&&typeof snap.data==='object')d=snap.data;
     cloudOK=true;
     /* دمج آمن: ما في جهاز جديد (فاضي) بيقدر يمسح تقدّم محفوظ. بناخد الأحسن من الاتنين */
@@ -12329,7 +12330,6 @@ SUG: <a short possible answer in Portuguese> || <another short answer>`}
 function parseLines(t){const g=k=>{const m=t.match(new RegExp('^\\s*'+k+'\\s*:\\s*(.*)$','mi'));return m?m[1].trim():''};
   const fix=g('FIX'),sug=g('SUG');const f=fix&&fix!=='-'?fix.split('||').map(x=>x.trim()):null;
   return {reply:g('PT'),reply_ar:g('AR'),correction:f&&f[1]?{you_said:f[0],better:f[1],why_ar:f[2]||''}:null,suggestions:sug?sug.split('||').map(x=>x.trim()).filter(Boolean):[]}}
-async function waitClaude(){for(let k=0;k<50;k++){if(window.claude&&claude.use)return true;await new Promise(r=>setTimeout(r,100))}return false}
 async function askClaude(msgs){
   if(!(await waitClaude()))throw{code:'unavailable'};
   const sample=await claude.use('sample');if(!sample)throw{code:'unavailable'};
