@@ -1,0 +1,17 @@
+name: daily-reminders
+on:
+  schedule:
+    - cron: '2 * * * *'
+  workflow_dispatch:
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    if: ${{ vars.PUSH_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm i --no-save firebase-admin@12
+      - run: node scripts/remind.mjs
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}

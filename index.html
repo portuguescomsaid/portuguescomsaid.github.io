@@ -594,6 +594,16 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .bexp p{margin:0 0 6px;line-height:1.9}.bexp ul,.bexp ol{margin:0 0 6px;padding-inline-start:20px;line-height:1.9}.bexp li{margin:2px 0}
 .bexp em{font-style:normal;font-weight:700;direction:ltr;unicode-bidi:isolate;color:var(--brand,#1f5c3f)}
 [data-theme=dark] .bexp em{color:#8fd3ac}
+.streak-risk{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg,#ff7a2f,#ffb52e);color:#fff;text-decoration:none;box-shadow:0 6px 18px rgba(255,122,47,.3)}
+.streak-risk .sr-f{font-size:36px;animation:srp 1.2s infinite}
+@keyframes srp{50%{transform:scale(1.15)}}
+.streak-ok{padding:10px 14px;border-radius:14px;background:#fff1e6;color:#8a3b00;font-size:15px}
+[data-theme=dark] .streak-ok{background:#3a2412;color:#ffcfa8}
+.wod{padding:14px 16px;border-radius:16px;background:var(--card,#fff);border:1px solid var(--line,#ddd);display:grid;gap:6px}
+.wod-h{display:flex;justify-content:space-between;font-weight:700;color:var(--brand,#1f5c3f)}
+.wod-w{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.wod-w b{font-size:24px}.wod-w .pron{opacity:.7}
+.wod-ar{font-size:17px}
+.wod-ex{display:flex;gap:8px;align-items:flex-start;padding-top:6px;border-top:1px dashed var(--line,#ddd)}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -727,6 +737,15 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
   document.addEventListener('click',async e=>{if(e.target&&e.target.id==='logout'){e.preventDefault();try{localStorage.removeItem('ptsaid.v2')}catch(x){}await auth.signOut();location.hash='';location.reload()}});
 })();
 if('serviceWorker' in navigator&&location.protocol==='https:')addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+/* ===== إشعارات Push (Firebase Cloud Messaging) ===== */
+const PUSH_VAPID='';
+window.pushOK=()=>!!(FB_CONFIG&&PUSH_VAPID.length>40&&!PUSH_VAPID.startsWith('/*')&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window);
+window.pushToken=async()=>{const B='https://www.gstatic.com/firebasejs/13.3.0/';
+  const [appM,mM]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-messaging.js')]);
+  let app;try{app=appM.getApp('push')}catch(e){app=appM.initializeApp(FB_CONFIG,'push')}
+  if(Notification.permission!=='granted'){const p=await Notification.requestPermission();if(p!=='granted')throw new Error('denied')}
+  const reg=await navigator.serviceWorker.ready;return await mM.getToken(mM.getMessaging(app),{vapidKey:PUSH_VAPID,serviceWorkerRegistration:reg})};
 </script>
 <script>/* ---------- utils ---------- */
 const $=(s,r=document)=>r.querySelector(s);
@@ -11643,7 +11662,7 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
-  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='inbox')vInbox();else if(h==='pron')vPron();else if(h==='mywords')vMyWords();else if(h==='goal')vGoal();else if(h==='league')vLeague();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
+  if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='inbox')vInbox();else if(h==='pron')vPron();else if(h==='dict')vDict();else if(h==='mywords')vMyWords();else if(h==='goal')vGoal();else if(h==='league')vLeague();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
   
@@ -11655,7 +11674,7 @@ function route(){
 window.addEventListener('hashchange',()=>{if(!navBack)navDepth++;navBack=false;route()});
 const TOP=['path','words','sentences','practice','basics','kids',''];
 let navDepth=0,navBack=false;
-function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h)||h==='inbox')return '#admin';if(['pron','mywords','league'].includes(h))return '#practice';if(h==='goal')return '#path';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
+function parentOf(h){if(/^(ch-|exam-|settings|cert-)/.test(h))return '#path';if(/^story-/.test(h))return '#stories';if(/^admin-/.test(h)||h==='inbox')return '#admin';if(['pron','mywords','league','dict'].includes(h))return '#practice';if(h==='goal')return '#path';if(h==='admin')return '#path';if(h==='games')return '#practice';if(/^kids/.test(h))return '#kids';if(/^basic-/.test(h))return '#basics';return '#practice'}
 function goBack(){
   const h=(location.hash||'#path').slice(1);
   const m=h.match(/^ch-(\d+)$/);
@@ -11687,7 +11706,7 @@ function vHome(){
   app.innerHTML=`<div class="stack">
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
    ${loginNote()}
-   ${goalCard()}${typeof leagueMini==='function'?leagueMini():''}
+   ${typeof streakRisk==='function'?streakRisk():''}${typeof wordOfDay==='function'?wordOfDay():''}${goalCard()}${typeof leagueMini==='function'?leagueMini():''}
    ${srsDue().length?`<a class="exam-cd" href="#review" style="background:var(--green-soft);border-color:var(--green)"><span class="cd-n">${srsDue().length}</span><span class="cd-t"><b>مراجعة اليوم</b><small>أغلاط سابقة لازم ترجعلها اليوم</small></span><span class="cd-go">راجع ←</span></a>`:''}
    <div class="stats"><div class="stat"><b>${S.xp}</b><span>نقاط XP</span></div><div class="stat"><b>${streakNow()}</b><span>أيام ورا بعض</span></div><div class="stat"><b>${nd}<small>/${CH.length}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${ne}<small>/${UNITS.length}</small></b><span>اختبارات وحدات</span></div></div>
    ${cont}
@@ -12473,6 +12492,7 @@ function vPractice(){
    <div class="ggrid">
    ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك لحد ما تثبت.',n||'', 'var(--sun-soft)')}
    ${card('#pron','🎤','النطق والحكي','قول جمل من مستواك، والتطبيق بيقلك وين غلطت.','', 'var(--green-soft)')}
+   ${card('#dict','✍️','إملاء سريع','اسمع جملة واكتبها. 8 جمل من مستواك، 5 دقايق.','', 'var(--sun-soft)')}
    ${card('#games','🎮','الألعاب','بكلمات مستواك: مطابقة، اسمع واختار، رتّب…','','var(--bad-soft)')}
    ${card('#stories','🎧','قصص مسموعة','حوار بصوتين لكل وحدة مع أسئلة.','','var(--green-soft)')}
    ${card('#sounds','👂','الأصوات المتشابهة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--blue-soft)')}
@@ -12643,6 +12663,55 @@ function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={
 if(typeof vSettings==='function'){const _vS4=vSettings;vSettings=function(){_vS4.apply(this,arguments);if(!(IS_OWNER||IS_ADMIN))return;
   const last=$$('section.settings',app).pop();if(last)last.insertAdjacentHTML('afterend',`<section class="card settings set2"><h2><span class="set-ic" style="background:#fff3d6">👋</span><span>شاشة الترحيب (للإدارة)</span></h2><p class="muted" style="margin:0">هاي اللي بتطلع لأي مستخدم جديد أول ما يسجّل دخول.</p><div class="row"><button class="btn" id="onbt">شوفها</button></div></section>`);
   const b=$('#onbt');if(b)b.onclick=()=>onbShow()}}
+
+/* ---------- 6) سلسلة الأيام: تنبيه لما تكون رح تنقطع ---------- */
+function streakRisk(){const n=S.streak&&S.streak.n||0;const t=today();
+  if(S.streak.last===t)return n>=2?`<div class="streak-ok">🔥 <b>${n} يوم</b> ورا بعض! كمّل بكرة عشان ما تنقطع.</div>`:'';
+  if(n>0&&S.streak.last===yesterday()){const nx=nextItem();const href=nx?(nx.t==='ch'?'#ch-'+nx.id:'#exam-'+nx.id):'#review';
+    return `<a class="streak-risk" href="${href}"><span class="sr-f">🔥</span><span><b>ما درست اليوم!</b><br>سلسلتك <b>${n} يوم</b> رح تنقطع الليلة. 5 دقايق بس بتحميها ←</span></a>`}
+  return ''}
+
+/* ---------- 7) كلمة اليوم ---------- */
+function wordOfDay(){try{const L=curLv();const chs=CH.filter(c=>chLv(c)===L);const ws=chs.flatMap(c=>c.W.filter(w=>!w.x&&w.pt.split(' ').length<=3));if(!ws.length)return '';
+  const t=today();let h=0;for(const ch of t)h=(h*31+ch.charCodeAt(0))>>>0;const w=ws[h%ws.length];
+  const ex=CH.flatMap(c=>c.S).find(s=>s.pt.length<70&&new RegExp('(^|[^\\p{L}])'+w.pt.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^\\p{L}]|$)','iu').test(s.pt));
+  return `<div class="wod"><div class="wod-h"><span>💡 كلمة اليوم</span><small>${LEVELS[L-1].tag}</small></div>
+   <div class="wod-w">${sayBtn(w.pt)}<b class="pt" lang="pt-BR" dir="ltr">${esc(w.pt)}</b><span class="pron">${esc(w.pron||'')}</span>${typeof favBtn==='function'?favBtn(w):''}</div><div class="wod-ar">${bidi(w.ar)}</div>
+   ${ex?`<div class="wod-ex">${sayBtn(ex.pt)}<span><span class="pt" lang="pt-BR" dir="ltr">${esc(ex.pt)}</span><br><small class="muted">${bidi(ex.ar)}</small></span></div>`:''}</div>`}catch(e){return ''}}
+
+/* ---------- 8) إملاء سريع ---------- */
+var dcU=-1;
+function vDict(){if(dcU<1)dcU=curLv();
+  const pool=lvChs(dcU).flatMap(c=>c.S.filter(s=>!s.x&&s.pt.split(' ').length>=2&&s.pt.split(' ').length<=Math.min(MAXW[dcU],10)));
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">✍️ إملاء سريع</h1><p class="muted" style="margin:4px 0 0">اسمع الجملة واكتبها بالبرتغالي. بتقدر تسمعها كمان مرة أو ببطء. الأخطاء الصغيرة بالعلامات (á، ç…) بتنحسبلك نص علامة.</p></div>
+   ${unitPills(dcU,'up',1)}<div id="qb"></div></div>`;
+  $$('#up .pill').forEach(b=>b.onclick=()=>{dcU=+b.dataset.u;vDict()});
+  if(!pool.length){$('#qb').innerHTML='<p class="muted">ما في جمل بهالمستوى لسا. افتح دروسه أول.</p>';return}
+  const run=()=>runQuiz($('#qb'),pick(pool,8).map(s=>({...qDict(s),noTiles:true})),{title:'إملاء سريع · '+LEVELS[dcU-1].tag,xp:8,retry:run,next:{label:'الرجوع للتدريب',href:'#practice'}});
+  run()}
+
+/* ---------- 9) إشعارات حقيقية على الموبايل ---------- */
+function pushDoc(){const nm=((MY_NAME||S.name||'').trim().split(/\s+/)[0]||'').slice(0,18);const [hh]=(S.remind||'19:00').split(':').map(Number);
+  return {tok:S.pushTok||'',h:hh,tz:-new Date().getTimezoneOffset(),last:S.streak.last||'',n:(S.streak&&S.streak.n)||0,nm,off:!S.pushOn,t:Date.now()}}
+async function pushSync(force){if(!DB||!MY_ID||!S.pushTok)return;const k=S.streak.last+'|'+S.remind+'|'+(S.pushOn?1:0);if(!force&&pushSync.k===k)return;pushSync.k=k;try{await DB.doc('push/'+MY_ID).set(pushDoc())}catch(e){}}
+setInterval(()=>{try{pushSync()}catch(e){}},60000);
+(function(){let k=0;const t=setInterval(()=>{k++;if(typeof cloudOK!=='undefined'&&cloudOK&&MY_ID){clearInterval(t);pushSync(true)}else if(k>90)clearInterval(t)},1000)})();
+async function pushEnable(){
+  if(!(window.pushOK&&window.pushOK())){toast(/iPhone|iPad/.test(navigator.userAgent)&&!navigator.standalone?'بالآيفون: أضف التطبيق للشاشة الرئيسية أول (زر المشاركة ← «إضافة إلى الشاشة الرئيسية»)، وافتحه من هناك.':'الإشعارات مش مدعومة بهالمتصفح.');return}
+  try{S.remind=($('#rt')&&$('#rt').value)||S.remind||'19:00';const tok=await window.pushToken();S.pushTok=tok;S.pushOn=true;save();await pushSync(true);toast('🔔 تم! رح يوصلك إشعار يومي الساعة '+S.remind+' إذا ما درست');vGoal()}
+  catch(e){toast(String(e&&e.message||e).includes('denied')?'رفضت الإشعارات. فعّلها من إعدادات المتصفح للموقع.':'ما زبط تفعيل الإشعارات. جرّب كمان مرة.')}}
+if(typeof vGoal==='function'){const _vG=vGoal;vGoal=function(){_vG.apply(this,arguments);
+  const sec=$$('section.card',app).pop();if(!sec)return;const ok=window.pushOK&&window.pushOK();
+  sec.insertAdjacentHTML('beforebegin',`<section class="card stack push-card"><h2 class="adm-h">🔔 إشعارات على الموبايل</h2>
+   <p class="muted" style="margin:0">إشعار يومي بالساعة اللي بتختارها، بس إذا ما درست هداك اليوم. وإذا سلسلتك رح تنقطع بيذكّرك فيها.</p>
+   ${S.pushOn?`<p style="margin:0">✅ مفعّلة، الساعة <b>${esc(S.remind||'19:00')}</b>.</p>`:''}
+   <div class="row"><input type="time" id="pt" class="sel" value="${S.remind||'19:00'}" style="max-width:150px">${S.pushOn?'<button class="btn" id="psave">حفظ الساعة</button><button class="btn ghost" id="poff">وقّف الإشعارات</button>':`<button class="btn primary" id="pon" ${ok?'':'data-na="1"'}>🔔 فعّل الإشعارات</button>`}</div>
+   ${/iPhone|iPad/.test(navigator.userAgent)?'<p class="muted" style="margin:0;font-size:13px">بالآيفون بتشتغل بس إذا التطبيق مضاف للشاشة الرئيسية (iOS 16.4 أو أحدث).</p>':''}</section>`);
+  const v=()=>$('#pt').value||'19:00';
+  const on=$('#pon');if(on)on.onclick=()=>{S.remind=v();pushEnable()};
+  const sv=$('#psave');if(sv)sv.onclick=async()=>{S.remind=v();save();await pushSync(true);toast('انحفظت الساعة ✓')};
+  const off=$('#poff');if(off)off.onclick=async()=>{S.pushOn=false;save();await pushSync(true);toast('وقّفنا الإشعارات');vGoal()};
+}}
 </script>
 </body>
 </html>
