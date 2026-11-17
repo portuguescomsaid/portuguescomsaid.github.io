@@ -11300,6 +11300,17 @@ let ROLE={},IS_ADMIN=false,MY_ID='',DB=null,STATS_REF=null,USER=null,IS_OWNER=fa
 function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(saveT);saveT=setTimeout(push,1200);hdr()}
 async function push(){if(!dbRef)return;if(saving){again=true;return}saving=true;try{await dbRef.set(JSON.parse(JSON.stringify(S)))}catch(e){}saving=false;if(again){again=false;push()}try{pushStats()}catch(e){}}
 async function waitClaude(){if(window.__authReady)await window.__authReady;return !!(window.claude&&window.claude.use)}
+function _dnum(s){const p=String(s||'').split('-').map(Number);return p.length===3?p[0]*1e4+p[1]*100+p[2]:0}
+function mergeSt(a,b){
+  if(a===undefined||a===null||a==='')return b;if(b===undefined||b===null||b==='')return a;
+  if(Array.isArray(a)&&Array.isArray(b)){const o=a.slice(),seen=new Set(a.map(x=>JSON.stringify(x)));b.forEach(x=>{const k=JSON.stringify(x);if(!seen.has(k)){seen.add(k);o.push(x)}});return o}
+  if(typeof a==='object'&&typeof b==='object'&&!Array.isArray(a)&&!Array.isArray(b)){
+    if('last' in a&&'n' in a&&'last' in b&&'n' in b){const da=_dnum(a.last),db=_dnum(b.last);return da>db?a:db>da?b:(a.n>=b.n?a:b)}
+    if('k' in a&&'x' in a&&'k' in b&&'x' in b){return a.k===b.k?{k:a.k,x:Math.max(a.x||0,b.x||0)}:(a.k>b.k?a:b)}
+    const o=Object.assign({},a);for(const k in b)o[k]=k in a?mergeSt(a[k],b[k]):b[k];return o}
+  if(typeof a==='number'&&typeof b==='number')return Math.max(a,b);
+  if(typeof a==='boolean'&&typeof b==='boolean')return a||b;
+  return a}
 async function initCloud(){
   try{
     if(!await waitClaude())return false;
@@ -11320,8 +11331,10 @@ async function initCloud(){
     if(snap==='timeout'){dbRef=null;return false}
     let d=snap;if(snap&&typeof snap.data==='function')d=snap.data();else if(snap&&snap.data&&typeof snap.data==='object')d=snap.data;
     cloudOK=true;
-    if(d&&d.updated&&d.updated>(S.updated||0)){S=Object.assign(defState(),d);migrate();try{buildMaps()}catch(e){}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-    else if(S.updated)push();
+    /* دمج آمن: ما في جهاز جديد (فاضي) بيقدر يمسح تقدّم محفوظ. بناخد الأحسن من الاتنين */
+    if(d&&d.updated){const before=JSON.stringify(S);const m=mergeSt(d,S);S=Object.assign(defState(),m);S.updated=Math.max(d.updated||0,S.updated||0);S.uid=id;migrate();try{buildMaps()}catch(e){}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+      if(JSON.stringify(S)!==JSON.stringify(Object.assign(defState(),d,{uid:id})))push()}
+    else if(S.updated){S.uid=id;push()}
     hdr();const h=(location.hash||'#path').slice(1);if(['path','words','sentences','games','basics','settings','kids','practice',''].includes(h)||h.startsWith('admin')||/^kids-[a-z_]+$/.test(h))route();
     const sc=$('#sync');if(sc)sc.textContent='التقدّم محفوظ بحسابك وبيظهر على كل أجهزتك.';
     return true;
@@ -12673,7 +12686,7 @@ function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={
     $$('[data-g]',box).forEach(x=>x.onclick=()=>{ans.goal=+x.dataset.g;draw()});
     $$('[data-go]',box).forEach(x=>x.onclick=()=>{S.why=ans.why.join('، ');S.goal=ans.goal;S.onb=Date.now();save();box.remove();location.hash=x.dataset.go;if(x.dataset.go==='#path')toast('برافو! أول درس جاهز 🎉');setTimeout(()=>{if(canInstall())installApp()},1500)})};
   draw()}
-(function(){let k=0;const t=setInterval(()=>{k++;const ready=(typeof cloudOK!=="undefined"&&cloudOK)||k>4;if(!ready)return;clearInterval(t);
+(function(){let k=0;const t=setInterval(()=>{k++;const ready=(typeof cloudOK!=="undefined"&&cloudOK)||(!IS_PWA&&k>6);if(!ready){if(k>120)clearInterval(t);return}clearInterval(t);
   const fresh=!(S.xp>0)&&!Object.keys(S.ch||{}).length&&!S.place;if(!S.onb&&fresh&&!IS_OWNER)onbShow();else if(!S.onb&&!fresh){S.onb=1;save()}},1000)})();
 if(typeof vSettings==='function'){const _vS4=vSettings;vSettings=function(){_vS4.apply(this,arguments);if(!(IS_OWNER||IS_ADMIN))return;
   const last=$$('section.settings',app).pop();if(last)last.insertAdjacentHTML('afterend',`<section class="card settings set2"><h2><span class="set-ic" style="background:#fff3d6">👋</span><span>شاشة الترحيب (للإدارة)</span></h2><p class="muted" style="margin:0">هاي اللي بتطلع لأي مستخدم جديد أول ما يسجّل دخول.</p><div class="row"><button class="btn" id="onbt">شوفها</button></div></section>`);
