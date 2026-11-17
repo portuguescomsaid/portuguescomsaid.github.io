@@ -11706,7 +11706,7 @@ function vHome(){
   app.innerHTML=`<div class="stack">
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
    ${loginNote()}
-   ${typeof streakRisk==='function'?streakRisk():''}${typeof wordOfDay==='function'?wordOfDay():''}${goalCard()}${typeof leagueMini==='function'?leagueMini():''}
+   ${typeof streakRisk==='function'?streakRisk():''}${goalCard()}${typeof leagueMini==='function'?leagueMini():''}
    ${srsDue().length?`<a class="exam-cd" href="#review" style="background:var(--green-soft);border-color:var(--green)"><span class="cd-n">${srsDue().length}</span><span class="cd-t"><b>مراجعة اليوم</b><small>أغلاط سابقة لازم ترجعلها اليوم</small></span><span class="cd-go">راجع ←</span></a>`:''}
    <div class="stats"><div class="stat"><b>${S.xp}</b><span>نقاط XP</span></div><div class="stat"><b>${streakNow()}</b><span>أيام ورا بعض</span></div><div class="stat"><b>${nd}<small>/${CH.length}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${ne}<small>/${UNITS.length}</small></b><span>اختبارات وحدات</span></div></div>
    ${cont}
@@ -12636,7 +12636,7 @@ if(typeof vSettings==='function'){const _vS3=vSettings;vSettings=function(){_vS3
 }}
 
 /* ---------- 5) الترحيب لأول مرة: تعريف بسيط + سبب التعلّم + الهدف اليومي + من وين تبدأ ---------- */
-function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={why:'',goal:S.goal||10};
+function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={why:[],goal:S.goal||10};
   const W=[['🧭','حياتي اليومية بالبرازيل'],['💼','الشغل'],['🎓','الدراسة'],['👨‍👩‍👧','أعلّم ولادي'],['✈️','السفر'],['🌱','بس حابب أتعلّم']];
   const box=document.createElement('div');box.id='onb';box.className='onb';document.body.appendChild(box);
   const dots=()=>`<div class="onb-dots">${[0,1,2,3].map(i=>`<i class="${i===st?'on':''}"></i>`).join('')}</div>`;
@@ -12644,8 +12644,8 @@ function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={
     if(st===0)h=`<div class="onb-ic">🇧🇷</div><h2>أهلًا فيك ببرتغالي مع سعيد</h2><p class="muted">تعلّم البرتغالي البرازيلي من الصفر لحد ما تحكي بثقة، بالعربي وخطوة بخطوة.</p>
       <ul class="onb-ul"><li>📚 دروس قصيرة بالترتيب من A1 لـ C1</li><li>🔊 كل كلمة وجملة بصوت برازيلي، ونطقها بالحروف العربية</li><li>🤖 محادثة مع الذكاء الاصطناعي بمواقف حقيقية</li><li>🧒 قسم خاص للأطفال بالصور والألعاب</li></ul>
       <button class="btn primary big" data-n>يلا نبلّش ←</button>`;
-    if(st===1)h=`<div class="onb-ic">💭</div><h2>ليش بدك تتعلّم برتغالي؟</h2><p class="muted">اختار اللي بيناسبك.</p><div class="onb-opts">${W.map(([i,t])=>`<button class="onb-o${ans.why===t?' on':''}" data-w="${t}"><span>${i}</span>${t}</button>`).join('')}</div>
-      <button class="btn primary big" data-n ${ans.why?'':'disabled'}>التالي ←</button>`;
+    if(st===1)h=`<div class="onb-ic">💭</div><h2>ليش بدك تتعلّم برتغالي؟</h2><p class="muted">بتقدر تختار أكتر من خيار.</p><div class="onb-opts">${W.map(([i,t])=>`<button class="onb-o${ans.why.includes(t)?' on':''}" data-w="${t}"><span>${i}</span>${t}</button>`).join('')}</div>
+      <button class="btn primary big" data-n ${ans.why.length?'':'disabled'}>التالي ←</button>`;
     if(st===2)h=`<div class="onb-ic">🎯</div><h2>قديش وقت بدك تدرس باليوم؟</h2><p class="muted">بتقدر تغيّره بعدين من الإعدادات.</p><div class="onb-opts">${[[5,'خفيف'],[10,'عادي'],[15,'جدّي'],[20,'قوي']].map(([m,t])=>`<button class="onb-o${ans.goal===m?' on':''}" data-g="${m}"><span>${m}</span>دقايق · ${t}</button>`).join('')}</div>
       <button class="btn primary big" data-n>التالي ←</button>`;
     if(st===3)h=`<div class="onb-ic">🚀</div><h2>من وين بدك تبدأ؟</h2>
@@ -12654,9 +12654,9 @@ function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={
       <button class="onb-o" data-go="#kids"><span>🧒</span><b>قسم الأطفال</b><small>لولادك: صور وأصوات وألعاب</small></button></div>`;
     box.innerHTML=`<div class="onb-card">${st?'<button class="onb-back" data-b>→</button>':''}${dots()}${h}</div>`;
     const n=$('[data-n]',box);if(n)n.onclick=()=>{st++;draw()};const b=$('[data-b]',box);if(b)b.onclick=()=>{st--;draw()};
-    $$('[data-w]',box).forEach(x=>x.onclick=()=>{ans.why=x.dataset.w;draw()});
+    $$('[data-w]',box).forEach(x=>x.onclick=()=>{const t=x.dataset.w;ans.why=ans.why.includes(t)?ans.why.filter(y=>y!==t):ans.why.concat(t);draw()});
     $$('[data-g]',box).forEach(x=>x.onclick=()=>{ans.goal=+x.dataset.g;draw()});
-    $$('[data-go]',box).forEach(x=>x.onclick=()=>{S.why=ans.why;S.goal=ans.goal;S.onb=Date.now();save();box.remove();location.hash=x.dataset.go;if(x.dataset.go==='#path')toast('برافو! أول درس جاهز 🎉')})};
+    $$('[data-go]',box).forEach(x=>x.onclick=()=>{S.why=ans.why.join('، ');S.goal=ans.goal;S.onb=Date.now();save();box.remove();location.hash=x.dataset.go;if(x.dataset.go==='#path')toast('برافو! أول درس جاهز 🎉')})};
   draw()}
 (function(){let k=0;const t=setInterval(()=>{k++;const ready=(typeof cloudOK!=="undefined"&&cloudOK)||k>4;if(!ready)return;clearInterval(t);
   const fresh=!(S.xp>0)&&!Object.keys(S.ch||{}).length&&!S.place;if(!S.onb&&fresh&&!IS_OWNER)onbShow();else if(!S.onb&&!fresh){S.onb=1;save()}},1000)})();
