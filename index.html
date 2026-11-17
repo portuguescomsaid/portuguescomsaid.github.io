@@ -11416,8 +11416,9 @@ function devSpeak(items){return new Promise(res=>{
   if(!last)return res();last.onend=last.onerror=()=>res();
   if(AUD.voices.length&&!hasBR()&&!say.warned){say.warned=true;toast('جهازك ما فيه صوت برازيلي، فالنطق ممكن يطلع أوروبي. شوف إعدادات الصوت.')}})}
 /* أسماء الحروف: محرك الصوت بيقرأ «A» لحالها غلط، فبنعطيه اسم الحرف مكتوب */
+const LETTER_EX={A:'amigo',B:'bola',C:'casa',D:'dia',E:'escola',F:'faca',G:'gato',H:'hoje',I:'ilha',J:'janela',K:'kiwi',L:'livro',M:'mãe',N:'nome',O:'ovo',P:'pão',Q:'queijo',R:'rua',S:'sol',T:'tudo',U:'uva',V:'você',W:'wi-fi',X:'xícara',Y:'yoga',Z:'zero'};
 const LETTER_PT={A:'a',B:'bê',C:'cê',D:'dê',E:'é',F:'éfe',G:'gê',H:'agá',I:'i',J:'jóta',K:'cá',L:'éle',M:'ême',N:'êne',O:'ó',P:'pê',Q:'quê',R:'érre',S:'ésse',T:'tê',U:'u',V:'vê',W:'dáblio',X:'xís',Y:'ípsilon',Z:'zê'};
-async function say(text,slow,vo){if(typeof text==='string'){const t=text.trim();if(/^[A-Za-z]$/.test(t)){const f=afile('pf_dora','#L:'+t.toUpperCase());if(f){filePlay([{url:f,slow,t:LETTER_PT[t.toUpperCase()],g:'f'}]);return}text=LETTER_PT[t.toUpperCase()]}else if(/^([A-Za-z]\s*[-·,]\s*)+[A-Za-z]$/.test(t))text=t.split(/\s*[-·,]\s*/).map(c=>LETTER_PT[c.toUpperCase()]).join(', ')}
+async function say(text,slow,vo,raw){if(!raw&&typeof text==='string'){const t=text.trim();if(/^[A-Za-z]$/.test(t)){const U=t.toUpperCase(),id0=++speakId;await say(LETTER_PT[U],slow,vo,1);if(speakId!==id0+1)return;const w=LETTER_EX[U];if(w){await sleep(550);if(speakId!==id0+1)return;await say(w,slow,vo,1)}return}else if(/^([A-Za-z]\s*[-·,]\s*)+[A-Za-z]$/.test(t))text=t.split(/\s*[-·,]\s*/).map(c=>LETTER_PT[c.toUpperCase()]).join(', ');return say(text,slow,vo,1)}
   const parts=speechParts(text);if(!parts.length)return;
   const id=++speakId;const base=S.rate||0.8;
   if(useClaude()){try{const r=slow?0.7:Math.max(0.85,Math.min(1.3,base+0.2));await AUD.tts.speak(parts.map(p=>Object.assign({text:p,language:'pt-BR',rate:r},vo&&vo.cv?{voice:vo.cv}:{})));return}catch(e){if(e&&e.code==='not_granted')AUD.tts=null;else return}}
