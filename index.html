@@ -251,7 +251,7 @@ main{padding:20px 0 32px}
 .flash{perspective:900px;width:100%}
 .flash .face{min-height:220px;border-radius:20px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;text-align:center;cursor:pointer}
 .flash .face .pt{font-size:36px;font-weight:800;direction:ltr}
-.flash .face.back{background:var(--green-soft)}
+.flash .face.flipped{background:var(--green-soft)}
 .flash .face .ar{font-size:26px;font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* v2 additions */
@@ -19817,7 +19817,7 @@ function vWords(){
 function flash(ws){
   let i=0,back=false;
   const show=()=>{const w=ws[i];app.innerHTML=`<div class="stack"><div class="row" style="justify-content:space-between"><button class="btn ghost" id="fx">→ الرجوع إلى الكلمات</button><span class="tnum muted">${i+1} / ${ws.length}</span></div>
-    <div class="flash"><div class="face${back?' back':''}" id="face" role="button" tabindex="0" aria-label="اقلب البطاقة">${back?`<span class="ar">${bidi(w.ar)}</span><span class="muted">${esc(w.pron)}</span>${P(w.pt)}`:`${PIC(w.pt,1,uIcon(w.ch))}${P(w.pt)}${SYL(w.pt)}<span class="muted">اضغط عشان تشوف المعنى</span>`}</div></div>
+    <div class="flash"><div class="face${back?' flipped':''}" id="face" role="button" tabindex="0" aria-label="اقلب البطاقة">${back?`<span class="ar">${bidi(w.ar)}</span><span class="muted">${esc(w.pron)}</span>${P(w.pt)}`:`${PIC(w.pt,1,uIcon(w.ch))}${P(w.pt)}${SYL(w.pt)}<span class="muted">اضغط عشان تشوف المعنى</span>`}</div></div>
     <div class="row" style="justify-content:center">${sayBtn(w.pt)}<button class="btn" id="pv" ${i===0?'disabled':''}>السابق</button><button class="btn primary" id="nv">${i<ws.length-1?'التالي':'خلّصت'}</button></div></div>`;
     const f=$('#face');f.onclick=()=>{back=!back;show()};f.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();back=!back;show()}};
     $('#fx').onclick=vWords;$('#pv').onclick=()=>{i--;back=false;show()};$('#nv').onclick=()=>{if(i<ws.length-1){i++;back=false;show();say(ws[i].pt)}else{addXP(5);vWords();toast('خلّصت البطاقات! +5 XP')}}};
