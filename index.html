@@ -842,6 +842,9 @@ function C(o){o.W=lines(o.w).map(([pt,pron,ar])=>({pt,pron,ar,ch:o.id,key:'w|'+p
 const EXAMS={};
 const NC=[];
 
+
+/* تصحيح صور كلمات طلعت غلط من مطابقة جذر الكلمة */
+const EMO_FIX={"acordo": "🤝", "alta / queda": "📈", "alta temporada": "📈", "ao ar livre": "🌳", "apresentador": "🎙️", "compreender": "💡", "comprido": "📏", "compridos": "📏", "comprimido": "💊", "compromisso": "📅", "de acordo com": "", "depois a gente marca": "📅", "doi": "", "dor de cotovelo": "💔", "custar os olhos da cara": "💸", "dar com a língua nos dentes": "🤐", "chover no molhado": "🔁", "centro-oeste": "🗺️", "chá de bebê": "🍼", "cartão de embarque": "🎫", "dados móveis": "📶", "dia do pagamento": "💵", "até certo ponto": "", "antes tarde do que nunca.": "⏳", "economizar": "💰", "edital": "📄", "editar": "✏️", "editor": "📰", "editora": "📚", "emprestar": "💰", "empréstimo": "💰", "ensaiar": "🔁", "entrevistado": "🎤", "entrevistador": "🎤", "escola de samba": "💃", "escolha": "☑️", "esperto": "🦊", "figo": "", "jogo de cintura": "", "investigação": "🔍", "mais cedo ou mais tarde": "⏳", "mais tarde": "⏳", "mal-entendido": "😕", "mandioca": "", "mandioca / aipim / macaxeira": "", "manga curta": "👕", "manga longa": "👕", "mudo": "🔇", "nome sujo": "🚫", "olhos da cara": "💸", "livre": "🕊️", "dor de dente": "🦷", "fechar negócio": "🤝", "fechou": "🤝", "em boca fechada não entra mosca.": "🤐", "pagar mico": "😳", "pagar o pato": "", "perdoar": "🙏", "perdão": "🙏", "piá": "👦", "plano de negócios": "📋", "porta-voz": "🎤", "prato do dia": "🍽️", "pressuposto": "", "pré-natal": "🤰", "página": "📄", "quebrar o galho": "🔧", "quebrar um galho": "🔧", "som alto": "🔊", "sala de aula": "🧑‍🏫", "tempo livre": "🕒", "trocadilho": "😄", "temperatura ambiente": "🌡️", "meio ambiente": "🌳", "dúzia": "🥚", "pressão": "🩺"};
 /* ===== syllables (تقطيع المقاطع) + stress ===== */
 const VOW='aeiouáéíóúâêôãõàü';
 const isVow=c=>!!c&&VOW.includes(c);
@@ -916,10 +919,10 @@ lixo:'🗑️',arvore:'🌳',lei:'⚖️',juiz:'⚖️',advogado:'⚖️',audien
 grafico:'📊',relatorio:'📊',planilha:'📊',dados:'📊',pesquisa:'🔎',cafezinho:'☕',
 comer:'🍽️',comi:'🍽️',comeu:'🍽️',como:'',falar:'🗣️',falo:'🗣️',fala:'🗣️',falei:'🗣️',falou:'🗣️',corra:'🏃',correr:'🏃',correndo:'🏃',corre:'🏃',leia:'📖',ler:'📖',sair:'🚪',saiu:'🚪',sai:'🚪',marcar:'📅',marcado:'📅',caiu:'📉',doi:'🤕',doem:'🤕',gravar:'🎥',gostoso:'😋',deliciosas:'😋',
 nome:'🏷️',idade:'🎂',guria:'👧',vina:'🌭',bergamota:'🍊',penal:'✏️'};
-const STEMS=[['comprov','📄'],['trabalh','💼'],['estud','📚'],['aprend','📚'],['almoc','🍽️'],['jant','🍽️'],['dorm','😴'],['acord','⏰'],['viag','✈️'],['viaj','✈️'],['compr','🛒'],['pag','💳'],['ligu','📞'],['ligo','📞'],['liga','📞'],['mandat','🗳️'],['mand','📤'],['envi','📤'],['telefon','📞'],['fotograf','📸'],['edit','🎞️'],['chov','🌧️'],['chuv','🌧️'],['esfri','🥶'],['vend','💰'],['alug','🔑'],['mud','📦'],['abert','🔓'],['abri','🔓'],['abre','🔓'],['abro','🔓'],['fech','🔒'],['cheg','📍'],['volt','🔙'],['esper','⏳'],['ajud','🤝'],['entend','💡'],['pens','💭'],['sonh','💭'],['gost','❤️'],['pergunt','❓'],['respond','💬'],['escrev','✍️'],['livr','📖'],['assin','✍️'],['preench','📝'],['renov','🔄'],['cancel','❌'],['confirm','✅'],['agend','📅'],['consult','🩺'],['exame','🧪'],['vacin','💉'],['fum','🚭'],['brinc','🧸'],['danc','💃'],['empres','🏢'],['negoc','🤝'],['propost','📄'],['orcament','🧾'],['salari','💰'],['dinheir','💵'],['boleto','🧾'],['fatura','🧾'],['saldo','💰'],['saque','🏧'],['transfer','🔁'],['escol','🏫'],['matricul','📝'],['alun','🧑‍🎓'],['condomin','🏢'],['porteir','💂'],['vizinh','🏘️'],['sindic','🏢'],['encanador','🔧'],['eletric','⚡'],['consert','🔧'],['quebr','💔'],['entup','🚽'],['medic','🩺'],['farmac','💊'],['remed','💊'],['comprimid','💊'],['receit','📋'],['sintom','🤒'],['tontura','😵'],['enjo','🤢'],['alergi','🤧'],['gargant','🗣️'],['press','🩺'],['polic','🚓'],['delegac','🚓'],['roub','🦹'],['perd','🔍'],['ferid','🩹'],['desmai','😵'],['document','📄'],['passaport','🛂'],['certid','📜'],['declarac','📜'],['requer','📜'],['procurac','📜'],['recurs','⚖️'],['process','⚖️'],['testemunh','👁️'],['contrat','📝'],['clausul','📝'],['noticia','📰'],['jornal','📰'],['manchet','📰'],['govern','🏛️'],['prefeit','🏛️'],['eleic','🗳️'],['vot','🗳️'],['inflac','📈'],['juros','📈'],['aument','📈'],['ambient','🌍'],['poluic','🏭'],['recicl','♻️'],['economiz','💡'],['sustent','🌱'],['plant','🌱'],['aplicativ','📱'],['camer','📷'],['ensai','📸'],['casament','💒'],['casad','💍'],['solteir','🙋'],['aniver','🎂'],['cumpriment','👋'],['beij','😘'],['abrac','🤗'],['curs','📚'],['ensin','🧑‍🏫'],['cancao','🎵'],['samba','💃'],['bossa','🎶'],['sertanej','🤠'],['forro','🪗'],['entrevist','🤝'],['curricul','📄'],['contrat','🤝'],['ferias','🏖️'],['feriad','🎉'],['reclam','📢'],['garanti','🛡️'],['defeit','⚠️'],['troc','🔁'],['devolu','↩️'],['reembols','💰'],['cansad','😩'],['nervos','😬'],['ocupad','⏳'],['atrasad','⏰'],['divert','😄'],['amig','🤝'],['pesso','🧑'],['reuni','👥'],['apresent','📊'],['grafic','📊'],['client','🤝'],['marca','🏷️'],['engaj','👍'],['parceri','🤝'],['investi','📈']];
+const STEMS=[['acordo','🤝'],['compreen','💡'],['comprid','📏'],['compromiss','📅'],['pagin','📄'],['pagod','🎵'],['mandioc',''],['editor','📰'],['edital','📄'],['mudo','🔇'],['esperto','🦊'],['livre','🕊️'],['perdo','🙏'],['perdao','🙏'],['pressup',''],['pressa','⏱️'],['escolh','☑️'],['trocadilh','😄'],['economiz','💰'],['ensaiar','🔁'],['investig','🔍'],['emprest','💰'],['comprov','📄'],['trabalh','💼'],['estud','📚'],['aprend','📚'],['almoc','🍽️'],['jant','🍽️'],['dorm','😴'],['acord','⏰'],['viag','✈️'],['viaj','✈️'],['compr','🛒'],['pag','💳'],['ligu','📞'],['ligo','📞'],['liga','📞'],['mandat','🗳️'],['mand','📤'],['envi','📤'],['telefon','📞'],['fotograf','📸'],['edit','🎞️'],['chov','🌧️'],['chuv','🌧️'],['esfri','🥶'],['vend','💰'],['alug','🔑'],['mud','📦'],['abert','🔓'],['abri','🔓'],['abre','🔓'],['abro','🔓'],['fech','🔒'],['cheg','📍'],['volt','🔙'],['esper','⏳'],['ajud','🤝'],['entend','💡'],['pens','💭'],['sonh','💭'],['gost','❤️'],['pergunt','❓'],['respond','💬'],['escrev','✍️'],['livr','📖'],['assin','✍️'],['preench','📝'],['renov','🔄'],['cancel','❌'],['confirm','✅'],['agend','📅'],['consult','🩺'],['exame','🧪'],['vacin','💉'],['fum','🚭'],['brinc','🧸'],['danc','💃'],['empres','🏢'],['negoc','🤝'],['propost','📄'],['orcament','🧾'],['salari','💰'],['dinheir','💵'],['boleto','🧾'],['fatura','🧾'],['saldo','💰'],['saque','🏧'],['transfer','🔁'],['escol','🏫'],['matricul','📝'],['alun','🧑‍🎓'],['condomin','🏢'],['porteir','💂'],['vizinh','🏘️'],['sindic','🏢'],['encanador','🔧'],['eletric','⚡'],['consert','🔧'],['quebr','💔'],['entup','🚽'],['medic','🩺'],['farmac','💊'],['remed','💊'],['comprimid','💊'],['receit','📋'],['sintom','🤒'],['tontura','😵'],['enjo','🤢'],['alergi','🤧'],['gargant','🗣️'],['press','🩺'],['polic','🚓'],['delegac','🚓'],['roub','🦹'],['perd','🔍'],['ferid','🩹'],['desmai','😵'],['document','📄'],['passaport','🛂'],['certid','📜'],['declarac','📜'],['requer','📜'],['procurac','📜'],['recurs','⚖️'],['process','⚖️'],['testemunh','👁️'],['contrat','📝'],['clausul','📝'],['noticia','📰'],['jornal','📰'],['manchet','📰'],['govern','🏛️'],['prefeit','🏛️'],['eleic','🗳️'],['vot','🗳️'],['inflac','📈'],['juros','📈'],['aument','📈'],['ambient','🌍'],['poluic','🏭'],['recicl','♻️'],['economiz','💡'],['sustent','🌱'],['plant','🌱'],['aplicativ','📱'],['camer','📷'],['ensai','📸'],['casament','💒'],['casad','💍'],['solteir','🙋'],['aniver','🎂'],['cumpriment','👋'],['beij','😘'],['abrac','🤗'],['curs','📚'],['ensin','🧑‍🏫'],['cancao','🎵'],['samba','💃'],['bossa','🎶'],['sertanej','🤠'],['forro','🪗'],['entrevist','🤝'],['curricul','📄'],['contrat','🤝'],['ferias','🏖️'],['feriad','🎉'],['reclam','📢'],['garanti','🛡️'],['defeit','⚠️'],['troc','🔁'],['devolu','↩️'],['reembols','💰'],['cansad','😩'],['nervos','😬'],['ocupad','⏳'],['atrasad','⏰'],['divert','😄'],['amig','🤝'],['pesso','🧑'],['reuni','👥'],['apresent','📊'],['grafic','📊'],['client','🤝'],['marca','🏷️'],['engaj','👍'],['parceri','🤝'],['investi','📈']];
 const UNIT_ICON={1:'🔤',2:'🗣️',3:'👨‍👩‍👧',4:'🍽️',5:'🏙️',6:'⏮️',7:'🏛️',8:'🏫',9:'💼',10:'🩺',11:'💬',12:'🤔',13:'🔀',14:'🎉',15:'✉️',16:'📐',17:'💼',18:'📰',19:'🎯',20:'✍️',21:'⚖️',22:'📜',23:'🏆'};
 const NUMW=new Set('zero um uma dois duas tres quatro cinco seis sete oito nove dez onze doze treze catorze quatorze quinze dezesseis dezessete dezoito dezenove vinte trinta quarenta cinquenta sessenta setenta oitenta noventa cem cento duzentos duzentas trezentos quatrocentos quinhentos seiscentos setecentos oitocentos novecentos mil milhao milhoes e'.split(' '));
-function emojis(text,max){
+function emojis(text,max){{const _k=String(text||'').toLowerCase().trim();if(typeof EMO_FIX!=='undefined'&&_k in EMO_FIX)return EMO_FIX[_k]?[EMO_FIX[_k]]:[]}
   let n=nrm(text);const out=[];const toks=n.split(' ').filter(Boolean);
   /* الأرقام: أيقونة بس للرقم المفرد من 0 لـ 10، وباقي الأرقام بدون أيقونات عشان ما تطلع غلط */
   if(toks.some(t=>NUMW.has(t)&&t!=='e')){if(toks.length===1&&EX[toks[0]]&&EX[toks[0]]!=='🔢')return [EX[toks[0]]];const rest=toks.filter(t=>!NUMW.has(t));if(!rest.length)return [];n=rest.join(' ')}
@@ -2667,39 +2670,39 @@ H('4 أفعال شاذة فقط')+TB(`era · éramos · eram|ser: كان
 tinha · tínhamos · tinham|ter: كان عنده
 ia · íamos · iam|ir: كان يذهب
 vinha · vínhamos · vinham|vir: كان يأتي`)+
-X(`Quando eu era criança, eu morava em Bagdá.|كواندو إيو إيرا كريانسا، إيو مورافا إين باغدا.|عندما كنت طفلًا كنت أسكن في بغداد.
-Eu trabalhava em um escritório.|إيو تراباليافا إين أوم إسكريتوريو.|كنت أعمل في مكتب.
+X(`Quando eu era criança, eu morava em Bagdá.|كواندو إيو إيرا كريانسا، إيو موراڤا إين باغدا.|عندما كنت طفلًا كنت أسكن في بغداد.
+Eu trabalhava em um escritório.|إيو ترابالياڤا إين أوم إسكريتوريو.|كنت أعمل في مكتب.
 Minha mãe fazia pão todo dia.|مينيا ماين فازيا باو تودو دجيا.|كانت أمي تخبز كل يوم.
 A casa era grande e tinha um jardim.|آ كازا إيرا غراندجي إي تشينيا أوم جارجين.|كان البيت كبيرًا وفيه حديقة.
 A gente ia à praia aos domingos.|آ جينتشي إيا آ برايا آوس دومينغوس.|كنا نذهب إلى البحر أيام الأحد.`)+
-H('perfeito أم imperfeito؟')+Pp('<b>imperfeito</b> للخلفية والعادة، و<b>perfeito</b> للحدث الذي حصل مرة وانتهى:')+X(`Eu estava dormindo quando você ligou.|إيو إستافا دورميندو كواندو ڤوسيه ليغو.|كنت نائمًا عندما اتصلت.
-Eu morava no Egito, mas mudei para o Brasil.|إيو مورافا نو إيجيتو، ماس موديي بارا أو برازيو.|كنت أسكن في مصر، لكني انتقلت إلى البرازيل.
-Estava chovendo quando eu saí.|إستافا شوڤيندو كواندو إيو سائي.|كانت تمطر عندما خرجت.`)+
+H('perfeito أم imperfeito؟')+Pp('<b>imperfeito</b> للخلفية والعادة، و<b>perfeito</b> للحدث الذي حصل مرة وانتهى:')+X(`Eu estava dormindo quando você ligou.|إيو إستاڤا دورميندو كواندو ڤوسيه ليغو.|كنت نائمًا عندما اتصلت.
+Eu morava no Egito, mas mudei para o Brasil.|إيو موراڤا نو إيجيتو، ماس موديي بارا أو برازيو.|كنت أسكن في مصر، لكني انتقلت إلى البرازيل.
+Estava chovendo quando eu saí.|إستاڤا شوڤيندو كواندو إيو سائي.|كانت تمطر عندما خرجت.`)+
 TIP('<b>estava + gerúndio</b> = كنت أفعل في تلك اللحظة: <em>Eu estava trabalhando.</em>'),
 w:`era|إيرا|كان
 tinha|تشينيا|كان عنده / كان هناك
 ia|إيا|كان يذهب
 vinha|ڤينيا|كان يأتي
-morava|مورافا|كنت أسكن
-trabalhava|تراباليافا|كنت أعمل
+morava|موراڤا|كنت أسكن
+trabalhava|ترابالياڤا|كنت أعمل
 fazia|فازيا|كان يفعل
-estava|إستافا|كان (حالة / مكان)
+estava|إستاڤا|كان (حالة / مكان)
 criança|كريانسا|طفل
 infância|إينفانسيا|طفولة
 antigamente|أنتشيغامينتشي|في الماضي / زمان
 sempre|سيمبري|دائمًا
 quando|كواندو|لمّا (عندما) — وبالسؤال: إيمتى؟
 enquanto|إينكوانتو|بينما`,
-s:`Quando eu era criança, eu morava em Casablanca.|كواندو إيو إيرا كريانسا، إيو مورافا إين كازابلانكا.|عندما كنت طفلًا كنت أسكن في الدار البيضاء.
-Eu trabalhava em um escritório.|إيو تراباليافا إين أوم إسكريتوريو.|كنت أعمل في مكتب.
+s:`Quando eu era criança, eu morava em Casablanca.|كواندو إيو إيرا كريانسا، إيو موراڤا إين كازابلانكا.|عندما كنت طفلًا كنت أسكن في الدار البيضاء.
+Eu trabalhava em um escritório.|إيو ترابالياڤا إين أوم إسكريتوريو.|كنت أعمل في مكتب.
 A casa era grande.|آ كازا إيرا غراندجي.|كان البيت كبيرًا.
 Minha mãe fazia pão todo dia.|مينيا ماين فازيا باو تودو دجيا.|كانت أمي تخبز كل يوم.
 A gente ia à praia aos domingos.|آ جينتشي إيا آ برايا آوس دومينغوس.|كنا نذهب إلى البحر أيام الأحد.
-Eu estava dormindo quando você ligou.|إيو إستافا دورميندو كواندو ڤوسيه ليغو.|كنت نائمًا عندما اتصلت.
-Estava chovendo quando eu saí.|إستافا شوڤيندو كواندو إيو سائي.|كانت تمطر عندما خرجت.
+Eu estava dormindo quando você ligou.|إيو إستاڤا دورميندو كواندو ڤوسيه ليغو.|كنت نائمًا عندما اتصلت.
+Estava chovendo quando eu saí.|إستاڤا شوڤيندو كواندو إيو سائي.|كانت تمطر عندما خرجت.
 Antigamente tudo era mais barato.|أنتشيغامينتشي تودو إيرا مايس باراتو.|زمان كان كل شيء أرخص.
 Eu tinha um carro branco.|إيو تشينيا أوم كاهّو برانكو.|كان عندي سيارة بيضاء.
-Enquanto eu cozinhava, ele lavava a louça.|إينكوانتو إيو كوزينيافا، إيلي لافافا آ لوسا.|بينما كنت أطبخ كان هو يغسل الصحون.`,
+Enquanto eu cozinhava, ele lavava a louça.|إينكوانتو إيو كوزينياڤا، إيلي لاڤاڤا آ لوسا.|بينما كنت أطبخ كان هو يغسل الصحون.`,
 d:`Quando eu ___ criança, eu morava em Damasco.|عندما كنت طفلًا...|era|fui|sou
 A casa ___ um jardim.|كان في البيت حديقة.|tinha|teve|tem
 A gente ___ à praia aos domingos.|كنا نذهب إلى البحر.|ia|foi|vai
@@ -3798,7 +3801,7 @@ história|إيستوريا|قصة`,
 s:`Era uma noite fria de julho.|إيرا أوما نويتشي فريا دجي جوليو.|كانت ليلة باردة من يوليو.
 As crianças dormiam quando a luz acabou.|آس كريانساس دورميان كواندو آ لوز أكابو.|كان الأولاد نائمين عندما انقطعت الكهرباء.
 Eu procurei uma vela, mas não encontrei.|إيو بروكوريي أوما ڤيلا، ماس ناو إينكونتريي.|بحثت عن شمعة ولم أجد.
-Enquanto eu cozinhava, alguém bateu na porta.|إينكوانتو إيو كوزينيافا، آوغين باتيو نا بورتا.|بينما كنت أطبخ طرق أحدهم الباب.
+Enquanto eu cozinhava, alguém bateu na porta.|إينكوانتو إيو كوزينياڤا، آوغين باتيو نا بورتا.|بينما كنت أطبخ طرق أحدهم الباب.
 Eu conheci minha esposa em 2014.|إيو كونيسي مينيا إسبوزا إين دويس ميو إي كاتورزي.|تعرفت على زوجتي في 2014.
 Eu já conhecia o bairro.|إيو جا كونيسيا أو بايهو.|كنت أعرف الحي.
 Eu soube da notícia ontem.|إيو سوبي دا نوتيسيا أونتين.|عرفت بالخبر أمس.
@@ -4189,7 +4192,7 @@ H('Mais-que-perfeito: tinha + particípio')+Pp('حدث وقع <b>قبل</b> حد
 Eu nunca tinha visto neve.|إيو نونكا تشينيا ڤيستو نيڤي.|لم أكن قد رأيت الثلج أبدًا.
 Ela já tinha comido quando ligamos.|إيلا جا تشينيا كوميدو كواندو ليغاموس.|كانت قد أكلت عندما اتصلنا.`)+
 H('Futuro composto و condicional composto')+X(`Até sexta, terei terminado o projeto.|أتيه سيستا، تيريي تيرمينادو أو بروجيتو.|حتى الجمعة سأكون قد أنهيت المشروع.
-Eu teria ido, mas estava doente.|إيو تيريا إيدو، ماس إستافا دوينتشي.|كنت سأذهب، لكني كنت مريضًا.
+Eu teria ido, mas estava doente.|إيو تيريا إيدو، ماس إستاڤا دوينتشي.|كنت سأذهب، لكني كنت مريضًا.
 Se eu tivesse sabido, teria ajudado.|سي إيو تشيڤيسي سابيدو، تيريا أجودادو.|لو عرفت لساعدت.`)+
 H('acabar de: للتو')+X(`Acabei de chegar.|أكابيي دجي شيغار.|وصلت للتو.
 Ele acabou de sair.|إيلي أكابو دجي سائير.|خرج للتو.`),
@@ -4211,7 +4214,7 @@ s:`Tenho trabalhado muito ultimamente.|تينيو تراباليادو موين�
 Tem chovido bastante.|تين شوڤيدو باستانتشي.|المطر كثير هذه الأيام.
 Quando cheguei, o ônibus já tinha saído.|كواندو شيغيي، أو أونيبوس جا تشينيا سائيدو.|عندما وصلت كانت الحافلة قد انطلقت.
 Eu nunca tinha visto neve.|إيو نونكا تشينيا ڤيستو نيڤي.|لم أكن قد رأيت الثلج.
-Eu teria ido, mas estava doente.|إيو تيريا إيدو، ماس إستافا دوينتشي.|كنت سأذهب لكني كنت مريضًا.
+Eu teria ido, mas estava doente.|إيو تيريا إيدو، ماس إستاڤا دوينتشي.|كنت سأذهب لكني كنت مريضًا.
 Se eu tivesse sabido, teria ajudado.|سي إيو تشيڤيسي سابيدو، تيريا أجودادو.|لو عرفت لساعدت.
 Acabei de chegar.|أكابيي دجي شيغار.|وصلت للتو.
 Ele acabou de sair.|إيلي أكابو دجي سائير.|خرج للتو.
@@ -4237,7 +4240,7 @@ amanhã|no dia seguinte
 ontem|no dia anterior
 aqui|ali / lá
 este|aquele`)+
-X(`O médico disse que eu precisava descansar.|أو ميدجيكو دجيسي كي إيو بريسيزافا دجيسكانسار.|قال الطبيب إنني أحتاج إلى الراحة.
+X(`O médico disse que eu precisava descansar.|أو ميدجيكو دجيسي كي إيو بريسيزاڤا دجيسكانسار.|قال الطبيب إنني أحتاج إلى الراحة.
 A professora perguntou se as crianças tinham feito a lição.|آ بروفيسورا بيرغونتو سي آس كريانساس تشينيان فيتو آ ليساو.|سألت المعلمة إن كان الأولاد قد عملوا الواجب.
 O gerente falou que ia me ligar.|أو جيرينتشي فالو كي إيا مي ليغار.|قال المدير إنه سيتصل بي.
 Ela me pediu que eu chegasse cedo.|إيلا مي بيدجيو كي إيو شيغاسي سيدو.|طلبت مني أن أصل مبكرًا.`)+
@@ -4264,12 +4267,12 @@ no dia anterior|نو دجيا أنتيريور|في اليوم السابق
 naquele dia|ناكيلي دجيا|في ذلك اليوم
 se|سي|إذا / هل (في السؤال المنقول)
 que|كي|أنّ`,
-s:`Ele disse que estava cansado.|إيلي دجيسي كي إستافا كانسادو.|قال إنه متعب.
+s:`Ele disse que estava cansado.|إيلي دجيسي كي إستاڤا كانسادو.|قال إنه متعب.
 Ela disse que ia viajar no dia seguinte.|إيلا دجيسي كي إيا ڤياجار نو دجيا سيغينتشي.|قالت إنها ستسافر في اليوم التالي.
 Ele contou que tinha comprado um carro.|إيلي كونتو كي تشينيا كومبرادو أوم كاهّو.|حكى أنه اشترى سيارة.
 Ela perguntou se eu ia à festa.|إيلا بيرغونتو سي إيو إيا آ فيستا.|سألت إن كنت سأذهب للحفلة.
-Ele perguntou onde eu morava.|إيلي بيرغونتو أوندجي إيو مورافا.|سأل أين أسكن.
-O médico disse que eu precisava descansar.|أو ميدجيكو دجيسي كي إيو بريسيزافا دجيسكانسار.|قال الطبيب إنني أحتاج الراحة.
+Ele perguntou onde eu morava.|إيلي بيرغونتو أوندجي إيو موراڤا.|سأل أين أسكن.
+O médico disse que eu precisava descansar.|أو ميدجيكو دجيسي كي إيو بريسيزاڤا دجيسكانسار.|قال الطبيب إنني أحتاج الراحة.
 Ela me pediu que eu chegasse cedo.|إيلا مي بيدجيو كي إيو شيغاسي سيدو.|طلبت أن أصل مبكرًا.
 O gerente falou que ia me ligar.|أو جيرينتشي فالو كي إيا مي ليغار.|قال المدير إنه سيتصل بي.
 Ele respondeu que não sabia.|إيلي هيسبونديو كي ناو سابيا.|أجاب أنه لا يعرف.
@@ -5350,7 +5353,7 @@ bonitinho|بونيتينيو|لطيف / حلو
 casarão|كازاراو|بيت ضخم
 carrão|كاهاو|سيارة فخمة
 portão|بورتاو|بوابة
-cedinho|سيدينيو|مبكرًا جدًا
+cedinho|سيدجينيو|مبكرًا جدًا
 pouquinho|بوكينيو|قليل جدًا`,
 s:`Vamos tomar um cafezinho?|ڤاموس تومار أوم كافيزينيو؟|نشرب فنجان قهوة؟
 Espera um minutinho!|إسبيرا أوم مينوتينيو!|لحظة!
@@ -5359,7 +5362,7 @@ Volto rapidinho.|ڤولتو هابيدجينيو.|أرجع بسرعة.
 Fala devagarinho, por favor.|فالا دجيڤاغارينيو، بور فاڤور.|تكلم على مهل.
 Quero um pouquinho só.|كيرو أوم بوكينيو سو.|أريد قليلًا فقط.
 Que bebê bonitinho!|كي بيبيه بونيتينيو!|يا له من طفل لطيف!
-Acordei cedinho hoje.|أكوردي سيدينيو أوجي.|استيقظت مبكرًا جدًا اليوم.
+Acordei cedinho hoje.|أكوردي سيدجينيو أوجي.|استيقظت مبكرًا جدًا اليوم.
 Ele comprou um carrão.|إيلي كومبرو أوم كاهاو.|اشترى سيارة فخمة.
 Deixa no portão, por favor.|ديشا نو بورتاو، بور فاڤور.|اتركه عند البوابة.`,
 d:`Vamos tomar um ___?|فنجان قهوة؟|cafezinho|cafeinho|cafézão
@@ -5450,7 +5453,7 @@ tô|تو|أنا
 cê|سيه|إنت
 bora|بورا|يلا
 né|نيه|صح؟
-tava|تافا|كان (estava)
+tava|تاڤا|كان (estava)
 tamo junto|تامو جونتو|معك / نحن معًا
 cadê|كاديه|وين؟
 peraí|بيرا آي|استنى (espera aí)
@@ -5463,7 +5466,7 @@ Peraí, já vou!|بيرا آي، جا ڤو!|استنى، جاي!
 Tô indo pra casa.|تو إيندو برا كازا.|أنا رايح عالبيت.
 Cê tá bem?|سيه تا بين؟|إنت منيح؟
 Num sei, cara.|نوم سي، كارا.|ما بعرف يا زلمة.
-Tava chovendo muito.|تافا شوڤيندو موينتو.|كانت تمطر كثير.
+Tava chovendo muito.|تاڤا شوڤيندو موينتو.|كانت تمطر كثير.
 Tamo junto!|تامو جونتو!|إحنا معك!
 Vou pro centro.|ڤو برو سينترو.|رايح عالوسط.
 Tá bom, né?|تا بون، نيه؟|تمام، صح؟`,
@@ -5669,7 +5672,7 @@ concerto|حفل موسيقي ≠ conserto (تصليح)
 seção / sessão|قسم ≠ جلسة
 eminente / iminente|بارز ≠ وشيك`)+
 X(`Por que você não veio?|بور كي ڤوسيه ناو ڤيو؟|لماذا لم تأتِ؟
-Não vim porque estava doente.|ناو ڤين بوركي إستافا دوينتشي.|لم آتِ لأنني كنت مريضًا.
+Não vim porque estava doente.|ناو ڤين بوركي إستاڤا دوينتشي.|لم آتِ لأنني كنت مريضًا.
 Dormi mal esta noite.|دورمي ماو إيستا نويتشي.|نمت بشكل سيئ الليلة.
 Ele não é um mau rapaz.|إيلي ناو إيه أوم ماو هاباز.|ليس شابًا سيئًا.
 Aonde você vai?|أوندجي ڤوسيه ڤاي؟|إلى أين أنت ذاهب؟
@@ -5690,7 +5693,7 @@ sessão|سيساو|جلسة
 seção|سيساو|قسم`,
 s:`Por que você não veio?|بور كي ڤوسيه ناو ڤيو؟|لماذا لم تأتِ؟
 Você não veio por quê?|ڤوسيه ناو ڤيو بور كيه؟|لم تأتِ لماذا؟
-Não vim porque estava doente.|ناو ڤين بوركي إستافا دوينتشي.|لم آتِ لأنني كنت مريضًا.
+Não vim porque estava doente.|ناو ڤين بوركي إستاڤا دوينتشي.|لم آتِ لأنني كنت مريضًا.
 Não entendo o porquê disso.|ناو إينتيندو أو بوركيه دجيسو.|لا أفهم سبب هذا.
 Dormi mal esta noite.|دورمي ماو إيستا نويتشي.|نمت بشكل سيئ.
 Ele não é um mau rapaz.|إيلي ناو إيه أوم ماو هاباز.|ليس شابًا سيئًا.
@@ -5783,7 +5786,7 @@ cartório|كاتب عدل
 escritura|سند ملكية
 reconhecer firma|تصديق التوقيع`)+
 X(`Recebi uma intimação.|هيسيبي أوما إينتيماساو.|استلمت تبليغًا رسميًا.
-A audiência foi marcada para março.|آ أوديينسيا فوي ماركادا بارا مارسو.|حُددت الجلسة في مارس.
+A audiência foi marcada para março.|آ آودجيينسيا فوي ماركادا بارا مارسو.|حُددت الجلسة في مارس.
 Leia todas as cláusulas antes de assinar.|ليا توداس آس كلاوزولاس أنتشيس دجي أسينار.|اقرأ كل البنود قبل التوقيع.
 Se rescindir o contrato, paga multa.|سي هيسيندجير أو كونتراتو، باغا مولتا.|إذا فسخت العقد تدفع غرامة.
 As partes fizeram um acordo.|آس بارتشيس فيزيران أوم أكوردو.|توصل الطرفان لتسوية.`),
@@ -5792,7 +5795,7 @@ autor|آوتور|مدّعٍ
 réu|هيو|مدّعى عليه
 juiz|جويز|قاضٍ
 testemunha|تيستيمونيا|شاهد
-audiência|أوديينسيا|جلسة
+audiência|آودجيينسيا|جلسة
 intimação|إينتيماساو|تبليغ رسمي
 sentença|سينتينسا|حكم
 cláusula|كلاوزولا|بند
@@ -5802,7 +5805,7 @@ escritura|إسكريتورا|سند ملكية
 acordo|أكوردو|تسوية / اتفاق
 lei|ليي|قانون`,
 s:`Recebi uma intimação.|هيسيبي أوما إينتيماساو.|استلمت تبليغًا رسميًا.
-A audiência foi marcada para março.|آ أوديينسيا فوي ماركادا بارا مارسو.|حُددت الجلسة في مارس.
+A audiência foi marcada para março.|آ آودجيينسيا فوي ماركادا بارا مارسو.|حُددت الجلسة في مارس.
 Leia todas as cláusulas antes de assinar.|ليا توداس آس كلاوزولاس أنتشيس دجي أسينار.|اقرأ كل البنود قبل التوقيع.
 Se rescindir o contrato, paga multa.|سي هيسيندجير أو كونتراتو، باغا مولتا.|إذا فسخت العقد تدفع غرامة.
 As partes fizeram um acordo.|آس بارتشيس فيزيران أوم أكوردو.|توصل الطرفان لتسوية.
@@ -5839,7 +5842,7 @@ referências|المراجع`)+
 TIP('<b>ABNT</b> = هيئة المعايير البرازيلية، وتحدد قواعد التوثيق والتنسيق في الأبحاث البرازيلية.')+
 H('عبارات أكاديمية')+X(`O presente trabalho tem como objetivo analisar...|أو بريزينتشي تراباليو تين كومو أوبجيتشيڤو آناليزار|يهدف هذا العمل إلى تحليل...
 Trata-se de uma pesquisa qualitativa.|تراتا سي دجي أوما بيسكيزا كواليتاتشيڤا.|إنه بحث نوعي.
-Os resultados indicam que...|أوس هيزولتادوس إينديكان كي|تشير النتائج إلى أن...
+Os resultados indicam que...|أوس هيزولتادوس إيندجيكان كي|تشير النتائج إلى أن...
 Conforme aponta Silva (2020)...|كونفورمي أبونتا سيلڤا|كما يشير سيلفا (2020)...
 Observa-se que...|أوبسيرڤا سي كي|يُلاحظ أن...
 Conclui-se, portanto, que...|كونكلوي سي، بورتانتو، كي|يُستنتج إذن أن...`)+
@@ -5860,7 +5863,7 @@ qualitativa|كواليتاتشيڤا|نوعية
 quantitativa|كوانتيتاتشيڤا|كمية`,
 s:`O presente trabalho tem como objetivo analisar o mercado.|أو بريزينتشي تراباليو تين كومو أوبجيتشيڤو آناليزار أو ميركادو.|يهدف هذا العمل إلى تحليل السوق.
 Trata-se de uma pesquisa qualitativa.|تراتا سي دجي أوما بيسكيزا كواليتاتشيڤا.|إنه بحث نوعي.
-Os resultados indicam um aumento nas vendas.|أوس هيزولتادوس إينديكان أوم أومينتو ناس ڤينداس.|تشير النتائج إلى زيادة المبيعات.
+Os resultados indicam um aumento nas vendas.|أوس هيزولتادوس إيندجيكان أوم أومينتو ناس ڤينداس.|تشير النتائج إلى زيادة المبيعات.
 Observa-se que os dados confirmam a hipótese.|أوبسيرڤا سي كي أوس دادوس كونفيرمان آ إيبوتيزي.|يُلاحظ أن البيانات تؤكد الفرضية.
 Conclui-se, portanto, que a estratégia funciona.|كونكلوي سي، بورتانتو، كي آ إستراتيجيا فونسيونا.|يُستنتج أن الاستراتيجية ناجحة.
 Minha orientadora revisou a metodologia.|مينيا أوريينتادورا هيڤيزو آ ميتودولوجيا.|راجعت مشرفتي المنهجية.
@@ -6049,7 +6052,7 @@ imagina|إيماجينا|لا مشكلة / العفو
 vamos ver|ڤاموس ڤير|سنرى
 depois a gente vê|دجيبويس آ جينتشي ڤيه|لاحقًا نرى
 pensar|بينسار|يفكر
-indireta|إينديريتا|تلميح
+indireta|إيندجيريتا|تلميح
 entrelinhas|إينتريلينياس|ما بين السطور
 tom|تون|نبرة
 educado|إيدوكادو|مهذب
@@ -6064,7 +6067,7 @@ Que maravilha, mais uma reunião!|كي ماراڤيليا، مايس أوما ه
 Chegou cedo, hein!|شيغو سيدو، إين!|وصلت مبكرًا ها!
 Posso contar com você?|بوسو كونتار كون ڤوسيه؟|هل أعتمد عليك؟
 É preciso ler nas entrelinhas.|إيه بريسيزو لير ناس إينتريلينياس.|يجب القراءة بين السطور.
-Ela mandou uma indireta.|إيلا ماندو أوما إينديريتا.|أرسلت تلميحًا.`,
+Ela mandou uma indireta.|إيلا ماندو أوما إيندجيريتا.|أرسلت تلميحًا.`,
 d:`«Vamos ___» = غالبًا لا|سنرى|ver|ir|sair
 ___, não precisa agradecer!|لا شكر على واجب!|Imagina|Imagino|Imagem
 Ele ___ no ano passado. (بلطف)|توفي...|faleceu|morreu de|matou
@@ -6708,7 +6711,7 @@ progresso|بروغريسو|تقدّم
 desafio|ديزافيو|تحدّي
 conquista|كونكيستا|إنجاز
 esforço|إيسفورسو|جهد
-dedicação|ديديكاساو|اجتهاد
+dedicação|ديدجيكاساو|اجتهاد
 prática|براتشيكا|ممارسة
 vale a pena|ڤالي آ بينا|بيستاهل
 persistência|بيرسيستينسيا|مثابرة
@@ -7065,11 +7068,11 @@ Minha irmã é alta e magra.|مينيا إرما إيه آلتا إي ماغرا
 O nosso gato é cinza e branco.|أو نوسو غاتو إيه سينزا إي برانكو|قطنا رمادي وأبيض
 Ele é magro e tem olhos castanhos.|إيلي إيه ماغرو إي تيم أوليوس كاستانيوس|هو نحيف وعيونه بنية
 Meus olhos são grandes e castanhos.|ميوس أوليوس ساو غرانجيس إي كاستانيوس|عيوني كبار وبنيات
-Tenho cabelo médio, liso e castanho.|تينيو كابيلو ميديو ليزو إي كاستانيو|شعري متوسط الطول وناعم وبني
+Tenho cabelo médio, liso e castanho.|تينيو كابيلو ميدجيو ليزو إي كاستانيو|شعري متوسط الطول وناعم وبني
 Meu cabelo é crespo, longo e castanho.|ميو كابيلو إيه كريسبو لونغو إي كاستانيو|شعري شديد التجعد وطويل وبني
 Minha mãe é idosa, alta, gorda e tem cabelo liso, curto e preto.|مينيا ماي إيه إيدوزا آلتا غوردا إي تيم كابيلو ليزو كورتو إي بريتو|أمي كبيرة بالسن وطويلة وممتلئة وشعرها ناعم وقصير وأسود
 Minha mãe é baixa, gorda e tem os cabelos longos, loiros e encaracolados.|مينيا ماي إيه بايشا غوردا إي تيم أوس كابيلوس لونغوس لويروس إي إنكاراكولادوس|أمي قصيرة وممتلئة وشعرها طويل وأشقر ومجعد
-Ela tem os olhos castanhos e o cabelo preto, liso e médio.|إيلا تيم أوز أوليوس كستانيوس إي أو كابيلو بريتو ليزو إي ميديو|عيونها بنية وشعرها أسود وناعم ومتوسط
+Ela tem os olhos castanhos e o cabelo preto, liso e médio.|إيلا تيم أوز أوليوس كستانيوس إي أو كابيلو بريتو ليزو إي ميدجيو|عيونها بنية وشعرها أسود وناعم ومتوسط
 Eu sou baixa.|إيو سو بايشا|أنا قصيرة
 Eu sou jovem, alta e magra.|إيو سو جوڤيم آلتا إي ماغرا|أنا شابة وطويلة ونحيفة
 Sou gorda e tenho um nariz grande.|سو غوردا إي تينيو أوم ناريز غرانجي|أنا ممتلئة وعندي أنف كبير
@@ -7152,7 +7155,7 @@ salsinha|ساوسينيا|بقدونس`,s:`O Brasil é cheio de frutas e verdura
 Sim, nos dois países temos laranja, limão, uva e banana.|سين نوس دويز بايزيس تيموس لارانجا ليماو أوڤا إي بانانا|آه بالبلدين عنا برتقال وليمون وعنب وموز`},
 15:{w:`gelo|جيلو|ثلج
 sabor|سابور|نكهة / طعم
-médio|ميديو|متوسط
+médio|ميدجيو|متوسط
 ácido|آسيدو|حمضي
 fraco|فراكو|ضعيف
 suave|سواڤي|خفيف / لطيف
@@ -7276,7 +7279,7 @@ Tô procurando vaga.|تو بروكوراندو ڤاغا|بدور على موقف
 A passagem custa R$ 4,40.|آ باساجيم كوستا كواترو هيايس إي كوارينتا سينتاڤوس|التذكرة بأربعة ريالات وأربعين سنتافو
 Como posso chegar ao metrô?|كومو بوسو شيغار آو ميترو؟|كيف بوصل للمترو؟
 Ela vai para a praia todo ano.|إيلا ڤاي بارا آ برايا تودو آنو|هي بتروح على الشاطئ كل سنة
-Siga em frente e vire à direita.|سيغا إيم فرينتشي إي ڤيري آ ديريتا|امشِ لقدام ولف يمين
+Siga em frente e vire à direita.|سيغا إيم فرينتشي إي ڤيري آ دجيريتا|امشِ لقدام ولف يمين
 Quanto custa a passagem de ônibus?|كوانتو كوستا آ باساجيم دجي أونيبوس؟|بكم تذكرة الباص؟
 Eu estou no terceiro andar, perto da iMax.|إيو إستو نو تيرسيرو أندار بيرتو دا آي ماكس|أنا بالطابق الثالث جنب آي ماكس
 Estou aqui.|إستو أكي|أنا هون`},
@@ -7744,7 +7747,7 @@ Eu vi um filme ótimo.|إيو ڤي أون فيومي أوتشيمو.|شفت في
 Ele disse que vem amanhã.|إيلي دجيسي كي ڤين أمانيا.|قال إنه جاي بكرة.
 Tive um dia longo.|تشيڤي أون دجيا لونغو.|كان عندي يوم طويل.`},
 25:{w:`primeiro|بريميرو|أول اشي
-depois|ديبويس|بعدين
+depois|دجيبويس|بعدين
 em seguida|إين سيغيدا|بعد هيك
 então|إينتاو|وقتها
 no fim|نو فين|بالآخر
@@ -7755,7 +7758,7 @@ parque|باركي|حديقة
 churrasco|شوهاسكو|شوي
 descansar|ديسكانسار|يرتاح
 divertido|دجيڤيرتشيدو|ممتع`,s:`No sábado, fizemos um passeio no parque.|نو سابادو، فيزيموس أون باسيو نو باركي.|السبت عملنا مشوار بالحديقة.
-Primeiro tomamos café, depois saímos.|بريميرو توماموس كافيه، ديبويس سايموس.|أول اشي فطرنا، بعدين طلعنا.
+Primeiro tomamos café, depois saímos.|بريميرو توماموس كافيه، دجيبويس سايموس.|أول اشي فطرنا، بعدين طلعنا.
 No fim, todo mundo estava cansado.|نو فين، تودو موندو إيستاڤا كانسادو.|بالآخر الكل كان تعبان.
 O fim de semana foi muito divertido.|أو فين دجي سيمانا فوي مويتو دجيڤيرتشيدو.|العطلة كانت ممتعة كتير.
 Domingo eu só descansei.|دومينغو إيو سو ديسكانسيي.|الأحد بس ارتحت.
@@ -7814,7 +7817,7 @@ Qual é a taxa da transferência?|كواو إيه آ تاشا دا ترانسف�
 29:{w:`ligar|ليغار|يتصل
 ligação|ليغاساو|مكالمة
 mensagem|مينساجين|رسالة
-áudio|آوديو|رسالة صوتية
+áudio|آودجيو|رسالة صوتية
 chamada de vídeo|شامادا دجي ڤيدجيو|مكالمة فيديو
 número|نوميرو|رقم
 celular|سيلولار|موبايل
@@ -7822,7 +7825,7 @@ sem sinal|سين سينياو|ما في إرسال
 bateria|باتيريا|بطارية
 carregador|كاهيغادور|شاحن
 retornar a ligação|هيتورنار آ ليغاساو|يرد الاتصال
-caixa postal|كايشا بوستاو|بريد صوتي`,s:`Te mando um áudio depois.|تشي ماندو أون آوديو ديبويس.|ببعتلك فويس بعدين.
+caixa postal|كايشا بوستاو|بريد صوتي`,s:`Te mando um áudio depois.|تشي ماندو أون آودجيو دجيبويس.|ببعتلك فويس بعدين.
 Meu celular está sem bateria.|ميو سيلولار إيستا سين باتيريا.|موبايلي فاضي.
 Pode me passar o seu número?|بودجي مي باسار أو سيو نوميرو؟|بتعطيني رقمك؟
 Caiu na caixa postal.|كاييو نا كايشا بوستاو.|راح عالبريد الصوتي.
@@ -8055,7 +8058,7 @@ Que frio! Cadê meu casaco?|كي فريو! كاديه ميو كازاكو؟|شو
 Object.assign(EXTRA_MORE,{
 61:{w:`para eu fazer|بارا إيو فازير|حتى أعمل
 antes de sairmos|أنتشيس دجي سايرموس|قبل ما نطلع
-depois de chegarem|ديبويس دجي شيغارين|بعد ما يوصلوا
+depois de chegarem|دجيبويس دجي شيغارين|بعد ما يوصلوا
 sem eles saberem|سين إيليس سابيرين|بدون ما يعرفوا
 ao entrarmos|آو إينترارموس|عند دخولنا
 apesar de serem|أبيزار دجي سيرين|رغم إنهم
@@ -8066,7 +8069,7 @@ permitir|بيرميتشير|يسمح
 lembrar|ليمبرار|يذكّر
 orientar|أوريينتار|يوجّه`,s:`É necessário vocês trazerem os documentos.|إيه نيسيساريو ڤوسيس ترازيرين أوس دوكومينتوس.|ضروري تجيبوا الأوراق.
 Antes de sairmos, vamos almoçar.|أنتشيس دجي سايرموس، ڤاموس آوموسار.|قبل ما نطلع، خلينا نتغدى.
-Depois de chegarem, liguem para mim.|ديبويس دجي شيغارين، ليغين بارا مين.|بعد ما توصلوا، اتصلوا فيّ.
+Depois de chegarem, liguem para mim.|دجيبويس دجي شيغارين، ليغين بارا مين.|بعد ما توصلوا، اتصلوا فيّ.
 Saíram sem eles perceberem.|سايرام سين إيليس بيرسيبيرين.|طلعوا بدون ما ينتبهوا.
 O professor deu tempo para pensarmos.|أو بروفيسور ديو تيمبو بارا بينسارموس.|المعلم عطانا وقت نفكر.
 Apesar de serem jovens, são responsáveis.|أبيزار دجي سيرين جوڤينس، ساو هيسبونساڤيس.|رغم إنهم صغار، مسؤولين.`},
@@ -8238,8 +8241,8 @@ enchente|إينشينتشي|فيضان`,s:`Vamos economizar água e energia.|ڤ�
 O lixo orgânico vai em outro saco.|أو ليشو أورغانيكو ڤاي إين أوترو ساكو.|الزبالة العضوية بكيس تاني.
 A cidade tem muitas ciclovias.|آ سيدادجي تين مويتاس سيكلوڤياس.|المدينة فيها مسارات دراجات كتير.
 A poluição do ar está aumentando.|آ بولويساو دو آر إيستا آومينتاندو.|تلوث الهوا عم يزيد.
-Depois da chuva forte houve enchente.|ديبويس دا شوڤا فورتشي أوڤي إينشينتشي.|بعد الشتا القوية صار فيضان.
-Evite o desperdício de comida.|إيڤيتي أو دجيسبيرجيسيو دجي كوميدا.|تجنّب هدر الأكل.`},
+Depois da chuva forte houve enchente.|دجيبويس دا شوڤا فورتشي أوڤي إينشينتشي.|بعد الشتا القوية صار فيضان.
+Evite o desperdício de comida.|إيڤيتشي أو دجيسبيرجيسيو دجي كوميدا.|تجنّب هدر الأكل.`},
 72:{w:`argumento|أرغومينتو|حجة
 defender|ديفيندير|يدافع عن
 criticar|كريتشيكار|ينتقد
@@ -8374,7 +8377,7 @@ Far-se-á o possível para resolver.|فار سي آ أو بوسيڤيو بارا
 à direita|آ دجيريتا|عاليمين
 a pé|آ بيه|مشيًا
 a partir de|آ بارتشير دجي|ابتداءً من
-devido à|ديڤيدو آ|بسبب الـ`,s:`Vou à farmácia e depois à padaria.|ڤو آ فارماسيا إي ديبويس آ بادَريا.|رايح عالصيدلية وبعدين عالمخبز.
+devido à|ديڤيدو آ|بسبب الـ`,s:`Vou à farmácia e depois à padaria.|ڤو آ فارماسيا إي دجيبويس آ بادَريا.|رايح عالصيدلية وبعدين عالمخبز.
 A reunião será às dez horas.|آ هيونياو سيرا آس ديز أوراس.|الاجتماع الساعة عشرة.
 Entreguei o relatório àquela funcionária.|إينتريغيي أو هيلاتوريو آكيلا فونسيوناريا.|سلّمت التقرير لتلك الموظفة.
 Fui a pé até o trabalho.|فوي آ بيه أتيه أو تراباليو.|رحت مشي عالشغل.
@@ -8504,7 +8507,7 @@ imagina|إيماجينا|ولا يهمك
 fica à vontade|فيكا آ ڤونتادجي|خود راحتك
 aparece lá em casa|أباريسي لا إين كازا|مرّ علينا (مجاملة)
 qualquer coisa, me liga|كواوكير كويزا، مي ليغا|إذا احتجت اشي اتصل
-depois a gente marca|ديبويس آ جينتشي ماركا|بعدين منحدد
+depois a gente marca|دجيبويس آ جينتشي ماركا|بعدين منحدد
 não precisava|ناو بريسيزاڤا|ما كان في داعي
 que chique!|كي شيكي!|شو أنيق!
 jeitinho|جيتينيو|حل مرن / بطريقة
@@ -8512,7 +8515,7 @@ deixa pra lá|ديشا برا لا|خليها
 sem querer|سين كيرير|بدون قصد
 na boa|نا بوا|بهدوء / بدون زعل`,s:`Obrigado pelo presente! — Imagina, não foi nada.|أوبريغادو بيلو بريزينتشي! — إيماجينا، ناو فوي نادا.|شكرًا عالهدية! — ولا يهمك، ما عملت اشي.
 Aparece lá em casa qualquer dia!|أباريسي لا إين كازا كواوكير دجيا!|مرّ علينا أي يوم! (مجاملة)
-Depois a gente marca um café.|ديبويس آ جينتشي ماركا أون كافيه.|بعدين منحدد قهوة.
+Depois a gente marca um café.|دجيبويس آ جينتشي ماركا أون كافيه.|بعدين منحدد قهوة.
 Deixa pra lá, não tem problema.|ديشا برا لا، ناو تين بروبليما.|خليها، ما في مشكلة.
 Desculpa, foi sem querer.|دجيسكولبا، فوي سين كيرير.|آسف، كانت بدون قصد.
 Fica à vontade, a casa é sua.|فيكا آ ڤونتادجي، آ كازا إيه سوا.|خود راحتك، البيت بيتك.`},
@@ -8773,7 +8776,7 @@ q:[['شو عند الولد؟','حرارة ووجع زور','وجع بطن','ك�
 /* ===== حوارات المستوى الثاني A2 (الفصول 23–42) ===== */
 Object.assign(DIALOGS,{
 23:{sp:['Paula','Omar'],l:`A|O que você fez ontem?|أو كي ڤوسي فيز أونتين؟|شو عملت مبارح؟
-B|Trabalhei até tarde e depois jantei com a família.|ترابالييه أتيه تاردجي إي ديبويس جانتيي كوم آ فاميليا.|اشتغلت لحد متأخر وبعدين تعشيت مع العيلة.
+B|Trabalhei até tarde e depois jantei com a família.|ترابالييه أتيه تاردجي إي دجيبويس جانتيي كوم آ فاميليا.|اشتغلت لحد متأخر وبعدين تعشيت مع العيلة.
 A|Você estudou português?|ڤوسي إيستودو بورتوغيس؟|درست برتغالي؟
 B|Estudei meia hora. Escutei um podcast no ônibus.|إيستوديي ميا أورا. إيسكوتيي أون بودكاستشي نو أونيبوس.|درست نص ساعة. سمعت بودكاست بالباص.
 A|E sua esposa? Ela trabalhou também?|إي سوا إسبوزا؟ إيلا تراباليو تامبين؟|ومرتك؟ اشتغلت كمان؟
@@ -8821,7 +8824,7 @@ B|Aqui é o Yusuf. Eu liguei ontem, mas a ligação caiu.|أكي إيه أو ي�
 A|Desculpe! O senhor pode repetir o assunto?|ديسكولبي! أو سينيور بودجي هيبيتشير أو أسونتو؟|آسفة! بتقدر تعيد الموضوع؟
 B|Quero saber o resultado do exame.|كيرو سابير أو هيزولتادو دو إيزامي.|بدي أعرف نتيجة الفحص.
 A|Vou mandar pelo WhatsApp, tá bom?|ڤو ماندار بيلو واتساب، تا بون؟|رح أبعتها عالواتساب، ماشي؟
-B|Tá ótimo. Pode mandar um áudio também?|تا أوتشيمو. بودجي ماندار أون آوديو تامبين؟|تمام كتير. بتقدري تبعتي فويس كمان؟`,
+B|Tá ótimo. Pode mandar um áudio também?|تا أوتشيمو. بودجي ماندار أون آودجيو تامبين؟|تمام كتير. بتقدري تبعتي فويس كمان؟`,
 q:[['ليش اتصل يوسف مرة تانية؟','لأن الخط قطع مبارح','لأنه نسي','لأنه غيّر رقمه'],['شو بده يعرف؟','نتيجة الفحص','موعد جديد','السعر'],['كيف رح توصله النتيجة؟','عالواتساب','بالبريد','بالعيادة']]},
 30:{sp:['Recepção','Layla'],l:`A|Clínica Sorriso, bom dia!|كلينيكا سوهيزو، بوم دجيا!|عيادة «سوهيزو»، صباح الخير!
 B|Bom dia! Eu gostaria de remarcar minha consulta.|بوم دجيا! إيو غوستاريا دجي هيماركار مينيا كونسولتا.|صباح الخير! بدي أغيّر موعدي.
@@ -8878,7 +8881,7 @@ B|Vi, sim. Eu a encontrei no mercado.|ڤي، سين. إيو آ إينكونتر�
 A|Ela me pediu o seu número.|إيلا مي بيدجيو أو سيو نوميرو.|طلبت مني رقمك.
 B|Pode passar para ela. Eu te dou permissão!|بودجي باسار بارا إيلا. إيو تشي دو بيرميساو!|بتقدر تعطيها إياه. بعطيك الإذن!
 A|Combinado. Vou mandar para ela agora.|كومبينادو. ڤو ماندار بارا إيلا أغورا.|اتفقنا. رح أبعتلها هلأ.
-B|Obrigada! Depois me conta o que ela queria.|أوبريغادا! ديبويس مي كونتا أو كي إيلا كيريا.|شكرًا! بعدين احكيلي شو بدها.`,
+B|Obrigada! Depois me conta o que ela queria.|أوبريغادا! دجيبويس مي كونتا أو كي إيلا كيريا.|شكرًا! بعدين احكيلي شو بدها.`,
 q:[['وين لقت فاطمة جوليا؟','بالسوق','بالمدرسة','بالشغل'],['شو طلبت جوليا؟','رقم فاطمة','عنوانها','مصاري'],['شو معنى «Eu a encontrei»؟','لقيتها','لقيته','لقيتك']]},
 38:{sp:['Clara','Ahmad'],l:`A|Quais são seus planos para o ano que vem?|كوايس ساو سيوس بلانوس بارا أو آنو كي ڤين؟|شو خططك للسنة الجاية؟
 B|Vou fazer um curso técnico e vou tirar a carteira de motorista.|ڤو فازير أون كورسو تيكنيكو إي ڤو تشيرار آ كارتيرا دجي موتوريستا.|رح آخد دورة مهنية ورح أطلّع رخصة سواقة.
@@ -9004,7 +9007,7 @@ B|Perguntou. Eu respondi que não tinha.|بيرغونتو. إيو هيسبونج
 A|E ele pediu para você descansar?|إي إيلي بيدجيو بارا ڤوسي ديسكانسار؟|وطلب منك ترتاح؟
 B|Pediu que eu ficasse em casa dois dias.|بيدجيو كي إيو فيكاسي إين كازا دويس دجياس.|طلب إني أضل بالبيت يومين.`,
 q:[['شو عند عادل حسب الدكتور؟','إنفلونزا','حساسية','كسر'],['عنده حرارة؟','لا','آه','ما بيعرف'],['قديش لازم يضل بالبيت؟','يومين','أسبوع','يوم']]},
-55:{sp:['Duda','Malik'],l:`A|E aí, bora tomar um açaí depois da aula?|إي آي، بورا تومار أون أساي ديبويس دا آولا؟|شو، يلا ناكل أساي بعد الدرس؟
+55:{sp:['Duda','Malik'],l:`A|E aí, bora tomar um açaí depois da aula?|إي آي، بورا تومار أون أساي دجيبويس دا آولا؟|شو، يلا ناكل أساي بعد الدرس؟
 B|Hoje não vai dar. Tô cheio de coisa pra fazer.|أوجي ناو ڤاي دار. تو شييو دجي كويزا برا فازير.|اليوم ما بزبط. عندي شغلات كتير.
 A|Que pena! E amanhã, rola?|كي بينا! إي أمانيا، هولا؟|خسارة! وبكرة، بيزبط؟
 B|Amanhã rola. Fechou!|أمانيا هولا. فيشو!|بكرة بيزبط. اتفقنا!
@@ -9030,7 +9033,7 @@ B|Claro. Como você começou?|كلارو. كومو ڤوسي كوميسو؟|أك�
 A|«Prezada Senhora Ana, venho por meio deste solicitar uma reunião.»|«بريزادا سينيورا آنا، ڤينيو بور ميو دجي ديستشي سوليسيتار أوما هيونياو.»|«السيدة آنا المحترمة، أكتب لأطلب اجتماعًا.»
 B|Ótimo. Lembre de dizer que o portfólio segue em anexo.|أوتشيمو. ليمبري دجي دجيزير كي أو بورتفوليو سيغي إين أنيكسو.|ممتاز. تذكّر تقول إنه البورتفوليو مرفق.
 A|E para terminar?|إي بارا تيرمينار؟|وكيف بخلّص؟
-B|«Atenciosamente», e depois seu nome e telefone.|«أتينسيوزامينتشي»، إي ديبويس سيو نومي إي تيليفوني.|«مع خالص التحية»، وبعدين اسمك وتلفونك.`,
+B|«Atenciosamente», e depois seu nome e telefone.|«أتينسيوزامينتشي»، إي دجيبويس سيو نومي إي تيليفوني.|«مع خالص التحية»، وبعدين اسمك وتلفونك.`,
 q:[['شو الهدف من الإيميل؟','طلب اجتماع','شكوى','استقالة'],['شو لازم يذكر؟','إنه البورتفوليو مرفق','راتبه','عنوانه'],['كيف بيخلّص الإيميل الرسمي؟','Atenciosamente','Beijos','Tchau']]},
 59:{sp:['Cliente','Atendente'],l:`A|Comprei este fone na semana passada e ele veio com defeito.|كومبريي إيستشي فوني نا سيمانا باسادا إي إيلي ڤييو كوم ديفيتو.|اشتريت هالسماعة الأسبوع الماضي وطلعت فيها عطل.
 B|O senhor tem a nota fiscal?|أو سينيور تين آ نوتا فيسكاو؟|معك الفاتورة؟
@@ -9174,7 +9177,7 @@ q:[['ليش رح يفتحوا فرع؟','نظرًا للطلب','لأنه رخي
 78:{sp:['Revisor','Autor'],l:`A|Aqui você escreveu «Me diga a verdade» no início do texto formal.|أكي ڤوسي إيسكريڤيو «مي دجيغا آ ڤيرداجي» نو إينيسيو دو تيكستو فورماو.|هون كتبت «Me diga a verdade» ببداية نص رسمي.
 B|Está errado?|إيستا إيهادو؟|غلط؟
 A|Na fala é normal. Na escrita formal, prefira «Diga-me a verdade».|نا فالا إيه نورماو. نا إيسكريتا فورماو، بريفيرا «دجيغا مي آ ڤيرداجي».|بالحكي عادي. بالكتابة الرسمية الأفضل «Diga-me a verdade».
-B|E depois de «não»?|إي ديبويس دجي «ناو»؟|وبعد «não»؟
+B|E depois de «não»?|إي دجيبويس دجي «ناو»؟|وبعد «não»؟
 A|Aí o pronome vem antes: «Não me disseram nada».|آي أو برونومي ڤين أنتشيس: «ناو مي دجيسيرام نادا».|هون الضمير بييجي قبل: «Não me disseram nada».
 B|Entendido. Palavras negativas atraem o pronome.|إينتينجيدو. بالاڤراس نيغاتشيڤاس أتراين أو برونومي.|مفهوم. الكلمات النافية بتجذب الضمير.`,
 q:[['ليش «Me diga» غلط هون؟','لأنها ببداية نص رسمي','لأنها ماضي','لأنها جمع'],['شو الأفضل رسميًا؟','Diga-me','Me diga','Diga me'],['وين بييجي الضمير بعد «não»؟','قبل الفعل','بعد الفعل','بآخر الجملة']]},
@@ -9194,7 +9197,7 @@ B|Agora entendi o porquê!|أغورا إينتيندجي أو بوركيه!|هل
 q:[['أي شكل للسؤال ببداية الجملة؟','Por que','Porque','Porquê'],['أي شكل للجواب؟','Porque','Por que','Por quê'],['شو معنى «o porquê»؟','السبب','ليش؟','لأن']]},
 81:{sp:['Servidora','Requerente'],l:`A|O senhor precisa protocolar um requerimento.|أو سينيور بريسيزا بروتوكولار أون هيكيريمينتو.|لازم تقدّم طلب رسمي.
 B|Como devo começar?|كومو ديڤو كوميسار؟|كيف لازم أبلّش؟
-A|«Ilustríssimo Senhor Diretor», depois sua qualificação.|«إيلوستريسيمو سينيور دجيريتور»، ديبويس سوا كواليفيكاساو.|«حضرة السيد المدير المحترم»، وبعدين بياناتك.
+A|«Ilustríssimo Senhor Diretor», depois sua qualificação.|«إيلوستريسيمو سينيور دجيريتور»، دجيبويس سوا كواليفيكاساو.|«حضرة السيد المدير المحترم»، وبعدين بياناتك.
 B|E no final?|إي نو فيناو؟|وبالآخر؟
 A|«Nestes termos, pede deferimento.» Data e assinatura.|«نيستيس تيرموس، بيدجي ديفيريمينتو.» داتا إي أسيناتورا.|«بناءً عليه، يرجو الموافقة.» التاريخ والتوقيع.
 B|E se for indeferido?|إي سي فور إينديفيريدو؟|وإذا انرفض؟
@@ -9211,10 +9214,10 @@ q:[['شو دور الزبون بالقضية؟','شاهد','مدّعى عليه'
 B|O presente trabalho tem como objetivo analisar o uso de IA no marketing.|أو بريزينتشي تراباليو تين كومو أوبجيتشيڤو أناليزار أو أوزو دجي إي آ نو ماركيتشينغ.|يهدف هذا العمل إلى تحليل استخدام الذكاء الاصطناعي بالتسويق.
 A|E a metodologia?|إي آ ميتودولوجيا؟|والمنهجية؟
 B|Trata-se de uma pesquisa qualitativa, com entrevistas.|تراتا سي دجي أوما بيسكيزا كواليتاتشيڤا، كوم إينتريڤيستاس.|هو بحث نوعي، مع مقابلات.
-A|Evite «eu acho». Prefira «observa-se» ou «constata-se».|إيڤيتي «إيو أشو». بريفيرا «أوبسيرڤا سي» أو «كونستاتا سي».|تجنّب «eu acho». الأفضل «يُلاحَظ» أو «يتبيّن».
+A|Evite «eu acho». Prefira «observa-se» ou «constata-se».|إيڤيتشي «إيو أشو». بريفيرا «أوبسيرڤا سي» أو «كونستاتا سي».|تجنّب «eu acho». الأفضل «يُلاحَظ» أو «يتبيّن».
 B|Vou revisar a introdução com isso em mente.|ڤو هيڤيزار آ إينترودوساو كوم إيسو إين مينتشي.|رح راجع المقدمة على هالأساس.`,
 q:[['شو موضوع البحث؟','الذكاء الاصطناعي بالتسويق','التعليم','الطب'],['شو نوع البحث؟','نوعي مع مقابلات','كمي','تجريبي بالمختبر'],['شو تتجنب بالكتابة الأكاديمية؟','eu acho','observa-se','trata-se']]},
-84:{sp:['Editor','Redatora'],l:`A|Neste anúncio, evite «eu» e «nós».|نيستشي أنونسيو، إيڤيتي «إيو» إي «نوس».|بهالإعلان، تجنّبي «أنا» و«إحنا».
+84:{sp:['Editor','Redatora'],l:`A|Neste anúncio, evite «eu» e «nós».|نيستشي أنونسيو، إيڤيتشي «إيو» إي «نوس».|بهالإعلان، تجنّبي «أنا» و«إحنا».
 B|Então escrevo «Vendem-se apartamentos»?|إينتاو إيسكريڤو «ڤيندين سي أبارتاميينتوس»؟|يعني بكتب «تُباع شقق»؟
 A|Isso. E «Precisa-se de vendedores».|إيسو. إي «بريسيزا سي دجي ڤينديدوريس».|صح. و«مطلوب بائعين».
 B|Por que «precisa» no singular?|بور كي «بريسيزا» نو سينغولار؟|ليش «precisa» مفرد؟
@@ -9234,7 +9237,7 @@ A|Mas sem pisar na bola com o cliente, hein?|ماس سين بيزار نا بو�
 B|Fica tranquilo. Vamos fazer tudo nos trinques.|فيكا ترانكويلو. ڤاموس فازير تودو نوس ترينكيس.|اطمّن. رح نعمل كل اشي مظبوط.
 A|Ótimo. Se tudo der certo, a pizza é por minha conta!|أوتشيمو. سي تودو دير سيرتو، آ بيتسا إيه بور مينيا كونتا!|ممتاز. إذا كله مشي منيح، البيتزا على حسابي!`,
 q:[['«botar a mão na massa» معناها:','نبلّش شغل جدّي','نطبخ','نرتاح'],['«tirar de letra» معناها:','نعملها بسهولة','نكتب رسالة','نغلط'],['شو وعد المدير؟','بيتزا على حسابه','إجازة','زيادة راتب']]},
-87:{sp:['Colega','Khaled'],l:`A|Khaled, adorei sua apresentação. Depois a gente marca um café!|خالد، أدوريي سوا أبريزينتاساو. ديبويس آ جينتشي ماركا أون كافيه!|خالد، عجبني عرضك كتير. بعدين منتفق عالقهوة!
+87:{sp:['Colega','Khaled'],l:`A|Khaled, adorei sua apresentação. Depois a gente marca um café!|خالد، أدوريي سوا أبريزينتاساو. دجيبويس آ جينتشي ماركا أون كافيه!|خالد، عجبني عرضك كتير. بعدين منتفق عالقهوة!
 B|Claro! Quando?|كلارو! كواندو؟|أكيد! إيمتى؟
 A|Ah... vamos ver, tá? Te aviso.|آه... ڤاموس ڤير، تا؟ تشي أڤيزو.|آه... منشوف، ماشي؟ ببلّغك.
 B|(pensando) «Vamos ver»... no Brasil isso pode ser um «não» educado.|(بينساندو) «ڤاموس ڤير»... نو برازيو إيسو بودجي سير أون «ناو» إيدوكادو.|(بيفكر) «منشوف»... بالبرازيل ممكن تكون «لا» مؤدبة.
@@ -9299,7 +9302,7 @@ q:[['شو كانت المشكلة؟','سوء فهم حول طريقة إرسال
 B|Tenho, em nome de Nabil Haddad, para três noites.|تينيو، إين نومي دجي نبيل حداد، بارا تريس نويتشيس.|آه، باسم نبيل حداد، لتلات ليالي.
 A|Perfeito. O café da manhã é das sete às dez.|بيرفيتو. أو كافيه دا مانيا إيه داس سيتشي آس ديز.|تمام. الفطور من السبعة للعشرة.
 B|E a que horas é o check-out?|إي آ كي أوراس إيه أو شيك آوت؟|والخروج الساعة كم؟
-A|Ao meio-dia. Se quiser, pode deixar a mala aqui depois.|آو ميو دجيا. سي كيزير، بودجي ديشار آ مالا أكي ديبويس.|الضهر. إذا بدك بتقدر تترك الشنطة هون بعدها.
+A|Ao meio-dia. Se quiser, pode deixar a mala aqui depois.|آو ميو دجيا. سي كيزير، بودجي ديشار آ مالا أكي دجيبويس.|الضهر. إذا بدك بتقدر تترك الشنطة هون بعدها.
 B|Ótimo, meu voo só sai à noite. Obrigado!|أوتشيمو، ميو ڤوو سو ساي آ نويتشي. أوبريغادو!|ممتاز، رحلتي بالليل. شكرًا!`,
 q:[['كم ليلة حجز نبيل؟','تلات ليالي','ليلتين','أسبوع'],['متى الفطور؟','من 7 لـ 10','من 6 لـ 8','طول النهار'],['ليش بده يترك الشنطة؟','رحلته بالليل','الشنطة تقيلة','بده يشتري هدايا']]},
 96:{sp:['Gerente','Layla'],l:`A|...e por isso, vamos mudar o horário de atendimento.|...إي بور إيسو، ڤاموس مودار أو أوراريو دجي أتينجيمينتو.|...ولهيك رح نغيّر ساعات الدوام.
@@ -10872,7 +10875,7 @@ bombeiros|بونبيروس|إطفاء
 polícia|بوليسيا|شرطة
 acidente|أسيدينتشي|حادث
 fogo|فوغو|نار
-incêndio|إينسينديو|حريق
+incêndio|إينسيندجيو|حريق
 ferido|فيريدو|مصاب
 sangue|سانغي|دم
 desmaiar|دجيزمايار|يغمى عليه
@@ -11226,7 +11229,7 @@ recomeçar|هيكوميسار|يبلّش من جديد`,
 s:`Quando você chegou ao Brasil?|كواندو ڤوسي شيغو آو برازيو؟|إيمتى وصلت البرازيل؟
 Cheguei há um ano e meio.|شيغيي آ أون آنو إي ميو.|وصلت من سنة ونص.
 No começo foi muito difícil.|نو كوميسو فوي موينتو دجيفيسيو.|بالبداية كان كتير صعب.
-Eu não entendia nada.|إيو ناو إينتينديا نادا.|ما كنت أفهم اشي.
+Eu não entendia nada.|إيو ناو إينتيندجيا نادا.|ما كنت أفهم اشي.
 As pessoas foram muito simpáticas.|آس بيسواس فوران موينتو سينباتشيكاس.|الناس كانوا كتير لطيفين.
 Aos poucos, me acostumei.|آوس بوكوس، مي أكوستومي.|شوي شوي تعوّدت.
 Sinto falta da comida do meu país.|سينتو فاوتا دا كوميدا دو ميو بايس.|بشتاق لأكل بلدي.
@@ -11680,9 +11683,9 @@ dificuldade|دجيفيكولدادجي|صعوبة
 reforço escolar|هيفورسو إيسكولار|دروس تقوية
 elogio|إيلوجيو|مديح
 conversa|كونڤيرسا|حديث / كلام
-dedicado|ديديكادو|مجتهد`,
+dedicado|ديدجيكادو|مجتهد`,
 s:`Como está o desempenho da minha filha?|كومو إيستا أو دجيزينبينيو دا مينيا فيليا؟|كيف مستوى بنتي؟
-Ela é muito dedicada.|إيلا إي موينتو ديديكادا.|هي كتير مجتهدة.
+Ela é muito dedicada.|إيلا إي موينتو ديدجيكادا.|هي كتير مجتهدة.
 Ele tem dificuldade em leitura.|إيلي تين دجيفيكولدادجي إين ليتورا.|عنده صعوبة بالقراءة.
 Ele teve muitas faltas este mês.|إيلي تيڤي موينتاس فاوتاس إيستشي ميس.|غاب كتير هالشهر.
 Ela conversa muito na aula.|إيلا كونڤيرسا موينتو نا آولا.|بتحكي كتير بالحصة.
@@ -12047,7 +12050,7 @@ conseguir|كونسيغير|يقدر / ينجح
 alcançar|آوكانسار|يحقق / يوصل
 realizar|هياليزار|يحقق
 esforço|إيسفورسو|جهد
-dedicação|ديديكاساو|اجتهاد
+dedicação|ديدجيكاساو|اجتهاد
 diploma|دجيبلوما|شهادة
 carreira|كاهيرا|مسيرة مهنية
 negócio próprio|نيغوسيو بروبريو|مشروع خاص
@@ -12179,7 +12182,7 @@ lesson:H('بالاستقبال')+Pp('بالفندق بتعمل <em>check-in</em>
 X(`Tenho uma reserva no nome de...|تينيو أوما هيزيرڤا نو نومي دجي...|عندي حجز باسم...
 O café da manhã está incluído?|أو كافي دا مانيا إيستا إينكلويدو؟|الفطور مشمول؟
 Que horas é o check-out?|كي أوراس إي أو شيك آوت؟|أي ساعة الخروج؟
-O ar-condicionado não funciona.|أو آر كونديسيونادو ناو فونسيونا.|المكيف ما بيشتغل.`)+
+O ar-condicionado não funciona.|أو آر كوندجيسيونادو ناو فونسيونا.|المكيف ما بيشتغل.`)+
 TIP('<em>quarto de casal</em> = غرفة بتخت مزدوج، و<em>quarto duplo</em> أو <em>de solteiro</em> = بتختين منفصلين.'),
 w:`hotel|أوتيو|فندق
 recepção|هيسيبساو|استقبال
@@ -12196,7 +12199,7 @@ cartão|كارتاو|كرت
 toalha|تواليا|منشفة
 travesseiro|تراڤيسيرو|مخدة
 cobertor|كوبيرتور|حرام / بطانية
-ar-condicionado|آر كونديسيونادو|مكيف
+ar-condicionado|آر كوندجيسيونادو|مكيف
 café da manhã|كافي دا مانيا|فطور
 incluído|إينكلويدو|مشمول
 andar|أندار|طابق
@@ -12573,7 +12576,7 @@ consulta|كونسولتا|موعد
 documento|دوكومينتو|وثيقة
 emprego|إينبريغو|شغل`,
 s:`Cheguei ao Brasil há dois anos.|شيغيي آو برازيو آ دويس آنوس.|وصلت البرازيل من سنتين.
-No começo eu não entendia nada.|نو كوميسو إيو ناو إينتينديا نادا.|بالبداية ما كنت أفهم اشي.
+No começo eu não entendia nada.|نو كوميسو إيو ناو إينتيندجيا نادا.|بالبداية ما كنت أفهم اشي.
 Ontem fui ao banco e abri uma conta.|أونتين فوي آو بانكو إي أبري أوما كونتا.|مبارح رحت عالبنك وفتحت حساب.
 Quando eu era criança, morava perto do mar.|كواندو إيو إيرا كريانسا، موراڤا بيرتو دو مار.|لما كنت صغير كنت ساكن قريب من البحر.
 Preciso agendar uma consulta na UBS.|بريسيزو أجيندار أوما كونسولتا نا أوبيإيسي.|لازم أحجز موعد بالمركز الصحي.
@@ -12893,7 +12896,7 @@ esquecido|إيسكيسيدو|ناسي
 terminado|تيرمينادو|مخلّص`,
 s:`Quando cheguei, o filme já tinha começado.|كواندو شيغيي، أو فيومي جا تشينيا كوميسادو.|لما وصلت، الفيلم كان مبلّش.
 Eu nunca tinha comido açaí antes.|إيو نونكا تشينيا كوميدو أساي أنتيس.|عمري ما كنت ماكل أساي قبل.
-Ela disse que tinha perdido o celular.|إيلا دجيسي كي تشينيا بيرديدو أو سيلولار.|قالت إنها كانت مضيّعة جوالها.
+Ela disse que tinha perdido o celular.|إيلا دجيسي كي تشينيا بيردجيدو أو سيلولار.|قالت إنها كانت مضيّعة جوالها.
 Nós já tínhamos jantado.|نوس جا تشينياموس جانتادو.|كنا متعشيين.
 Eles ainda não tinham chegado.|إيليس أيندا ناو تشينيان شيغادو.|لسا ما كانوا واصلين.
 Eu tinha esquecido a chave em casa.|إيو تشينيا إيسكيسيدو آ شاڤي إين كازا.|كنت ناسي المفتاح بالبيت.
@@ -13048,7 +13051,7 @@ X(`Se eu tivesse estudado, teria passado.|سي إيو تشيڤيسي إيستو�
 Eu deveria ter ligado antes.|إيو ديڤيريا تير ليغادو أنتيس.|كان لازم أتصل قبل.
 Que pena que eu não fui!|كي بينا كي إيو ناو فوي!|يا خسارة ما رحت!`)+
 TIP('تعبير شائع: <em>Se arrependimento matasse...</em> (لو الندم بيقتل...) لما حدا كتير ندمان.'),
-w:`arrependimento|أهيبينديمينتو|ندم
+w:`arrependimento|أهيبيندجيمينتو|ندم
 arrepender-se|أهيبينديرسي|يندم
 me arrependo|مي أهيبيندو|أنا ندمان
 tivesse feito|تشيڤيسي فيتو|لو كان عامل
@@ -13221,7 +13224,7 @@ futuro|فوتورو|مستقبل
 pretérito perfeito|بريتيريتو بيرفيتو|الماضي التام
 imperfeito|إينبيرفيتو|الماضي المستمر
 mais-que-perfeito|مايس كي بيرفيتو|الماضي الأسبق
-condicional|كونديسيوناو|الشرطي
+condicional|كوندجيسيوناو|الشرطي
 subjuntivo|سوبجونتشيڤو|صيغة الشك
 gerúndio|جيروندجيو|صيغة -ndo
 particípio|بارتشيسيبيو|اسم المفعول
@@ -13637,7 +13640,7 @@ TIP('<b>دايمًا</b> اطلب <em>número de protocolo</em> بآخر الم�
 w:`ligação|ليغاساو|مكالمة
 ligar|ليغار|يتصل
 atendente|أتينديينتشي|موظف خدمة
-atendimento|أتينديمينتو|خدمة العملاء
+atendimento|أتيندجيمينتو|خدمة العملاء
 setor|سيتور|قسم
 ramal|هاماو|تحويلة
 digite|دجيجيتشي|اضغط / اكتب
@@ -13928,7 +13931,7 @@ C({id:186,u:30,pt:'Redes sociais',ar:'السوشال ميديا',
 lesson:H('لغة السوشال')+Pp('البرازيل من أكتر الدول استعمالًا للسوشال. <em>WhatsApp</em> هو كل شي: شغل، مدرسة، عمارة، دكتور. وكلمات شائعة: <em>postar</em>، <em>curtir</em> (لايك)، <em>compartilhar</em>، <em>seguidor</em>.')+
 X(`Me segue no Instagram!|مي سيغي نو إنستاغرام!|تابعني عالإنستغرام!
 Vou postar um vídeo hoje.|ڤو بوستار أون ڤيدجيو أوجي.|رح أنزّل فيديو اليوم.
-Me manda um áudio.|مي ماندا أون آوديو.|ابعتلي فويس.`)+
+Me manda um áudio.|مي ماندا أون آودجيو.|ابعتلي فويس.`)+
 TIP('البرازيليين بيحبوا الـ<em>áudio</em> (فويس) بالواتساب كتير. و<em>Zap</em> أو <em>Zap Zap</em> = واتساب (عامي).'),
 w:`rede social|هيدجي سوسياو|شبكة اجتماعية
 perfil|بيرفيو|بروفايل
@@ -13943,7 +13946,7 @@ seguidor|سيغيدور|متابع
 story|ستوري|ستوري
 marcar|ماركار|يعمل تاغ
 mensagem|مينساجين|رسالة
-áudio|آوديو|فويس
+áudio|آودجيو|فويس
 grupo|غروبو|غروب
 bloquear|بلوكيار|يبلّك
 engajamento|إينغاجامينتو|تفاعل
@@ -13954,7 +13957,7 @@ Postei uma foto da praia.|بوستيي أوما فوتو دا برايا.|نزّ
 O vídeo viralizou!|أو ڤيدجيو ڤيراليزو!|الفيديو صار تريند!
 Comenta e compartilha com os amigos.|كومينتا إي كونبارتيليا كون أوس أميغوس.|علّق وشارك مع أصحابك.
 Me marca na foto.|مي ماركا نا فوتو.|اعملي تاغ بالصورة.
-Me manda um áudio no zap.|مي ماندا أون آوديو نو زاب.|ابعتلي فويس عالواتساب.
+Me manda um áudio no zap.|مي ماندا أون آودجيو نو زاب.|ابعتلي فويس عالواتساب.
 Saí do grupo da escola, muita mensagem!|ساي دو غروبو دا إيسكولا، موينتا مينساجين!|طلعت من غروب المدرسة، رسايل كتير!
 Bloqueei esse perfil falso.|بلوكيي إيسي بيرفيو فاوسو.|بلّكت هالبروفايل المزيّف.`,
 d:`Me ___ no Instagram!|تابعني.|segue|seguir|sigo de
@@ -14358,7 +14361,7 @@ chover|شوڤير|إذا شتت
 teria|تيريا|كان عنده
 seria|سيريا|كان
 estaria|إيستاريا|كان (حالة)
-condição|كونديساو|شرط
+condição|كوندجيساو|شرط
 consequência|كونسيكوينسيا|نتيجة
 caso contrário|كازو كونتراريو|وإلا
 senão|سيناو|وإلا
@@ -14366,7 +14369,7 @@ a menos que|آ مينوس كي|إلا إذا`,
 s:`Se você quiser, passo aí amanhã.|سي ڤوسي كيزير، باسو آي أمانيا.|إذا بدك، بمرّ عليك بكرة.
 Se eu puder, vou à reunião.|سي إيو بودير، ڤو آ هيونياو.|إذا بقدر، بروح عالاجتماع.
 Se eu tivesse aprendido português antes, hoje estaria trabalhando na minha área.|سي إيو تشيڤيسي أبريندجيدو بورتوغيس أنتيس، أوجي إيستاريا ترابالياندو نا مينيا آريا.|لو تعلّمت برتغالي قبل، كان اليوم بشتغل بمجالي.
-Se ele fosse mais organizado, não teria perdido o voo.|سي إيلي فوسي مايس أورغانيزادو، ناو تيريا بيرديدو أو ڤوو.|لو كان أكتر ترتيب، ما كان ضيّع الطيارة.
+Se ele fosse mais organizado, não teria perdido o voo.|سي إيلي فوسي مايس أورغانيزادو، ناو تيريا بيردجيدو أو ڤوو.|لو كان أكتر ترتيب، ما كان ضيّع الطيارة.
 Se não tivesse chovido, a gente estaria na praia agora.|سي ناو تشيڤيسي شوڤيدو، آ جينتشي إيستاريا نا برايا أغورا.|لو ما شتت، كنا هلأ عالبحر.
 Quando eu tiver tempo, vou te visitar.|كواندو إيو تشيڤير تيمبو، ڤو تشي ڤيزيتار.|لما يصير عندي وقت، رح أزورك.
 Estude, senão você não passa.|إيستودي، سيناو ڤوسي ناو باسا.|ادرس وإلا ما بتنجح.
@@ -14960,9 +14963,9 @@ q:[['شو مشروع محمود؟','حلويات عربية','مطعم','مخب�
 203:{sp:['Karim','Coordenadora'],l:`A|Boa tarde. Gostaria de informações sobre o mestrado em administração.|بوا تاردجي. غوستاريا دجي إينفورماسويس سوبري أو ميستراادو إين أدجيمينيستراساو.|مسا الخير. حابب معلومات عن ماجستير الإدارة.
 B|As inscrições abrem em agosto. Tem prova e entrevista.|آس إينسكريسويس أبرين إين أغوستو. تين بروڤا إي إينتريڤيستا.|التسجيل بيفتح بآب. في امتحان ومقابلة.
 A|Meu diploma é estrangeiro. Preciso revalidar?|ميو دجيبلوما إي إيسترانجيرو. بريسيزو هيڤاليدار؟|شهادتي من برا. لازم أعادلها؟
-B|Para o mestrado, normalmente não. Mas veja o edital.|بارا أو ميستراادو، نورماومينتشي ناو. ماس ڤيجا أو إيديتاو.|للماجستير عادة لا. بس شوف الإعلان الرسمي.
+B|Para o mestrado, normalmente não. Mas veja o edital.|بارا أو ميستراادو، نورماومينتشي ناو. ماس ڤيجا أو إيدجيتاو.|للماجستير عادة لا. بس شوف الإعلان الرسمي.
 A|E tem bolsa?|إي تين بولسا؟|وفي منحة؟
-B|Tem algumas, da CAPES, para quem tem dedicação exclusiva.|تين آوغوماس، دا كابيس، بارا كين تين ديديكاساو إيسكلوزيڤا.|في شوية، من CAPES، للي متفرّغ تمامًا.`,
+B|Tem algumas, da CAPES, para quem tem dedicação exclusiva.|تين آوغوماس، دا كابيس، بارا كين تين ديدجيكاساو إيسكلوزيڤا.|في شوية، من CAPES، للي متفرّغ تمامًا.`,
 q:[['إيمتى التسجيل؟','آب','كانون الثاني','آذار'],['لازم يعادل للماجستير؟','عادة لا، بس يشوف الإعلان','أكيد','ما في ماجستير'],['لمين المنحة؟','للمتفرّغ','للكل','للأجانب بس']]},
 204:{sp:['Agente de saúde','Moradora'],l:`A|Bom dia! Estou visitando as casas por causa da dengue.|بون دجيا! إيستو ڤيزيتاندو آس كازاس بور كاوزا دا دينغي.|صباح الخير! عم زور البيوت بسبب الضنك.
 B|Teve algum caso aqui no bairro?|تيڤي آوغون كازو أكي نو بايهو؟|صار في حالات بالحارة؟
@@ -15001,7 +15004,7 @@ X(`O aluguel no centro está caríssimo.|أو آلوغيو نو سينترو إ�
 Muita gente mora longe do trabalho.|موينتا جينتشي مورا لونجي دو تراباليو.|ناس كتير ساكنين بعيد عن شغلهم.
 A cidade precisa de mais áreas verdes.|آ سيدادجي بريسيزا دجي مايس آرياس ڤيردجيس.|المدينة بحاجة لمساحات خضرا أكتر.`)+
 TIP('<em>condomínio fechado</em> = مجمّع سكني مسوّر، و<em>Minha Casa Minha Vida</em> = برنامج حكومي للسكن المدعوم.'),
-w:`moradia|موراديا|سكن
+w:`moradia|مورادجيا|سكن
 cidade|سيدادجي|مدينة
 bairro|بايهو|حارة
 centro|سينترو|مركز
@@ -15206,7 +15209,7 @@ Os ___ podem mandar mensagem.|المستمعين.|ouvintes|ouvidos|ouvir`});
 
 C({id:213,u:39,pt:'Críticas e avaliações',ar:'النقد والتقييم',
 lesson:H('كيف تقيّم شي؟')+Pp('التقييم المتوازن فيه: <b>الإيجابي</b> + <b>السلبي</b> + <b>الحكم النهائي</b>. ولتلطيف النقد: <em>deixa a desejar</em> (مش قد التوقعات)، <em>poderia ser melhor</em>.')+
-X(`O atendimento deixou a desejar.|أو أتينديمينتو ديشو آ ديزيجار.|الخدمة ما كانت قد التوقعات.
+X(`O atendimento deixou a desejar.|أو أتيندجيمينتو ديشو آ ديزيجار.|الخدمة ما كانت قد التوقعات.
 A comida é excelente, mas o preço é salgado.|آ كوميدا إي إيسيلينتشي، ماس أو بريسو إي ساوغادو.|الأكل ممتاز، بس السعر غالي.
 Dou nota quatro de cinco.|دو نوتا كواترو دجي سينكو.|بعطيه 4 من 5.`)+
 TIP('<em>salgado</em> حرفيًا «مالح» بس بالعامي = غالي: <em>O preço está salgado!</em>'),
@@ -15227,7 +15230,7 @@ decepcionante|ديسيبسيونانتشي|مخيّب
 impecável|إينبيكاڤيو|بلا عيب
 razoável|هازواڤيو|مقبول`,
 s:`O hotel superou as expectativas.|أو أوتيو سوبيرو آس إيسبيكتاتشيڤاس.|الفندق فاق التوقعات.
-O atendimento deixou a desejar.|أو أتينديمينتو ديشو آ ديزيجار.|الخدمة ما كانت قد التوقعات.
+O atendimento deixou a desejar.|أو أتيندجيمينتو ديشو آ ديزيجار.|الخدمة ما كانت قد التوقعات.
 O ponto positivo é a localização.|أو بونتو بوزيتيڤو إي آ لوكاليزاساو.|النقطة الإيجابية الموقع.
 O ponto negativo é o barulho.|أو بونتو نيغاتيڤو إي أو باروليو.|النقطة السلبية الإزعاج.
 Dou cinco estrelas!|دو سينكو إيستريلاس!|بعطيه 5 نجوم!
@@ -15262,7 +15265,7 @@ kkkk|كا كا كا|ههههه
 mico|ميكو|موقف محرج
 vergonha alheia|ڤيرغونيا آليا|إحراج عن غيرك
 sem graça|سين غراسا|مش مضحك / محرج
-trocadilho|تروكاديليو|تلاعب بالكلام
+trocadilho|تروكادجيليو|تلاعب بالكلام
 levar na esportiva|ليڤار نا إيسبورتشيڤا|ياخدها بروح رياضية`,
 s:`Ele conta piada muito bem.|إيلي كونتا بيادا موينتو بين.|بيحكي نكت كتير منيح.
 Morri de rir com esse meme!|موهي دجي هير كون إيسي ميمي!|متت من الضحك على هالميم!
@@ -15366,7 +15369,7 @@ B|Um pouco salgado. Dou nota quatro de cinco.|أون بوكو ساوغادو. د
 q:[['كيف الأكل؟','ممتاز','عادي','سيء'],['شو مشكلة الخدمة؟','استنوا 40 دقيقة','الجرسون ما كان مؤدب','الطلب غلط'],['قديش التقييم؟','4 من 5','5 من 5','3 من 5']]},
 214:{sp:['Thiago','Yasmin'],l:`A|Yasmin, você viu o meme que eu mandei? Kkkkk|ياسمين، ڤوسي ڤيو أو ميمي كي إيو ماندي؟ كا كا كا|ياسمين، شفتي الميم اللي بعتته؟ هههه
 B|Vi, mas não entendi a piada.|ڤي، ماس ناو إينتيندجي آ بيادا.|شفته، بس ما فهمت النكتة.
-A|É um trocadilho com "manga", a fruta e a parte da camisa.|إي أون تروكاديليو كون مانغا، آ فروتا إي آ بارتشي دا كاميزا.|تلاعب بكلمة «مانغا»، الفاكهة وكُم القميص.
+A|É um trocadilho com "manga", a fruta e a parte da camisa.|إي أون تروكادجيليو كون مانغا، آ فروتا إي آ بارتشي دا كاميزا.|تلاعب بكلمة «مانغا»، الفاكهة وكُم القميص.
 B|Ahhh! Agora sim, morri de rir!|آآآ! أغورا سين، موهي دجي هير!|آآه! هلأ إيه، متت من الضحك!
 A|E ontem paguei o maior mico: chamei a professora de "mãe"!|إي أونتين باغيي أو مايور ميكو: شاميي آ بروفيسورا دجي ماي!|ومبارح انفضحت: ناديت المعلمة «ماما»!
 B|Kkkk, que vergonha alheia!|كا كا كا، كي ڤيرغونيا آليا!|هههه، استحيت عنك!`,
@@ -15478,7 +15481,7 @@ ação|أساو|دعوى
 processo|بروسيسو|قضية
 entrar com uma ação|إينترار كون أوما أساو|يرفع دعوى
 juiz|جويز|قاضي
-audiência|آوديينسيا|جلسة
+audiência|آودجيينسيا|جلسة
 acordo|أكوردو|تسوية / اتفاق
 prova|بروڤا|دليل
 testemunha|تيستيمونيا|شاهد
@@ -15492,7 +15495,7 @@ A Defensoria Pública atende de graça.|آ ديفينسوريا بوبليكا �
 Quero saber quais são os meus direitos.|كيرو سابير كوايس ساو أوس ميوس دجيريتوس.|بدي أعرف شو حقوقي.
 A empresa não pagou minhas férias.|آ إينبريزا ناو باغو مينياس فيرياس.|الشركة ما دفعتلي إجازتي.
 Vou entrar com uma ação trabalhista.|ڤو إينترار كون أوما أساو تراباليستا.|رح أرفع دعوى عمالية.
-A audiência é no dia dez.|آ آوديينسيا إي نو دجيا دجيس.|الجلسة يوم 10.
+A audiência é no dia dez.|آ آودجيينسيا إي نو دجيا دجيس.|الجلسة يوم 10.
 Guardei todas as provas: mensagens e recibos.|غوارديي توداس آس بروڤاس: مينساجينس إي هيسيبوس.|خبّيت كل الأدلة: رسايل ووصولات.
 Fizemos um acordo.|فيزيموس أون أكوردو.|عملنا تسوية.
 Preciso reconhecer firma no cartório.|بريسيزو هيكونيسير فيرما نو كارتوريو.|لازم أوثّق التوقيع بمكتب التوثيق.`,
@@ -15574,7 +15577,7 @@ Atualmente trabalho como freelancer.|أتواومينتشي تراباليو ك�
 Recomenda-se revisar os custos.|هيكومينيدا سي هيڤيزار أوس كوستوس.|بيُنصح بمراجعة التكاليف.
 Gostei muito do trabalho. Uma sugestão: aumente a fonte.|غوستيي موينتو دو تراباليو. أوما سوجيستاو: آومينتي آ فونتشي.|عجبني الشغل كتير. اقتراح: كبّر الخط.
 De fato, vale a pena investir.|دجي فاتو، ڤالي آ بينا إينڤيستير.|فعلًا بيستاهل الاستثمار.
-O atendimento deixou a desejar.|أو أتينديمينتو ديشو آ ديزيجار.|الخدمة ما كانت قد التوقعات.
+O atendimento deixou a desejar.|أو أتيندجيمينتو ديشو آ ديزيجار.|الخدمة ما كانت قد التوقعات.
 Quais garantias vocês aceitam?|كوايس غارانتشياس ڤوسيس أسيتان؟|شو الضمانات اللي بتقبلوها؟
 A gente dá um jeito.|آ جينتشي دا أون جيتو.|بندبّرها.`,
 d:`Duvido que ele ___ lido.|يكون.|tenha|tem|tinha
@@ -15729,7 +15732,7 @@ A|O senhor tem carteira assinada?|أو سينيور تين كارتيرا أسي
 B|Tenho, e guardei os contracheques e as mensagens.|تينيو، إي غوارديي أوس كونتراشيكيس إي آس مينساجينس.|عندي، وخبّيت قسائم الراتب والرسايل.
 A|Ótimo, são provas importantes. Vamos entrar com uma ação na Justiça do Trabalho.|أوتشيمو، ساو بروڤاس إينبورتانتشيس. ڤاموس إينترار كون أوما أساو نا جوستيسا دو تراباليو.|ممتاز، هاي أدلة مهمة. رح نرفع دعوى بمحكمة العمل.
 B|E vou precisar pagar alguma coisa?|إي ڤو بريسيزار باغار آوغوما كويزا؟|ورح أدفع اشي؟
-A|Não, o atendimento da Defensoria é gratuito.|ناو، أو أتينديمينتو دا ديفينسوريا إي غراتويتو.|لا، خدمة المحامي الحكومي مجانية.`,
+A|Não, o atendimento da Defensoria é gratuito.|ناو، أو أتيندجيمينتو دا ديفينسوريا إي غراتويتو.|لا، خدمة المحامي الحكومي مجانية.`,
 q:[['شو المشكلة؟','ما دفعوا مستحقاته','حادث','إيجار'],['شو الأدلة؟','قسائم الراتب والرسايل','شاهد','فيديو'],['قديش بيدفع؟','ولا اشي','نص المبلغ','100 ريال']]},
 219:{sp:['Policial','Pedro'],l:`A|Boa tarde. É uma blitz de rotina. Documentos, por favor.|بوا تاردجي. إي أوما بليتس دجي هوتشينا. دوكومينتوس، بور فاڤور.|مسا الخير. حاجز روتيني. الأوراق لو سمحت.
 B|Aqui está a minha CNH. O documento do carro está no aplicativo.|أكي إيستا آ مينيا سي إيني آغا. أو دوكومينتو دو كاهو إيستا نو أبليكاتشيڤو.|هاي رخصتي. ورقة السيارة بالتطبيق.
@@ -15801,7 +15804,7 @@ s:`Realizamos uma pesquisa com cem participantes.|هياليزاموس أوما 
 A empresa enfrenta sérias dificuldades.|آ إينبريزا إينفرينتا سيرياس دجيفيكولدادجيس.|الشركة بتواجه صعوبات جدية.
 Constatamos um aumento nos custos.|كونستاتاموس أون آومينتو نوس كوستوس.|لاحظنا زيادة بالتكاليف.
 Esse fator é crucial para o resultado.|إيسي فاتور إي كروسياو بارا أو هيزولتادو.|هالعامل حاسم للنتيجة.
-O artigo aborda a questão da moradia.|أو آرتشيغو أبوردا آ كيستاو دا موراديا.|المقالة بتتناول قضية السكن.
+O artigo aborda a questão da moradia.|أو آرتشيغو أبوردا آ كيستاو دا مورادجيا.|المقالة بتتناول قضية السكن.
 A falta de chuva acarretou prejuízos.|آ فاوتا دجي شوڤا أكاهيتو بريجويزوس.|قلة المطر سببت خسائر.
 É importante salientar que os dados são preliminares.|إي إينبورتانتشي ساليينتار كي أوس دادوس ساو بريليميناريس.|مهم نشدد إنه البيانات أولية.
 O programa viabilizou a compra da casa própria.|أو بروغراما ڤيابيليزو آ كونبرا دا كازا بروبريا.|البرنامج خلّى شرا البيت ممكن.
@@ -15831,7 +15834,7 @@ concessão|كونسيساو|تنازل
 meio-termo|ميو تيرمو|حل وسط
 margem|مارجين|هامش
 viável|ڤياڤيو|ممكن / عملي
-condições|كونديسويس|شروط
+condições|كوندجيسويس|شروط
 cláusula|كلاوزولا|بند
 prazo de pagamento|برازو دجي باغامينتو|مهلة الدفع
 volume|ڤولومي|كمية
@@ -15962,7 +15965,7 @@ autor|آوتور|مؤلف
 obra|أوبرا|عمل
 página|باجينا|صفحة
 ano de publicação|آنو دجي بوبليكاساو|سنة النشر
-editora|إيديتورا|دار نشر
+editora|إيدجيتورا|دار نشر
 plágio|بلاجيو|سرقة أدبية
 paráfrase|بارافرازي|إعادة صياغة
 apud|آبود|نقلًا عن
@@ -16122,7 +16125,7 @@ réu|هيو|مدّعى عليه
 petição inicial|بيتيساو إينيسياو|صحيفة دعوى
 citação|سيتاساو|تبليغ
 contestação|كونتيستاساو|رد / دفاع
-audiência|آوديينسيا|جلسة
+audiência|آودجيينسيا|جلسة
 sentença|سينتينسا|حكم
 recurso|هيكورسو|استئناف
 recorrer|هيكوهير|يستأنف
@@ -16136,7 +16139,7 @@ custas processuais|كوستاس بروسيسوايس|رسوم قضائية
 número do processo|نوميرو دو بروسيسو|رقم القضية`,
 s:`O advogado protocolou a petição inicial.|أو أدڤوغادو بروتوكولو آ بيتيساو إينيسياو.|المحامي قدّم صحيفة الدعوى.
 O réu foi citado para apresentar contestação.|أو هيو فوي سيتادو بارا أبريزينتار كونتيستاساو.|المدّعى عليه انبلّغ ليقدّم رده.
-A audiência foi marcada para março.|آ آوديينسيا فوي ماركادا بارا مارسو.|الجلسة انحددت بآذار.
+A audiência foi marcada para março.|آ آودجيينسيا فوي ماركادا بارا مارسو.|الجلسة انحددت بآذار.
 O juiz deu a sentença a nosso favor.|أو جويز ديو آ سينتينسا آ نوسو فاڤور.|القاضي حكم لصالحنا.
 A outra parte vai recorrer.|آ أوترا بارتشي ڤاي هيكوهير.|الطرف التاني رح يستأنف.
 O processo ainda não transitou em julgado.|أو بروسيسو أيندا ناو ترانزيتو إين جولغادو.|القضية لسا ما صار حكمها نهائي.
@@ -16273,7 +16276,7 @@ empenho|التزام مالي حكومي`,['المصطلح','المعنى'],fals
 TIP('المناقصات بتنشر على <b>PNCP</b> (Portal Nacional de Contratações Públicas). قبل ما تشارك، اقرأ الـedital كلمة كلمة.'),
 w:`licitação|ليسيتاساو|مناقصة
 órgão público|أورغاو بوبليكو|جهة حكومية
-edital|إيديتاو|إعلان رسمي بالشروط
+edital|إيدجيتاو|إعلان رسمي بالشروط
 pregão eletrônico|بريغاو إيليترونيكو|مزاد إلكتروني
 habilitação|أبيليتاساو|أهلية
 certidão negativa|سيرتشيداو نيغاتشيڤا|شهادة براءة ذمة
@@ -16288,8 +16291,8 @@ empenho|إينبينيو|التزام مالي
 prefeitura|بريفيتورا|بلدية
 transparência|ترانسبارينسيا|شفافية
 servidor público|سيرڤيدور بوبليكو|موظف حكومي`,
-s:`A prefeitura publicou um edital para serviços de fotografia.|آ بريفيتورا بوبليكو أون إيديتاو بارا سيرڤيسوس دجي فوتوغرافيا.|البلدية نشرت مناقصة لخدمات تصوير.
-Leia o edital com atenção.|ليا أو إيديتاو كون أتينساو.|اقرأ الإعلان بانتباه.
+s:`A prefeitura publicou um edital para serviços de fotografia.|آ بريفيتورا بوبليكو أون إيدجيتاو بارا سيرڤيسوس دجي فوتوغرافيا.|البلدية نشرت مناقصة لخدمات تصوير.
+Leia o edital com atenção.|ليا أو إيدجيتاو كون أتينساو.|اقرأ الإعلان بانتباه.
 Precisamos das certidões negativas para a habilitação.|بريسيزاموس داس سيرتشيدويس نيغاتشيڤاس بارا آ أبيليتاساو.|بدنا شهادات براءة الذمة للأهلية.
 O critério é o menor preço.|أو كريتيريو إي أو مينور بريسو.|المعيار أقل سعر.
 No pregão, demos o último lance.|نو بريغاو، ديموس أو أوتشيمو لانسي.|بالمزاد عطينا آخر عرض.
@@ -16331,7 +16334,7 @@ garantir|غارانتشير|يضمن
 participação|بارتيسيباساو|مشاركة
 denúncia|دينونسيا|بلاغ
 ouvidoria|أوڤيدوريا|مكتب الشكاوى الحكومي`,
-s:`A Constituição garante saúde e educação para todos.|آ كونستيتويساو غارانتي ساوودجي إي إيدوكاساو بارا تودوس.|الدستور بيضمن الصحة والتعليم للكل.
+s:`A Constituição garante saúde e educação para todos.|آ كونستيتويساو غارانتشي ساوودجي إي إيدوكاساو بارا تودوس.|الدستور بيضمن الصحة والتعليم للكل.
 Estrangeiros residentes também têm acesso ao SUS.|إيسترانجيروس هيزيدينتشيس تانبين تين أسيسو آو سوس.|الأجانب المقيمين كمان إلهم وصول للـSUS.
 Todos são iguais perante a lei.|تودوس ساو إيغوايس بيرانتشي آ لي.|الكل متساوي قدام القانون.
 A discriminação é crime no Brasil.|آ دجيسكريميناساو إي كريمي نو برازيو.|التمييز جريمة بالبرازيل.
@@ -16405,7 +16408,7 @@ apuração|أبوراساو|التحقق وجمع المعلومات
 apurar|أبورار|يتحقق
 pauta|باوتا|موضوع التغطية
 redação|هيداساو|غرفة الأخبار
-editor|إيديتور|محرر
+editor|إيدجيتور|محرر
 imparcialidade|إينبارسياليدادجي|حياد
 checar|شيكار|يتأكد
 fato|فاتو|واقعة
@@ -16418,7 +16421,7 @@ Ouvi três fontes diferentes.|أوڤي تريس فونتشيس دجيفيرين�
 A apuração levou duas semanas.|آ أبوراساو ليڤو دواس سيماناس.|التحقق أخد أسبوعين.
 É preciso checar os fatos antes de publicar.|إي بريسيزو شيكار أوس فاتوس أنتيس دجي بوبليكار.|لازم تتأكد من الوقائع قبل النشر.
 Separe o fato da opinião.|سيباري أو فاتو دا أوبينياو.|افصل الواقعة عن الرأي.
-O editor cortou o último parágrafo.|أو إيديتور كورتو أو أوتشيمو باراغرافو.|المحرر قص الفقرة الأخيرة.
+O editor cortou o último parágrafo.|أو إيدجيتور كورتو أو أوتشيمو باراغرافو.|المحرر قص الفقرة الأخيرة.
 Essa matéria foi um furo de reportagem.|إيسا ماتيريا فوي أون فورو دجي هيبورتاجين.|هالتقرير كان سبق صحفي.
 Ela escreve uma coluna semanal.|إيلا إيسكريڤي أوما كولونا سيماناو.|بتكتب عمود أسبوعي.`,
 d:`O ___ deve responder às seis perguntas.|الفقرة الافتتاحية.|lide|líder|lado
@@ -16538,7 +16541,7 @@ propaganda enganosa|بروباغاندا إينغانوزا|إعلان مضلل
 copywriting|كوبيرايتينغ|كتابة إعلانية
 legenda|ليجيندا|كابشن`,
 s:`Qual é o slogan da marca?|كواو إي أو سلوغان دا ماركا؟|شو شعار العلامة؟
-Experimente hoje e sinta a diferença!|إيسبيريمينتي أوجي إي سينتا آ دجيفيرينسا!|جرّب اليوم وحس بالفرق!
+Experimente hoje e sinta a diferença!|إيسبيريمينتشي أوجي إي سينتا آ دجيفيرينسا!|جرّب اليوم وحس بالفرق!
 Últimas vagas: garanta já a sua!|أوتشيماس ڤاغاس: غارانتا جا آ سوا!|آخر الأماكن: احجز مكانك هلأ!
 Mais de mil famílias já confiam na gente.|مايس دجي مين فاميلياس جا كونفيان نا جينتشي.|أكتر من ألف عيلة بتثق فينا.
 Qual é o nosso diferencial?|كواو إي أو نوسو دجيفيرينسياو؟|شو ميزتنا التنافسية؟
@@ -16603,7 +16606,7 @@ B|Cinquenta por cento de sinal e o resto na entrega das fotos, em trinta dias.|�
 A|Posso usar as fotos no meu site?|بوسو أوزار آس فوتوس نو ميو سايتشي؟|بقدر أستعمل الصور بموقعي؟
 B|Pode. O direito de uso é seu, e os direitos autorais continuam comigo.|بودجي. أو دجيريتو دجي أوزو إي سيو، إي أوس دجيريتوس آوتورايس كونتينوان كوميغو.|بتقدر. حق الاستخدام إلك، وحقوق المؤلف بتضل إلي.`,
 q:[['شو موضوع العقد؟','تصوير عرس','تصميم شعار','فيديو إعلاني'],['قديش العربون؟','50%','30%','100%'],['لمين حقوق المؤلف؟','للمصوّر','للزبون','للتنين']]},
-234:{sp:['Sócio 1','Sócio 2'],l:`A|Saiu um edital da prefeitura para fotografia de eventos.|ساييو أون إيديتاو دا بريفيتورا بارا فوتوغرافيا دجي إيڤينتوس.|نزل إعلان مناقصة من البلدية لتصوير الفعاليات.
+234:{sp:['Sócio 1','Sócio 2'],l:`A|Saiu um edital da prefeitura para fotografia de eventos.|ساييو أون إيدجيتاو دا بريفيتورا بارا فوتوغرافيا دجي إيڤينتوس.|نزل إعلان مناقصة من البلدية لتصوير الفعاليات.
 B|É pregão eletrônico?|إي بريغاو إيليترونيكو؟|مزاد إلكتروني؟
 A|É. O critério é o menor preço.|إي. أو كريتيريو إي أو مينور بريسو.|إيه. المعيار أقل سعر.
 B|Temos todas as certidões negativas para a habilitação?|تيموس توداس آس سيرتشيدويس نيغاتشيڤاس بارا آ أبيليتاساو؟|معنا كل شهادات براءة الذمة للأهلية؟
@@ -16762,7 +16765,7 @@ compositor|كونبوزيتور|ملحّن / كاتب أغاني
 intérprete|إينتيربريتشي|مؤدي
 canção|كانساو|أغنية
 letra|ليترا|كلمات
-melodia|ميلوديا|لحن
+melodia|ميلودجيا|لحن
 harmonia|أرمونيا|تناغم
 festival|فيستيڤاو|مهرجان
 censura|سينسورا|رقابة
@@ -16778,7 +16781,7 @@ Muitas canções usavam metáforas para driblar a censura.|موينتاس كان
 Caetano e Gil foram para o exílio em Londres.|كايتانو إي جيو فورااو بارا أو إيزيليو إين لوندريس.|كايتانو وجيل راحوا عالمنفى بلندن.
 A bossa nova mistura samba e jazz.|آ بوسا نوڤا ميستورا سانبا إي جاز.|البوسا نوڤا بتخلط السامبا والجاز.
 Elis Regina foi uma grande intérprete.|إيليس هيجينا فوي أوما غراندجي إينتيربريتشي.|إيليس ريجينا كانت مؤدية عظيمة.
-A melodia é simples, mas a letra é profunda.|آ ميلوديا إي سينبليس، ماس آ ليترا إي بروفوندا.|اللحن بسيط بس الكلمات عميقة.
+A melodia é simples, mas a letra é profunda.|آ ميلودجيا إي سينبليس، ماس آ ليترا إي بروفوندا.|اللحن بسيط بس الكلمات عميقة.
 Os festivais de música dos anos 60 eram famosos.|أوس فيستيڤايس دجي موزيكا دوس آنوس سيسينتا إيرااو فاموزوس.|مهرجانات الموسيقى بالستينات كانت مشهورة.
 Ouço MPB para melhorar meu português.|أوسو إيمي بي بي بارا ميليورار ميو بورتوغيس.|بسمع MPB لأحسّن برتغاليتي.`,
 d:`A MPB ___ nos anos sessenta.|ظهرت.|surgiu|surge de|surgir
@@ -16854,7 +16857,7 @@ Ramadã|هاماداا|رمضان
 jejum|جيجون|صيام
 respeito|هيسبيتو|احترام`,
 s:`O Brasil é um Estado laico.|أو برازيو إي أون إيستادو لايكو.|البرازيل دولة علمانية.
-A Constituição garante a liberdade religiosa.|آ كونستيتويساو غارانتي آ ليبيردادجي هيليجيوزا.|الدستور بيضمن الحرية الدينية.
+A Constituição garante a liberdade religiosa.|آ كونستيتويساو غارانتشي آ ليبيردادجي هيليجيوزا.|الدستور بيضمن الحرية الدينية.
 A maioria dos brasileiros é católica.|آ مايوريا دوس برازيليروس إي كاتوليكا.|أغلب البرازيليين كاثوليك.
 O número de evangélicos cresceu muito.|أو نوميرو دجي إيڤانجيليكوس كريسيو موينتو.|عدد الإنجيليين زاد كتير.
 Tem uma mesquita perto do centro de Curitiba.|تين أوما ميسكيتا بيرتو دو سينترو دجي كوريتيبا.|في جامع قريب من مركز كوريتيبا.
@@ -17083,7 +17086,7 @@ B|Perfeito!|بيرفيتو!|ممتاز!`,
 q:[['saber لشو؟','للمعلومة','للأماكن','للناس'],['escutar يعني؟','ينتبه للصوت','يلتقط صوت','يحكي'],['شو مثال الطالب؟','بسمع السير بس بصغي للدرس','بعرف ريو','بعرف العنوان']]},
 248:{sp:['Entrevistador','Candidata'],l:`A|Fale um pouco sobre um desafio que você superou.|فالي أون بوكو سوبري أون ديزافيو كي ڤوسي سوبيرو.|احكيلي شوي عن تحدّي تغلّبتِ عليه.
 B|Deixa eu pensar... Bom, quando cheguei ao Brasil, eu não falava nada.|ديشا إيو بينسار... بون، كواندو شيغيي آو برازيو، إيو ناو فالاڤا نادا.|خليني أفكر... طيب، لما وصلت البرازيل ما كنت أحكي اشي.
-B|Então, tipo, eu precisei aprender rápido para trabalhar com... como é que se diz... atendimento ao cliente.|إينتاو، تشيبو، إيو بريسيزيي أبريندير هابيدو بارا تراباليار كون... كومو إي كي سي دجيز... أتينديمينتو آو كليينتشي.|فيعني، اضطريت أتعلّم بسرعة لأشتغل بـ... كيف بيقولوا... خدمة العملاء.
+B|Então, tipo, eu precisei aprender rápido para trabalhar com... como é que se diz... atendimento ao cliente.|إينتاو، تشيبو، إيو بريسيزيي أبريندير هابيدو بارا تراباليار كون... كومو إي كي سي دجيز... أتيندجيمينتو آو كليينتشي.|فيعني، اضطريت أتعلّم بسرعة لأشتغل بـ... كيف بيقولوا... خدمة العملاء.
 A|E como você fez?|إي كومو ڤوسي فيز؟|وكيف عملتِ؟
 B|Na verdade, o que mais ajudou foi não ter medo de errar. Ou seja, falar mesmo travando.|نا ڤيردادجي، أو كي مايس أجودو فوي ناو تير ميدو دجي إيهار. أو سيجا، فالار ميزمو تراڤاندو.|بالحقيقة، أكتر شي ساعدني إني ما خفت أغلط. يعني أحكي حتى وأنا عم بعلق.`,
 q:[['شو كان التحدّي؟','ما كانت تحكي برتغالي','ما لقت شغل','الطقس'],['كيف تعاملت مع الكلمة اللي نسيتها؟','como é que se diz','سكتت','حكت إنجليزي'],['شو أكتر شي ساعد؟','ما خافت تغلط','الكتب','المعلم']]},
@@ -18283,7 +18286,7 @@ ou|أو|أو
 porque|بوركي|لأنه
 então|إينتاو|إذن / يعني
 também|تامبين|كمان
-depois|ديبويس|بعدين
+depois|دجيبويس|بعدين
 antes|أنتشيس|قبل
 agora|أغورا|هلأ
 sempre · nunca|سيمبري · نونكا|دايمًا · أبدًا
