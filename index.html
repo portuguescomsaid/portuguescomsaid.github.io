@@ -648,6 +648,7 @@ html,body{overflow-x:hidden}
 .fb-file{position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0}
 .ksvg svg{width:62%;height:auto;max-height:86%}
 .pic.psvg{display:inline-flex;align-items:center;justify-content:center}.pic.psvg svg{width:1.15em;height:1.15em}
+.favb{display:none!important}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -19632,6 +19633,7 @@ function route(){
   clearTimers();stopAudio();hdr();
   const h=(location.hash||'#path').slice(1)||'path';let m;
   dictHandler=null;try{DICT&&DICT.stop().catch(()=>{})}catch(e){}
+  if(/^(review|chat|stories|story-|mywords)/.test(h)){location.replace('#practice');return}
   if(h==='basics')vBasics();else if(h==='words')vWords();else if(h==='sentences')vSents();else if(h==='games')vGames();else if(h==='settings')vSettings();else if(h==='inbox')vInbox();else if(h==='pron')vPron();else if(h==='dict')vDict();else if(h==='mywords')vMyWords();else if(h==='goal')vGoal();else if(h==='league')vLeague();else if(h==='kids')vKids();else if((m=h.match(/^basic-([a-z-]+)$/)))vBasic(m[1]);else if((m=h.match(/^kids-([a-z_]+)$/)))vKidsCat(m[1]);else if((m=h.match(/^kidsgame-([a-z_]+)$/)))vKidsGame(m[1]);else if(h==='admin')vAdmin();else if((m=h.match(/^admin-(.+)$/)))vAdminUser(decodeURIComponent(m[1]));
   else if(h==='practice')vPractice();else if(h==='review')vReview();else if(h==='speak')vSpeak();else if(h==='chat')vChat();else if(h==='stories')vStories();else if(h==='sounds')vSounds();else if(h==='placement')vPlacement();
   else if((m=h.match(/^story-(\d+)$/)))vStory(+m[1]);else if((m=h.match(/^cert-(\d)$/)))vCert(+m[1]);
@@ -19677,7 +19679,7 @@ function vHome(){
    <div class="hello"><h1>${P(MY_NAME?'Olá, '+MY_NAME+'!':'Olá!')}</h1><p>كل يوم: درس واحد أو خطوتين منه، ولعبة سريعة. 20 دقيقة بتكفي.</p></div>
    ${loginNote()}
    ${typeof installBanner==='function'?installBanner():''}${typeof streakRisk==='function'?streakRisk():''}${goalCard()}${typeof leagueMini==='function'?leagueMini():''}
-   ${srsDue().length?`<a class="exam-cd" href="#review" style="background:var(--green-soft);border-color:var(--green)"><span class="cd-n">${srsDue().length}</span><span class="cd-t"><b>مراجعة اليوم</b><small>أغلاط سابقة لازم ترجعلها اليوم</small></span><span class="cd-go">راجع ←</span></a>`:''}
+   
    <div class="stats"><div class="stat"><b>${S.xp}</b><span>نقاط XP</span></div><div class="stat"><b>${streakNow()}</b><span>أيام ورا بعض</span></div><div class="stat"><b>${nd}<small>/${CH.length}</small></b><span>دروس مخلّصة</span></div><div class="stat"><b>${ne}<small>/${UNITS.length}</small></b><span>اختبارات وحدات</span></div></div>
    ${cont}
    ${LEVELS.map(lvCard).join('')}
@@ -20532,15 +20534,11 @@ function vPractice(){
   const card=(href,ic,t,d,badge,c)=>`<a class="gcard" href="${href}"><span class="gi" style="background:${c}">${ic}</span><h3>${t}${badge?` <span class="badge">${badge}</span>`:''}</h3><p>${d}</p></a>`;
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">التدريب</h1><p class="muted" style="margin:4px 0 0">كل شي بيقوّيك برا الدروس، على قد مستواك (${LEVELS[curLv()-1].tag}).</p></div>
    <div class="ggrid">
-   ${card('#chat','🤖','تكلّم مع الذكاء الاصطناعي','محادثة خطوة بخطوة بمواقف حقيقية، بصوتك أو كتابة.','','var(--blue-soft)')}
    ${card('#placement','🧭','تحديد المستوى','اعرف من وين تبدأ.',S.place||'','var(--sun-soft)')}
-   ${card('#review','🔁','مراجعة اليوم','أغلاطك بترجعلك لحد ما تثبت.',n||'', 'var(--sun-soft)')}
-   ${card('#pron','🎤','النطق والحكي','قول جمل من مستواك، والتطبيق بيقلك وين غلطت.','', 'var(--green-soft)')}
-   ${card('#dict','✍️','إملاء سريع','اسمع جملة واكتبها. 8 جمل من مستواك.','', 'var(--sun-soft)')}
    ${card('#games','🎮','الألعاب','بكلمات مستواك: مطابقة، اسمع واختار، رتّب…','','var(--bad-soft)')}
-   ${card('#stories','🎧','قصص مسموعة','حوار بصوتين لكل وحدة مع أسئلة.','','var(--green-soft)')}
-   ${card('#sounds','👂','الأصوات المتشابهة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--blue-soft)')}
-   ${card('#mywords','⭐','دفتر كلماتي','الكلمات اللي حفظتها، مع مراجعة خاصة.',Object.keys(S.fav||{}).length||'', 'var(--blue-soft)')}
+   ${card('#pron','🎤','النطق والحكي','قول جمل من مستواك، والتطبيق بيقلك وين غلطت.','','var(--green-soft)')}
+   ${card('#dict','✍️','إملاء سريع','اسمع جملة واكتبها. 8 جمل من مستواك.','','var(--blue-soft)')}
+   ${card('#sounds','👂','الأصوات المتشابهة','p/b، v/f، r/rr، ó/ô، lh، nh…','','var(--sun-soft)')}
    ${card(certs.length?'#cert-'+certs[certs.length-1].n:'#cert-1','🎓','شهاداتي',certs.length?certs.map(L=>L.tag).join(' · '):'بعد النجاح بامتحان نهائي.','','var(--green-soft)')}
    </div></div>`;
 }
@@ -20698,7 +20696,7 @@ function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={
   const dots=()=>`<div class="onb-dots">${[0,1,2,3].map(i=>`<i class="${i===st?'on':''}"></i>`).join('')}</div>`;
   const draw=()=>{let h='';
     if(st===0)h=`<div class="onb-ic">🇧🇷</div><h2>أهلًا فيك ببرتغالي مع سعيد</h2><p class="muted">تعلّم البرتغالي البرازيلي من الصفر لحد ما تحكي بثقة، بالعربي وخطوة بخطوة.</p>
-      <ul class="onb-ul"><li>📚 دروس قصيرة بالترتيب من A1 لـ C1</li><li>🔊 كل كلمة وجملة بصوت برازيلي، ونطقها بالحروف العربية</li><li>🤖 محادثة مع الذكاء الاصطناعي بمواقف حقيقية</li><li>🧒 قسم خاص للأطفال بالصور والألعاب</li></ul>
+      <ul class="onb-ul"><li>📚 دروس قصيرة بالترتيب من A1 لـ C1</li><li>🔊 كل كلمة وجملة بصوت برازيلي، ونطقها بالحروف العربية</li><li>🎮 ألعاب وتمارين نطق وإملاء</li><li>🧒 قسم خاص للأطفال بالصور والألعاب</li></ul>
       <button class="btn primary big" data-n>يلا نبلّش ←</button>`;
     if(st===1)h=`<div class="onb-ic">💭</div><h2>ليش بدك تتعلّم برتغالي؟</h2><p class="muted">بتقدر تختار أكتر من خيار.</p><div class="onb-opts">${W.map(([i,t])=>`<button class="onb-o${ans.why.includes(t)?' on':''}" data-w="${t}"><span>${i}</span>${t}</button>`).join('')}</div>
       <button class="btn primary big" data-n ${ans.why.length?'':'disabled'}>التالي ←</button>`;
@@ -20724,7 +20722,7 @@ if(typeof vSettings==='function'){const _vS4=vSettings;vSettings=function(){_vS4
 /* ---------- 6) سلسلة الأيام: تنبيه لما تكون رح تنقطع ---------- */
 function streakRisk(){const n=S.streak&&S.streak.n||0;const t=today();
   if(S.streak.last===t)return n>=2?`<div class="streak-ok">🔥 <b>${n} يوم</b> ورا بعض! كمّل بكرة عشان ما تنقطع.</div>`:'';
-  if(n>0&&S.streak.last===yesterday()){const nx=nextItem();const href=nx?(nx.t==='ch'?'#ch-'+nx.id:'#exam-'+nx.id):'#review';
+  if(n>0&&S.streak.last===yesterday()){const nx=nextItem();const href=nx?(nx.t==='ch'?'#ch-'+nx.id:'#exam-'+nx.id):'#path';
     return `<a class="streak-risk" href="${href}"><span class="sr-f">🔥</span><span><b>ما درست اليوم!</b><br>سلسلتك <b>${n} يوم</b> رح تنقطع الليلة. 5 دقايق بس بتحميها ←</span></a>`}
   return ''}
 
