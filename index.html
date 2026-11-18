@@ -20360,7 +20360,7 @@ function vChat(){
 }
 function chatRoom(sc,lv){
   chatSt={sc,lv,step:1,g:Math.random()<.5?'m':'f',msgs:[{role:'user',content:chatSystem(sc,lv)+'\n\nStart the conversation (step 1).'},{role:'assistant',content:'PT: '+sc.open.pt+'\nAR: '+sc.open.ar+'\nFIX: -\nSUG: '+sc.open.sug.join(' || ')}],view:[{text:sc.open.pt,ar:sc.open.ar}]};
-  claude.use('sample').then(s=>s&&s.ready&&s.ready()).catch(()=>{});
+  try{window.claude&&claude.use('sample').then(s=>s&&s.ready&&s.ready()).catch(()=>{})}catch(e){}
   app.innerHTML=`<div class="stack chat"><div class="row" style="justify-content:space-between"><button class="back linkbtn" id="cb">→ المواقف</button><span class="chip">${sc.ic} ${esc(sc.ar)} · ${lv}</span><span class="chip" id="stp">١/${sc.steps.length}</span></div>
    <div id="log" class="log" aria-live="polite"></div>
    <div class="sugg" id="sugg"></div>
@@ -20374,7 +20374,7 @@ function chatRoom(sc,lv){
     log.scrollTop=log.scrollHeight;window.scrollTo({top:document.body.scrollHeight});const sp=$('#stp');if(sp)sp.textContent='الخطوة '+chatSt.step+'/'+chatSt.sc.steps.length};
   const sugg=list=>{$('#sugg').innerHTML=(list||[]).slice(0,2).map(t=>`<button class="pill" data-t="${esc(t)}">${esc(t)}</button>`).join('');$$('#sugg .pill').forEach(b=>b.onclick=()=>{$('#cin').value=b.dataset.t;$('#cin').focus()})};
   const turn=async()=>{chatSt.view.push({wait:true});draw();$('#send').disabled=true;
-    try{let v;const s=await claude.use('sample');
+    try{let v;if(!await waitClaude())throw{code:'unavailable'};const s=await claude.use('sample');
       if(s&&s.stream){const live={text:'',ar:'',live:true};let shown=false;
         const msgs=chatSt.msgs.length>11?[chatSt.msgs[0],...chatSt.msgs.slice(-10)]:chatSt.msgs;
         const full=await s.stream(msgs,t=>{const m=t.match(/^\s*PT\s*:\s*(.*)$/mi);if(m&&m[1]){live.text=m[1];if(!shown){chatSt.view.pop();chatSt.view.push(live);shown=true}draw()}});
