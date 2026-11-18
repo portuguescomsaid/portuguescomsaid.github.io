@@ -646,6 +646,8 @@ html,body{overflow-x:hidden}
 .knum .kn-st,.knum .kn-st i{font-size:15px!important;line-height:1.15;width:auto;height:auto}
 .knum:has(.kn-st){padding:20px 22px 6px}
 .fb-file{position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0}
+.ksvg svg{width:62%;height:auto;max-height:86%}
+.pic.psvg{display:inline-flex;align-items:center;justify-content:center}.pic.psvg svg{width:1.15em;height:1.15em}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -928,7 +930,16 @@ function emojis(text,max){
     if(e&&!out.includes(e))out.push(e)}
   return out.slice(0,max);
 }
-const PIC=(text,max,fallback)=>{const e=emojis(text,max);if(e.length)return `<span class="pic" aria-hidden="true">${e.join('')}</span>`;return fallback?`<span class="pic dim" aria-hidden="true">${fallback}</span>`:''};
+const PIC=(text,max,fallback)=>{const kk=String(text||'').toLowerCase().trim();if(typeof KSVG!=='undefined'&&KSVG[kk])return `<span class="pic psvg" aria-hidden="true">${KSVG[kk]}</span>`;const e=emojis(text,max);if(e.length)return `<span class="pic" aria-hidden="true">${e.join('')}</span>`;return fallback?`<span class="pic dim" aria-hidden="true">${fallback}</span>`:''};
+/* ===== رسومات SVG لكلمات ما إلها إيموجي مناسب ===== */
+const KSVG={
+mesa:`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="58" rx="24" ry="3" fill="#000" opacity=".12"/><rect x="6" y="20" width="52" height="8" rx="2" fill="#B9773E"/><rect x="6" y="26" width="52" height="3" fill="#8E5427"/><rect x="11" y="29" width="5" height="27" rx="1.5" fill="#9C5F2E"/><rect x="48" y="29" width="5" height="27" rx="1.5" fill="#9C5F2E"/><rect x="18" y="29" width="4" height="22" rx="1.5" fill="#7A4520"/><rect x="42" y="29" width="4" height="22" rx="1.5" fill="#7A4520"/><rect x="16" y="36" width="32" height="3" fill="#8E5427"/></svg>`,
+cozinha:`<svg viewBox="0 0 64 64"><rect x="4" y="4" width="56" height="14" rx="2" fill="#E9EEF2"/><rect x="7" y="7" width="15" height="9" rx="1" fill="#C9D3DB"/><rect x="42" y="7" width="15" height="9" rx="1" fill="#C9D3DB"/><path d="M24 6h16l3 10H21z" fill="#9AA6B2"/><rect x="4" y="30" width="56" height="28" rx="2" fill="#F4F1EA"/><rect x="2" y="27" width="60" height="4" rx="1" fill="#6B7A88"/><rect x="22" y="32" width="20" height="24" rx="2" fill="#3A3F45"/><rect x="25" y="38" width="14" height="10" rx="1.5" fill="#F2A33A" opacity=".85"/><rect x="25" y="34" width="14" height="2" rx="1" fill="#8A939B"/><circle cx="25" cy="26" r="3" fill="#3A3F45"/><circle cx="39" cy="26" r="3" fill="#3A3F45"/><rect x="7" y="34" width="12" height="21" rx="1" fill="#D9CFBF"/><rect x="45" y="34" width="12" height="21" rx="1" fill="#D9CFBF"/><rect x="16" y="42" width="1.5" height="5" fill="#8A7A62"/><rect x="47" y="42" width="1.5" height="5" fill="#8A7A62"/><path d="M46 22c2-4 6-4 8 0" stroke="#7F8C99" stroke-width="2" fill="none"/></svg>`,
+geladeira:`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="61" rx="15" ry="2" fill="#000" opacity=".12"/><rect x="16" y="3" width="32" height="57" rx="4" fill="#F1F5F8" stroke="#B8C4CE" stroke-width="2"/><line x1="16" y1="22" x2="48" y2="22" stroke="#B8C4CE" stroke-width="2"/><rect x="19" y="9" width="3" height="9" rx="1.5" fill="#8C99A5"/><rect x="19" y="27" width="3" height="16" rx="1.5" fill="#8C99A5"/><rect x="34" y="27" width="10" height="6" rx="1" fill="#CFE6F5"/><circle cx="41" cy="12" r="2.5" fill="#7FC4E8"/></svg>`,
+travesseiro:`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="52" rx="26" ry="3" fill="#000" opacity=".1"/><path d="M8 20c8-4 40-4 48 0 3 8 3 20 0 28-8 4-40 4-48 0-3-8-3-20 0-28z" fill="#FFFFFF" stroke="#C7D3E3" stroke-width="2"/><path d="M14 26c10-2 26-2 36 0" stroke="#E2E9F2" stroke-width="2" fill="none"/><path d="M14 42c10 2 26 2 36 0" stroke="#E2E9F2" stroke-width="2" fill="none"/><circle cx="8" cy="20" r="2" fill="#C7D3E3"/><circle cx="56" cy="20" r="2" fill="#C7D3E3"/><circle cx="8" cy="48" r="2" fill="#C7D3E3"/><circle cx="56" cy="48" r="2" fill="#C7D3E3"/></svg>`,
+toalha:`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="55" rx="24" ry="3" fill="#000" opacity=".1"/><rect x="8" y="36" width="48" height="16" rx="5" fill="#4F9FD9"/><rect x="8" y="40" width="48" height="3" fill="#FFFFFF" opacity=".7"/><rect x="8" y="46" width="48" height="2" fill="#FFFFFF" opacity=".5"/><rect x="12" y="20" width="40" height="16" rx="5" fill="#7DBAE8"/><rect x="12" y="24" width="40" height="3" fill="#FFFFFF" opacity=".7"/><rect x="12" y="30" width="40" height="2" fill="#FFFFFF" opacity=".5"/><path d="M52 25c4 0 4 8 0 8" fill="#6AAEE0"/></svg>`,
+garfo:`<svg viewBox="0 0 64 64"><g transform="rotate(35 32 32)"><rect x="29.5" y="28" width="5" height="32" rx="2.5" fill="#A9B2BB"/><path d="M24 6v14c0 5 3 8 8 8s8-3 8-8V6" fill="none" stroke="#C3CAD1" stroke-width="3"/><rect x="22.5" y="4" width="3" height="16" rx="1.5" fill="#C3CAD1"/><rect x="27.2" y="4" width="3" height="16" rx="1.5" fill="#C3CAD1"/><rect x="33.8" y="4" width="3" height="16" rx="1.5" fill="#C3CAD1"/><rect x="38.5" y="4" width="3" height="16" rx="1.5" fill="#C3CAD1"/><path d="M24 18c0 6 3 10 8 10s8-4 8-10z" fill="#C3CAD1"/></g></svg>`
+};
 
 /* ===== Unidade 1: Primeiros passos ===== */
 C({id:1,u:1,pt:'Os sons do português',ar:'الحروف والنطق البرازيلي',
@@ -9831,7 +9842,7 @@ cadeira|كاديرا|كرسي
 armário|أرماريو|خزانة
 guarda-roupa|غواردا هوبا|خزانة أواعي
 estante|إيستانتشي|مكتبة / رفوف
-geladeira|جيلاديرا|براد
+geladeira|جيلاديرا|ثلاجة
 fogão|فوغاو|غاز
 micro-ondas|ميكرو أونداس|ميكروويف
 máquina de lavar|ماكينا دجي لاڤار|غسالة
@@ -9842,7 +9853,7 @@ A cozinha é pequena.|آ كوزينيا إي بيكينا.|المطبخ صغير
 Tem uma suíte e um banheiro social.|تين أوما سويتشي إي أون بانييرو سوسياو.|في غرفة مع حمّام وحمّام عادي.
 O apartamento é mobiliado?|أو أبارتامينتو إي موبيليادو؟|الشقة مفروشة؟
 Não, está sem móveis.|ناو، إيستا سين مويڤيس.|لا، فاضية بلا أثاث.
-Preciso comprar uma geladeira.|بريسيزو كونبرار أوما جيلاديرا.|لازم أشتري براد.
+Preciso comprar uma geladeira.|بريسيزو كونبرار أوما جيلاديرا.|لازم أشتري ثلاجة.
 O sofá está na sala.|أو سوفا إيستا نا سالا.|الكنباية بالصالون.
 Tem varanda?|تين ڤاراندا؟|في برندة؟
 Tem vaga na garagem?|تين ڤاغا نا غاراجين؟|في مكان سيارة بالكراج؟
@@ -9852,7 +9863,7 @@ d:`O apartamento tem dois ___.|غرفتين نوم.|quartos|salas|camas
 A ___ é pequena.|المطبخ صغير.|cozinha|quarto|banheiro
 O apartamento é ___?|مفروشة؟|mobiliado|móveis|mobília
 O sofá está na ___.|بالصالون.|sala|cozinha|garagem
-Preciso comprar uma ___.|براد.|geladeira|fogão de|armário
+Preciso comprar uma ___.|ثلاجة.|geladeira|fogão de|armário
 Tem ___ na garagem?|مكان سيارة؟|vaga|varanda|vez`});
 
 C({id:110,u:6,pt:'Tarefas de casa',ar:'شغل البيت',
@@ -13582,7 +13593,7 @@ retorno|هيتورنو|رد
 atenciosamente|أتينسيوزامينتشي|مع الاحترام
 protocolo|بروتوكولو|رقم المعاملة
 nota fiscal|نوتا فيسكاو|فاتورة رسمية`,
-s:`Comprei uma geladeira no dia 5 de março.|كونبريي أوما جيلاديرا نو دجيا سينكو دجي مارسو.|اشتريت براد يوم 5 آذار.
+s:`Comprei uma geladeira no dia 5 de março.|كونبريي أوما جيلاديرا نو دجيا سينكو دجي مارسو.|اشتريت ثلاجة يوم 5 آذار.
 O número do pedido é 48213.|أو نوميرو دو بيدجيدو إي كوارينتا إي أويتو مين دوزينتوس إي تريزي.|رقم الطلب 48213.
 O produto chegou com defeito.|أو برودوتو شيغو كون ديفيتو.|المنتج وصل فيه عطل.
 O prazo de entrega já passou.|أو برازو دجي إينتريغا جا باسو.|مهلة التوصيل خلصت.
@@ -18812,7 +18823,7 @@ cozinha|كوزينيا|مطبخ|Kitchen|🍳
 banheiro|بانييرو|حمّام|Bathroom|🛁
 sofá|سوفا|كنباية|Couch|🛋️
 televisão|تيليڤيزاو|تلفزيون|Television|📺
-geladeira|جيلاديرا|براد|Refrigerator|🧊
+geladeira|جيلاديرا|ثلاجة|Refrigerator|🧊
 chuveiro|شوڤيرو|دوش|Shower|🚿
 travesseiro|تراڤيسيرو|مخدّة|Pillow|🛏️
 escova de dentes|إيسكوڤا دجي دينتشيس|فرشاية سنان|Toothbrush|🪥
@@ -19092,6 +19103,7 @@ async function wikiImg(spec){
 function kidPic(k,it,big){
   if(k.color)return `<span class="kpic kcol" style="background:${it.img}"></span>`;
   if(k.num)return `<span class="kpic knum">${+it.img<=10?'<span class="kn-st">'+'<i>⭐</i>'.repeat(+it.img)+'</span>':'<span class="kn-e">'+it.em+'</span>'}<b>${it.img}</b></span>`;
+  if(!k.phrase&&typeof KSVG!=='undefined'&&KSVG[String(it.pt).toLowerCase()])return `<span class="kpic ksvg">${KSVG[String(it.pt).toLowerCase()]}</span>`;
   if(k.phrase||k.emo||!it.img||it.img==='-')return `<span class="kpic kemo">${it.em}</span>`;
   return `<span class="kpic kimg" data-wiki="${esc(it.img)}"><span class="kemo">${it.em}</span></span>`;
 }
