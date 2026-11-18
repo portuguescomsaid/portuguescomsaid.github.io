@@ -20526,9 +20526,9 @@ async function vLeague(){
   const realN=rows.length;const botsOn=cfg.on&&!(cfg.hide&&realN>=cfg.hide);
   if(botsOn){rows=rows.concat(leagueBots(cfg.n||25)).sort((a,b)=>b.x-a.x)}
   const me=rows.findIndex(r=>r.id===MY_ID);const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-  $('#lg').outerHTML=`<div class="card lg-list">${rows.length?rows.slice(0,50).map((r,i)=>`<div class="lg-row${r.id===MY_ID?' me':''}${r.bot?' bot':''}"><span class="lg-n">${medal(i)}</span><span class="lg-nm">${r.bot?'🤖 ':''}${esc(r.n||'طالب')}${r.id===MY_ID?' (إنت)':''}${r.bot?` <small class="lg-lv">${r.lv}</small>`:''}</span><b class="lg-x">${r.x} XP</b></div>`).join(''):'<p class="muted" style="margin:0">لسا ما حدا جمع نقاط هالأسبوع. كن الأول!</p>'}
+  $('#lg').outerHTML=`<div class="card lg-list">${rows.length?rows.slice(0,50).map((r,i)=>`<div class="lg-row${r.id===MY_ID?' me':''}${r.bot?' bot':''}"><span class="lg-n">${medal(i)}</span><span class="lg-nm">${r.bot?'<span title="منافس تدريبي آلي">🤖</span> ':''}${esc(r.n||'طالب')}${r.id===MY_ID?' (إنت)':''}${r.bot?` <small class="lg-lv">${r.lv}</small>`:''}</span><b class="lg-x">${r.x} XP</b></div>`).join(''):'<p class="muted" style="margin:0">لسا ما حدا جمع نقاط هالأسبوع. كن الأول!</p>'}
    ${me>=50?`<div class="lg-row me"><span class="lg-n">${me+1}</span><span class="lg-nm">إنت</span><b class="lg-x">${rows[me].x} XP</b></div>`:''}</div>
-   ${botsOn?'<p class="muted" style="margin:0;font-size:13px">🤖 = منافس تدريبي آلي، بينضاف لحد ما يكبر الدوري.</p>':''}`;
+   `;
   if(botsOn){const l=$('.lg-list');if(l)l.insertAdjacentHTML('beforebegin','<p class="lg-botnote">🤖 منافسين تدريبيين معك بالدوري لحد ما يكبر. تحدّاهم!</p>')}
   if(IS_OWNER||IS_ADMIN){const st=$('.stack',app);st.insertAdjacentHTML('beforeend',`<section class="card stack"><h2 class="adm-h">⚙️ المنافسين الآليين (للإدارة)</h2>
     <p class="muted" style="margin:0">مستخدمين حقيقيين هالأسبوع: <b>${realN}</b>. المنافسين الآليين بيبيّنوا مع 🤖 وعليهم ملاحظة واضحة.</p>
