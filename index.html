@@ -639,6 +639,12 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .fb-thumbs img{width:72px;height:72px;object-fit:cover;border-radius:10px;border:1px solid var(--line,#ddd);cursor:zoom-in}
 .fb-th{position:relative}.fb-th button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:#c0392b;color:#fff;font-size:12px;cursor:pointer}
 .fb-view{cursor:zoom-out;display:flex;flex-direction:column;gap:10px}.fb-view img{max-width:100%;max-height:82vh;border-radius:12px;background:#fff}
+.kcards{grid-template-columns:repeat(2,minmax(0,1fr))}@media(min-width:640px){.kcards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.kcard{min-width:0}.kcard>*{max-width:100%;overflow-wrap:anywhere}
+.kn-st{display:flex;flex-wrap:wrap;justify-content:center;gap:1px;max-width:100%;line-height:1.1}.kn-st i{font-style:normal}
+html,body{overflow-x:hidden}
+.knum .kn-st,.knum .kn-st i{font-size:15px!important;line-height:1.15;width:auto;height:auto}
+.knum:has(.kn-st){padding:20px 22px 6px}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -19084,7 +19090,7 @@ async function wikiImg(spec){
 }
 function kidPic(k,it,big){
   if(k.color)return `<span class="kpic kcol" style="background:${it.img}"></span>`;
-  if(k.num)return `<span class="kpic knum">${+it.img<=10?'⭐'.repeat(+it.img):'<span class="kn-e">'+it.em+'</span>'}<b>${it.img}</b></span>`;
+  if(k.num)return `<span class="kpic knum">${+it.img<=10?'<span class="kn-st">'+'<i>⭐</i>'.repeat(+it.img)+'</span>':'<span class="kn-e">'+it.em+'</span>'}<b>${it.img}</b></span>`;
   if(k.phrase||k.emo||!it.img||it.img==='-')return `<span class="kpic kemo">${it.em}</span>`;
   return `<span class="kpic kimg" data-wiki="${esc(it.img)}"><span class="kemo">${it.em}</span></span>`;
 }
