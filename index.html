@@ -618,6 +618,13 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 .is-n{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--brand,#1f5c3f);color:#fff;font-weight:700;flex:none}
 .is-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--card,#fff);font-size:22px;flex:none;color:#0a84ff}
 .inst-arrow{font-size:34px;animation:ia 1s infinite;color:var(--brand,#1f5c3f)}@keyframes ia{50%{transform:translateY(8px)}}
+.ex-multi{flex-wrap:wrap;align-items:flex-start}
+.mx{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;flex:1;min-width:0}
+.mx-i{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:10px 6px;border-radius:14px;background:rgba(0,0,0,.035)}
+[data-theme=dark] .mx-i{background:rgba(255,255,255,.06)}
+.mx-i .pt{font-size:20px;font-weight:700}.mx-i .pic{font-size:22px;margin:0}
+.mx-note{flex-basis:100%;font-size:14px;opacity:.8;padding-top:4px}
+.mx-i .ar,.mx-i .pron{text-align:center;align-self:center;width:100%}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -781,7 +788,16 @@ const H=t=>`<h3>${t}</h3>`;
 const Pp=t=>`<p>${t}</p>`;
 const TIP=t=>`<div class="tip">${t}</div>`;
 const exRow=(pt,pr,ar)=>`<div class="ex">${sayBtn(pt)}<div class="ex-t"><span class="pt" lang="pt-BR" dir="ltr">${esc(pt)}</span>${SYL(pt)}${pr?`<span class="pron">${esc(pr)}</span>`:''}${ar?`<span class="ar">${bidi(ar)}</span>`:''}</div>${PIC(pt,2)}</div>`;
-const X=s=>`<div class="ex-list">${lines(s).map(([a,b,c])=>exRow(a,b,c)).join('')}</div>`;
+/* سطر فيه أكتر من كلمة (a · b): بنقسمه لبطاقات صغيرة، كل كلمة مع لفظها ومعناها تحت بعض، عشان ما ينقلب الترتيب بين العربي والبرتغالي */
+function splitMulti(pt,pr,ar){const P=String(pt).split(' · ');if(P.length<2)return null;const R=String(pr||'').split(' · ');if(R.length!==P.length)return null;
+  let note='',m=null;const s=String(ar||'');
+  if(s.includes('— المعنى:')){const [a,b]=s.split('— المعنى:');note=a.trim();m=b.trim().split(' · ')}
+  else{const mm=s.match(/^(.*?)\s*(\([^()]*\))?\s*$/);const body=(mm?mm[1]:s).trim();const pa=mm&&mm[2]?mm[2].slice(1,-1):'';const A=body.split(' · ');if(A.length===P.length){m=A;note=pa}else note=s}
+  if(m&&m.length!==P.length){note=s;m=null}
+  return P.map((p,i)=>({pt:p.trim(),pr:R[i].trim(),ar:m?m[i].trim():''})).concat([{note}])}
+const exMulti=(pt,pr,ar)=>{const L=splitMulti(pt,pr,ar);if(!L)return null;const note=L.pop().note;
+  return `<div class="ex ex-multi">${sayBtn(pt)}<div class="mx">${L.map(x=>`<div class="mx-i">${PIC(x.pt,1)}<span class="pt" lang="pt-BR" dir="ltr">${esc(x.pt)}</span>${SYL(x.pt)}<span class="pron">${esc(x.pr)}</span>${x.ar?`<span class="ar">${bidi(x.ar)}</span>`:''}</div>`).join('')}</div>${note?`<div class="mx-note">💡 ${bidi(note)}</div>`:''}</div>`};
+const X=s=>`<div class="ex-list">${lines(s).map(([a,b,c])=>exMulti(a,b,c)||exRow(a,b,c)).join('')}</div>`;
 const TB=(s,head,speak=true)=>`<div class="tbl-wrap"><table class="tbl">${head?`<tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>`:''}${lines(s).map(r=>`<tr><td class="pt" lang="pt-BR" dir="ltr">${speak?`<button class="mini" data-say="${esc(r[0])}" aria-label="استمع">${SPK}</button>`:''}${esc(r[0])}${speak?SYL(r[0]):''}</td>${r.slice(1).map(c=>`<td>${bidi(c)}</td>`).join('')}</tr>`).join('')}</table></div>`;
 const SRC=(title,pt,arLines)=>`<div class="src"><div class="src-h"><span>${title}</span>${sayBtn(pt)}</div><p class="src-pt" lang="pt-BR" dir="ltr">${esc(pt)}</p>${arLines?`<div class="src-ar">${arLines.split('\n').map(l=>`<p>${bidi(l.trim())}</p>`).join('')}</div>`:''}</div>`;
 
@@ -858,7 +874,7 @@ const PHRASE={'cafe da manha':'🍳','fim de semana':'🗓️','bom dia':'☀️
 const EX={oi:'👋',ola:'👋',tchau:'👋',obrigado:'🙏',obrigada:'🙏',desculpa:'🙇',beleza:'👍',otimo:'👌',
 dia:'☀️',noite:'🌙',tarde:'🌇',manha:'🌅',hoje:'📅',ontem:'⏮️',amanha:'⏭️',anteontem:'⏮️',
 casa:'🏠',carro:'🚗',rua:'🛣️',cadeira:'🪑',chave:'🔑',pao:'🍞',mae:'👩',pai:'👨',filho:'👦',filha:'👧',filhos:'👨‍👩‍👧‍👦',familia:'👨‍👩‍👧‍👦',irmao:'👦',irma:'👧',irmaos:'👫',avo:'🧓',bebe:'👶',crianca:'🧒',criancas:'🧒',gato:'🐱',gatos:'🐱',cao:'🐕',cachorro:'🐕',marido:'🤵',esposa:'👰',mulher:'👩',homem:'👨',menino:'👦',menina:'👧',neto:'👶',neta:'👶',tio:'👨',tia:'👩',
-um:'1️⃣',uma:'1️⃣',dois:'2️⃣',duas:'2️⃣',tres:'3️⃣',quatro:'4️⃣',cinco:'5️⃣',seis:'6️⃣',sete:'7️⃣',oito:'8️⃣',nove:'9️⃣',dez:'🔟',zero:'0️⃣',cem:'💯',mil:'🔢',vinte:'🔢',cinquenta:'🔢',
+um:'1️⃣',uma:'1️⃣',dois:'2️⃣',duas:'2️⃣',tres:'3️⃣',quatro:'4️⃣',cinco:'5️⃣',seis:'6️⃣',sete:'7️⃣',oito:'8️⃣',nove:'9️⃣',dez:'🔟',zero:'0️⃣',cem:'💯',mil:'',vinte:'',cinquenta:'',
 real:'💵',reais:'💵',centavo:'🪙',centavos:'🪙',dinheiro:'💵',pix:'📲',cartao:'💳',carta:'✉️',mail:'📧',
 agua:'💧',cafe:'☕',cha:'🍵',leite:'🥛',suco:'🧃',ovo:'🥚',ovos:'🥚',arroz:'🍚',feijao:'🫘',carne:'🥩',frango:'🍗',peixe:'🐟',salada:'🥗',sopa:'🍲',pizza:'🍕',sorvete:'🍦',chocolate:'🍫',banana:'🍌',maca:'🍎',uva:'🍇',morango:'🍓',abacaxi:'🍍',laranja:'🍊',limao:'🍋',limonada:'🍋',manga:'🥭',melancia:'🍉',mamao:'🍈',cenoura:'🥕',batata:'🥔',tomate:'🍅',cebola:'🧅',brocolis:'🥦',berinjela:'🍆',abobora:'🎃',alface:'🥬',couve:'🥬',figo:'🫐',tamara:'🌴',sal:'🧂',acucar:'🍬',pimenta:'🌶️',queijo:'🧀',sanduiche:'🥪',churrasco:'🍖',coxinha:'🍗',doce:'🍬',amargo:'☕',azedo:'🍋',salgado:'🧂',salgadinho:'🥨',quente:'🔥',frio:'🥶',fria:'🥶',gelado:'🧊',gelada:'🧊',calor:'🥵',chuva:'🌧️',sol:'☀️',neve:'❄️',nublado:'☁️',garoa:'🌦️',comida:'🍽️',fruta:'🍎',frutas:'🍎',legume:'🥕',verdura:'🥬',esfirra:'🫓',quibe:'🧆',lanche:'🥪',almoco:'🍽️',jantar:'🍽️',janta:'🍽️',sobremesa:'🍰',brigadeiro:'🍫',tapioca:'🫓',feijoada:'🫘',
 onibus:'🚌',uber:'🚕',taxi:'🚕',bicicleta:'🚲',aviao:'✈️',aeroporto:'✈️',posto:'⛽',gasolina:'⛽',semaforo:'🚦',sinaleiro:'🚦',direita:'➡️',esquerda:'⬅️',reto:'⬆️',perto:'📍',pertinho:'📍',longe:'🗺️',mapa:'🗺️',localizacao:'📍',centro:'🏙️',cidade:'🏙️',bairro:'🏘️',parque:'🌳',praia:'🏖️',mar:'🌊',escola:'🏫',hospital:'🏥',farmacia:'💊',mercado:'🛒',padaria:'🥖',restaurante:'🍽️',banco:'🏦',esquina:'↪️',
@@ -879,8 +895,11 @@ comer:'🍽️',comi:'🍽️',comeu:'🍽️',como:'',falar:'🗣️',falo:'�
 nome:'🏷️',idade:'🎂',guria:'👧',vina:'🌭',bergamota:'🍊',penal:'✏️'};
 const STEMS=[['comprov','📄'],['trabalh','💼'],['estud','📚'],['aprend','📚'],['almoc','🍽️'],['jant','🍽️'],['dorm','😴'],['acord','⏰'],['viag','✈️'],['viaj','✈️'],['compr','🛒'],['pag','💳'],['ligu','📞'],['ligo','📞'],['liga','📞'],['mandat','🗳️'],['mand','📤'],['envi','📤'],['telefon','📞'],['fotograf','📸'],['edit','🎞️'],['chov','🌧️'],['chuv','🌧️'],['esfri','🥶'],['vend','💰'],['alug','🔑'],['mud','📦'],['abert','🔓'],['abri','🔓'],['abre','🔓'],['abro','🔓'],['fech','🔒'],['cheg','📍'],['volt','🔙'],['esper','⏳'],['ajud','🤝'],['entend','💡'],['pens','💭'],['sonh','💭'],['gost','❤️'],['pergunt','❓'],['respond','💬'],['escrev','✍️'],['livr','📖'],['assin','✍️'],['preench','📝'],['renov','🔄'],['cancel','❌'],['confirm','✅'],['agend','📅'],['consult','🩺'],['exame','🧪'],['vacin','💉'],['fum','🚭'],['brinc','🧸'],['danc','💃'],['empres','🏢'],['negoc','🤝'],['propost','📄'],['orcament','🧾'],['salari','💰'],['dinheir','💵'],['boleto','🧾'],['fatura','🧾'],['saldo','💰'],['saque','🏧'],['transfer','🔁'],['escol','🏫'],['matricul','📝'],['alun','🧑‍🎓'],['condomin','🏢'],['porteir','💂'],['vizinh','🏘️'],['sindic','🏢'],['encanador','🔧'],['eletric','⚡'],['consert','🔧'],['quebr','💔'],['entup','🚽'],['medic','🩺'],['farmac','💊'],['remed','💊'],['comprimid','💊'],['receit','📋'],['sintom','🤒'],['tontura','😵'],['enjo','🤢'],['alergi','🤧'],['gargant','🗣️'],['press','🩺'],['polic','🚓'],['delegac','🚓'],['roub','🦹'],['perd','🔍'],['ferid','🩹'],['desmai','😵'],['document','📄'],['passaport','🛂'],['certid','📜'],['declarac','📜'],['requer','📜'],['procurac','📜'],['recurs','⚖️'],['process','⚖️'],['testemunh','👁️'],['contrat','📝'],['clausul','📝'],['noticia','📰'],['jornal','📰'],['manchet','📰'],['govern','🏛️'],['prefeit','🏛️'],['eleic','🗳️'],['vot','🗳️'],['inflac','📈'],['juros','📈'],['aument','📈'],['ambient','🌍'],['poluic','🏭'],['recicl','♻️'],['economiz','💡'],['sustent','🌱'],['plant','🌱'],['aplicativ','📱'],['camer','📷'],['ensai','📸'],['casament','💒'],['casad','💍'],['solteir','🙋'],['aniver','🎂'],['cumpriment','👋'],['beij','😘'],['abrac','🤗'],['curs','📚'],['ensin','🧑‍🏫'],['cancao','🎵'],['samba','💃'],['bossa','🎶'],['sertanej','🤠'],['forro','🪗'],['entrevist','🤝'],['curricul','📄'],['contrat','🤝'],['ferias','🏖️'],['feriad','🎉'],['reclam','📢'],['garanti','🛡️'],['defeit','⚠️'],['troc','🔁'],['devolu','↩️'],['reembols','💰'],['cansad','😩'],['nervos','😬'],['ocupad','⏳'],['atrasad','⏰'],['divert','😄'],['amig','🤝'],['pesso','🧑'],['reuni','👥'],['apresent','📊'],['grafic','📊'],['client','🤝'],['marca','🏷️'],['engaj','👍'],['parceri','🤝'],['investi','📈']];
 const UNIT_ICON={1:'🔤',2:'🗣️',3:'👨‍👩‍👧',4:'🍽️',5:'🏙️',6:'⏮️',7:'🏛️',8:'🏫',9:'💼',10:'🩺',11:'💬',12:'🤔',13:'🔀',14:'🎉',15:'✉️',16:'📐',17:'💼',18:'📰',19:'🎯',20:'✍️',21:'⚖️',22:'📜',23:'🏆'};
+const NUMW=new Set('zero um uma dois duas tres quatro cinco seis sete oito nove dez onze doze treze catorze quatorze quinze dezesseis dezessete dezoito dezenove vinte trinta quarenta cinquenta sessenta setenta oitenta noventa cem cento duzentos duzentas trezentos quatrocentos quinhentos seiscentos setecentos oitocentos novecentos mil milhao milhoes e'.split(' '));
 function emojis(text,max){
-  const n=nrm(text);const out=[];
+  let n=nrm(text);const out=[];const toks=n.split(' ').filter(Boolean);
+  /* الأرقام: أيقونة بس للرقم المفرد من 0 لـ 10، وباقي الأرقام بدون أيقونات عشان ما تطلع غلط */
+  if(toks.some(t=>NUMW.has(t)&&t!=='e')){if(toks.length===1&&EX[toks[0]]&&EX[toks[0]]!=='🔢')return [EX[toks[0]]];const rest=toks.filter(t=>!NUMW.has(t));if(!rest.length)return [];n=rest.join(' ')}
   for(const p in PHRASE){if((' '+n+' ').includes(' '+p+' ')&&!out.includes(PHRASE[p]))out.push(PHRASE[p])}
   for(const t of n.split(' ')){if(out.length>=max)break;if(!t)continue;
     let e=EX[t];
@@ -9291,10 +9310,10 @@ pronuncia:`pai · pão|باي · باو|أبو · خبز (ão من الأنف)
 caro · carro|كارو · كاهو|غالي · سيارة (r و rr)
 dia · tia|دجيا · تشيا|يوم · خالة/عمة
 avó · avô|أڤو (مفتوحة) · أڤو (مسكّرة)|ستّي · سيدي
-quero · quilo|كيرو · كيلو|qu قبل e/i = ك
-guerra · água|غيها · آغوا|gu قبل e = غ، وقبل a = غو
-exame · táxi · peixe|إيزامي · تاكسي · بيشي|x = ز أو كس أو ش
-ônibus · café|أونيبوس · كافي|^ صوت مسكّر، ´ صوت مفتوح وعليه الضغط`,
+quero · quilo|كيرو · كيلو|qu قبل e/i = ك — المعنى: بدي · كيلو
+guerra · água|غيها · آغوا|gu قبل e = غ، وقبل a = غو — المعنى: حرب · مي
+exame · táxi · peixe|إيزامي · تاكسي · بيشي|x = ز أو كس أو ش — المعنى: فحص · تكسي · سمك
+ônibus · café|أونيبوس · كافي|^ صوت مسكّر، ´ صوت مفتوح وعليه الضغط — المعنى: باص · قهوة`,
 alfabeto:`Como se escreve seu nome?|كومو سي إيسكريڤي سيو نومي؟|كيف بينكتب اسمك؟
 arroba (@)|أهوبا|@ بالإيميل
 ponto com|بونتو كون|دوت كوم
@@ -10377,6 +10396,14 @@ Tá bom.|تا بون.|ماشي.`},
 ];
 if(typeof BMORE!=='undefined'){BT.forEach(t=>{t.r=_bmerge(t.r,BMORE[t.id])});BNEW.forEach(([after,o])=>{const i=BT.findIndex(x=>x.id===after);BT.splice(i<0?BT.length:i+1,0,o)})}
 BT.forEach(t=>{t.R=lines(t.r).map(([pt,pron,ar])=>({pt,pron,ar,key:'b|'+pt}))});
+/* أسئلة التمرين: بنقسم السطور المركّبة لكلمات مفردة، وبنستعمل بس اللي إلها معنى عربي واضح (مش قاعدة) */
+function quizAtoms(R){const out=[];R.forEach(r=>{const L=splitMulti(r.pt,r.pron,r.ar);
+  if(L){L.pop();L.forEach(x=>{if(x.ar&&!/[a-z]/i.test(x.ar))out.push({pt:x.pt,pron:x.pr,ar:x.ar,key:'b|'+x.pt})});return}
+  const s=String(r.ar||'');let m;
+  if(s.includes('— المعنى:')){const ar=s.split('— المعنى:')[1].trim();if(!/[a-z]/i.test(ar))out.push({...r,ar});return}
+  if((m=s.match(/مثال: ([^\s=]+) = (.+)$/))){out.push({pt:m[1],pron:'',ar:m[2].trim(),key:'b|'+m[1]});return}
+  if(s&&!/[a-z=]/i.test(s))out.push(r)});
+  const seen=new Set();return out.filter(x=>{const k=x.pt+'|'+x.ar;if(seen.has(k))return false;seen.add(k);return true})}
 function vBasics(){
   const done=S.bs||{};
   const card=(t,i)=>`<a class="bcard${done[t.id]>=70?' done':''}" href="#basic-${t.id}"><span class="b-n">${i+1}</span><span class="b-ic">${t.ic}</span><b>${esc(t.t)}</b><small>${esc(t.s)}</small>${done[t.id]!=null?`<span class="b-st">${done[t.id]}%</span>`:''}</a>`;
@@ -10394,7 +10421,7 @@ function vBasic(id){
    <div class="card lesson">${typeof BEXP!=='undefined'&&BEXP[t.id]?'<div class="bexp">'+BEXP[t.id]+'</div>':Pp(t.intro)}${X(t.r)}${t.tip?TIP(t.tip):''}</div>
    <div class="row"><button class="btn primary" id="bq">تمرين: ${gram?Math.min(10,t.D.length)+2:Math.min(10,t.R.length)} أسئلة</button>${nx?`<a class="btn" href="#basic-${nx.id}">التالي: ${esc(nx.t)} ←</a>`:''}</div></div>`;
     $('#bq').onclick=quiz};
-  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const pool=t.R;const qs=gram?shuffle(shuffle(t.D).slice(0,10).map(drillQ).concat(shuffle(pool).slice(0,2).map((w,n)=>n?qListen(w,pool):qPt2Ar(w,pool)))):shuffle(pool).slice(0,Math.min(10,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
+  const quiz=()=>{app.innerHTML=`<div id="qb"></div>`;const A=quizAtoms(t.R);const pool=A.length>=4?A:t.R;const qs=gram?shuffle(shuffle(t.D).slice(0,10).map(drillQ).concat(shuffle(pool).slice(0,2).map((w,n)=>n?qListen(w,pool):qPt2Ar(w,pool)))):shuffle(pool).slice(0,Math.min(10,pool.length)).map((w,n)=>n%3===0?qPt2Ar(w,pool):n%3===1?qAr2Pt(w,pool):qListen(w,pool));
     runQuiz($('#qb'),qs,{title:t.t,retry:quiz,onDone:p=>{S.bs=S.bs||{};if(S.bs[id]==null||p>S.bs[id]){S.bs[id]=p;save()}},next:nx?{label:'التالي: '+nx.t+' ←',href:'#basic-'+nx.id}:{label:'الرجوع إلى الأساسيات',href:'#basics'}})};
   show();
 }
