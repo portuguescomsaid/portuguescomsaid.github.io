@@ -645,6 +645,7 @@ nav.tabs{grid-template-columns:repeat(6,1fr)}
 html,body{overflow-x:hidden}
 .knum .kn-st,.knum .kn-st i{font-size:15px!important;line-height:1.15;width:auto;height:auto}
 .knum:has(.kn-st){padding:20px 22px 6px}
+.fb-file{position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -19759,17 +19760,26 @@ const MAXW={1:6,2:8,3:11,4:14,5:18};
 function unitPills(sel,id,lv){return `<div class="pager" id="${id}">${lv?'':`<button class="pill${sel===0?' on':''}" data-u="0">الكل</button>`}${LEVELS.filter(L=>lvReady(L.n)).map(L=>`<button class="pill${sel===L.n?' on':''}" data-u="${L.n}">${L.tag}</button>`).join('')}</div>`}
 const chLv=c=>lvOf(unitOf(c.id));
 const match=(q,...f)=>{if(!q)return true;const n=norm(q),a=q.trim();return f.some(x=>norm(x).includes(n)||String(x).includes(a))};
+/* عرض تدريجي: أول كم فصل فورًا، والباقي لما توصل لتحت (عشان الصفحة ما تعلق) */
+function chOrdered(){if(chOrdered.c&&chOrdered.n===CH.length)return chOrdered.c;const seen=new Set(),out=[];
+  (typeof UNITS!=='undefined'?UNITS:[]).forEach(u=>(u.chs||[]).forEach(i=>{const c=CH[i-1];if(c&&!seen.has(c.id)){seen.add(c.id);out.push(c)}}));
+  CH.forEach(c=>{if(c&&!seen.has(c.id))out.push(c)});chOrdered.n=CH.length;return chOrdered.c=out}
+function lazyList(box,parts,after){if(!box)return;const tok=(lazyList.k=(lazyList.k||0)+1);box.innerHTML='';let i=0;
+  const add=n=>{if(tok!==lazyList.k)return;const end=Math.min(parts.length,i+n);let h='';for(;i<end;i++)h+=parts[i]();
+    const s=box.querySelector('.lz-more');if(s)s.remove();box.insertAdjacentHTML('beforeend',h+(i<parts.length?'<div class="lz-more muted" style="text-align:center;padding:14px">… جاري التحميل</div>':''));
+    if(after)after();const m=box.querySelector('.lz-more');if(m){if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();add(8)}},{rootMargin:'900px'});io.observe(m)}else setTimeout(()=>add(8),300)}};
+  add(5)}
 function vWords(){
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الكلمات</h1><p class="muted" style="margin:4px 0 0">${allWords().length} كلمة مع النطق بالعربي. دوّر أو اختار مستوى.</p></div>
    <input class="search" id="ws" type="search" placeholder="دوّر بالعربي أو البرتغالي…" value="${esc(wQ)}" aria-label="بحث">
    ${unitPills(wU,'up')}
    <div class="row"><button class="btn primary" id="fc">بطاقات المراجعة</button><label class="toggle" for="hm" style="gap:8px"><input type="checkbox" class="switch" id="hm" ${wHide?'checked':''}><span>خبّي المعنى</span></label></div>
    <div id="wl"></div></div>`;
-  const list=()=>CH.filter(c=>!wU||chLv(c)===wU).map(c=>({c,ws:c.W.filter(w=>match(wQ,w.pt,w.ar,w.pron))})).filter(x=>x.ws.length);
-  const draw=()=>{const L=list();$('#wl').innerHTML=L.length?L.map(({c,ws})=>`<div class="ch-label">${CN(c.id)} · ${esc(c.ar)}</div><div class="wgrid${wHide?' hide-mean':''}">${ws.map(wcard).join('')}</div>`).join(''):'<p class="muted">ما في نتايج.</p>';
+  const list=()=>chOrdered().filter(c=>!wU||chLv(c)===wU).map(c=>({c,ws:c.W.filter(w=>match(wQ,w.pt,w.ar,w.pron))})).filter(x=>x.ws.length);
+  const draw=()=>{const L=list();lazyList($('#wl'),L.map(({c,ws})=>()=>`<div class="ch-label">${CN(c.id)} · ${esc(c.ar)}</div><div class="wgrid${wHide?' hide-mean':''}">${ws.map(wcard).join('')}</div>`),()=>$$('.hide-mean .mean').forEach(m=>m.onclick=()=>m.classList.toggle('peek')));if(L.length)return;$('#wl').innerHTML='<p class="muted">ما في نتايج.</p>';
     $$('.hide-mean .mean').forEach(m=>m.onclick=()=>m.classList.toggle('peek'))};
   draw();
-  $('#ws').oninput=e=>{wQ=e.target.value;draw()};
+  $('#ws').oninput=e=>{wQ=e.target.value;clearTimeout(draw.t);draw.t=setTimeout(draw,220)};
   $$('#up .pill').forEach(b=>b.onclick=()=>{wU=+b.dataset.u;vWords()});
   $('#hm').onchange=e=>{wHide=e.target.checked;draw()};
   $('#fc').onclick=()=>{const ws=list().flatMap(x=>x.ws);if(ws.length)flash(shuffle(ws))};
@@ -19787,9 +19797,10 @@ function vSents(){
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px">الجمل</h1><p class="muted" style="margin:4px 0 0">${allSents().length} جملة من مواقف حقيقية بالبرازيل، مع النطق. اسمع وكرّر.</p></div>
    <input class="search" id="ss" type="search" placeholder="دوّر بالعربي أو البرتغالي…" value="${esc(sQ)}" aria-label="بحث">
    ${unitPills(sU,'up')}<div id="sl"></div></div>`;
-  const draw=()=>{const L=CH.filter(c=>!sU||chLv(c)===sU).map(c=>({c,ss:c.S.filter(s=>match(sQ,s.pt,s.ar))})).filter(x=>x.ss.length);
-    $('#sl').innerHTML=L.length?L.map(({c,ss})=>`<div class="ch-label">${c.id} · ${esc(c.ar)}</div><div class="slist">${ss.map(sitem).join('')}</div>`).join(''):'<p class="muted">ما في نتايج.</p>'};
-  draw();$('#ss').oninput=e=>{sQ=e.target.value;draw()};
+  const draw=()=>{const L=chOrdered().filter(c=>!sU||chLv(c)===sU).map(c=>({c,ss:c.S.filter(s=>match(sQ,s.pt,s.ar))})).filter(x=>x.ss.length);
+    if(!L.length){$('#sl').innerHTML='<p class="muted">ما في نتايج.</p>';return}
+    lazyList($('#sl'),L.map(({c,ss})=>()=>`<div class="ch-label">${CN(c.id)} · ${esc(c.ar)}</div><div class="slist">${ss.map(sitem).join('')}</div>`))};
+  draw();$('#ss').oninput=e=>{sQ=e.target.value;clearTimeout(draw.t);draw.t=setTimeout(draw,220)};
   $$('#up .pill').forEach(b=>b.onclick=()=>{sU=+b.dataset.u;vSents()});
 }
 function vGames(){
@@ -20143,7 +20154,7 @@ function fbOpen(){
     <div class="pager" id="fbt">${['bug','idea','note','question'].map(k=>`<button class="pill${k===type?' on':''}" data-t="${k}">${MTYPES[k]}</button>`).join('')}</div>
     <textarea id="fbx" rows="4" class="sel" style="width:100%;min-height:100px;resize:vertical" placeholder="اوصف المشكلة أو اقتراحك… (مثلًا: بالتمرين التالت الجواب الصح مكتوب غلط)"></textarea>
     <div class="fb-thumbs" id="fbi"></div>
-    <label class="btn fb-att">📎 أرفق صورة أو سكرين <input type="file" id="fbf" accept="image/*" multiple hidden></label>
+    <button type="button" class="btn fb-att">📎 أرفق صورة أو سكرين</button><input type="file" id="fbf" accept="image/*" multiple class="fb-file" tabindex="-1" aria-hidden="true">
     <small class="muted">📍 رح نعرف إنك كنت بـ: ${esc(fbWhere())} · لحد 3 صور</small>
     <button class="btn primary" id="fbs">أرسل</button></div>`;
   document.body.appendChild(o);const where=fbWhere();
@@ -20151,7 +20162,8 @@ function fbOpen(){
   $$('#fbt .pill',o).forEach(b=>b.onclick=()=>{type=b.dataset.t;$$('#fbt .pill',o).forEach(x=>x.classList.toggle('on',x===b))});
   const drawI=()=>{$('#fbi',o).innerHTML=imgs.map((u,i)=>`<span class="fb-th"><img src="${u}" alt=""><button data-i="${i}" aria-label="شيل الصورة">✕</button></span>`).join('');
     $$('#fbi button',o).forEach(b=>b.onclick=()=>{imgs.splice(+b.dataset.i,1);drawI()});$('.fb-att',o).hidden=imgs.length>=3};
-  $('#fbf',o).onchange=async e=>{const fs=[...e.target.files].slice(0,3-imgs.length);for(const f of fs){try{imgs.push(await fbShrink(f))}catch(err){toast('ما قدرت أقرأ الصورة')}}e.target.value='';drawI()};
+  $('.fb-att',o).onclick=e=>{e.preventDefault();e.stopPropagation();const f=$('#fbf',o);f.value='';f.click()};
+  $('#fbf',o).onchange=async e=>{const fs=[...e.target.files].slice(0,3-imgs.length);if(fs.length)toast('جاري تجهيز الصورة…');for(const f of fs){try{imgs.push(await fbShrink(f))}catch(err){toast('ما قدرت أقرأ الصورة')}}drawI()};
   $('#fbs',o).onclick=async()=>{const t=$('#fbx',o).value.trim();if(t.length<3&&!imgs.length){toast('اكتب شو صار أو أرفق صورة');return}
     const b=$('#fbs',o);b.disabled=true;b.textContent='جاري الإرسال…';
     try{const v=await inboxGet(MY_ID);let name=MY_NAME;try{const me=await USER.me();name=(me&&me.name)||name}catch(e){}
