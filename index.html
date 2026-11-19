@@ -658,6 +658,12 @@ html,body{overflow-x:hidden}
 #lg-form .btn{width:100%;justify-content:center}
 .lg-msg{min-height:20px;margin:2px 0;color:var(--bad);font-size:14px}
 .lg-links{display:flex;flex-direction:column;gap:8px;font-size:14px}.lg-links a{color:var(--green)}
+.lg-big{font-size:18px;padding:16px;width:100%}
+.lg-note{font-size:13px;color:var(--muted);margin:2px 0 6px}
+.lg-or{display:flex;align-items:center;gap:10px;width:100%;color:var(--muted);font-size:13px;margin:6px 0}.lg-or:before,.lg-or:after{content:"";flex:1;height:1px;background:var(--line)}
+#lg-google{width:100%}#lg-google b{font-family:Arial,sans-serif;color:#4285F4;margin-inline-end:6px}
+.lg-mail-link{font-size:14px;color:var(--muted);margin-top:6px}
+#lg-mail{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:6px}#lg-mail[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -696,13 +702,19 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
       <img src="icon-192.png" alt="" class="lg-ic">
       <h1>برتغالي مع سعيد</h1><p class="lg-sub">Português com Said</p>
       <div id="lg-form">
+        <button class="btn primary lg-big" id="lg-guest">🚀 ابدأ فورًا، بدون حساب</button>
+        <p class="lg-note">تقدّمك بينحفظ تلقائيًا. وبعدين بتقدر تربطه بإيميلك من الإعدادات.</p>
+        <div class="lg-or"><span>أو</span></div>
+        <button class="btn" id="lg-google"><b>G</b> الدخول بحساب Google</button>
+        <a href="#" id="lg-showmail" class="lg-mail-link">الدخول بالإيميل وكلمة السر</a>
+        <div id="lg-mail" hidden>
         <input id="lg-name" type="text" placeholder="اسمك" autocomplete="name" hidden>
         <input id="lg-email" type="email" placeholder="الإيميل" autocomplete="email" dir="ltr">
         <input id="lg-pass" type="password" placeholder="كلمة السر (6 حروف أو أكثر)" autocomplete="current-password" dir="ltr">
         <button class="btn primary" id="lg-go">دخول</button>
-        <button class="btn" id="lg-google">الدخول بحساب Google</button>
-        <p class="lg-msg" id="lg-msg"></p>
         <div class="lg-links"><a href="#" id="lg-toggle">ما عندك حساب؟ اعمل حساب جديد</a><a href="#" id="lg-forgot">نسيت كلمة السر</a></div>
+        </div>
+        <p class="lg-msg" id="lg-msg"></p>
       </div></div>`;
     document.body.appendChild(o);
     let mode='in';
@@ -711,7 +723,9 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
     $i('lg-toggle').onclick=e=>{e.preventDefault();mode=mode==='in'?'up':'in';$i('lg-name').hidden=mode==='in';$i('lg-go').textContent=mode==='in'?'دخول':'اعمل حساب';e.target.textContent=mode==='in'?'ما عندك حساب؟ اعمل حساب جديد':'عندك حساب؟ ادخل';msg('')};
     $i('lg-go').onclick=async()=>{const em=$i('lg-email').value.trim(),pw=$i('lg-pass').value;if(!em||!pw)return msg('اكتب الإيميل وكلمة السر.');
       msg('لحظة…');try{if(mode==='up'){const nm=$i('lg-name').value.trim();if(!nm)return msg('اكتب اسمك.');pendingName=nm;const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:nm});await afterLogin(c.user)}else await auth.signInWithEmailAndPassword(em,pw)}catch(e){msg(err(e))}};
-    $i('lg-google').onclick=async()=>{msg('لحظة…');try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){msg(err(e))}};
+    $i('lg-google').onclick=async()=>{msg('لحظة…');const pr=new firebase.auth.GoogleAuthProvider();try{await auth.signInWithPopup(pr)}catch(e){const c=e&&e.code||'';if(/popup|operation-not-supported|web-storage/.test(c)){try{await auth.signInWithRedirect(pr);return}catch(x){}}msg(err(e))}};
+    $i('lg-guest').onclick=async()=>{msg('لحظة…');try{await auth.signInAnonymously()}catch(e){msg((e&&e.code||'').includes('operation-not-allowed')?'الدخول السريع مش مفعّل حاليًا، استعمل Google أو الإيميل.':err(e))}};
+    $i('lg-showmail').onclick=e=>{e.preventDefault();$i('lg-mail').hidden=false;e.target.hidden=true;$i('lg-email').focus()};
     $i('lg-forgot').onclick=async e=>{e.preventDefault();const em=$i('lg-email').value.trim();if(!em)return msg('اكتب إيميلك فوق وبعدين اضغط «نسيت كلمة السر».');try{await auth.sendPasswordResetEmail(em);msg('بعتنالك رابط على الإيميل لتغيير كلمة السر.')}catch(e){msg(err(e))}};
     return o;
   }
@@ -765,7 +779,7 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
   let ready=false;
   async function afterLogin(u){
     if(ready)return;ready=true;
-    const name=(u.displayName||pendingName||(u.email||'').split('@')[0]||'').trim();
+    const name=(u.displayName||pendingName||(u.email||'').split('@')[0]||(u.isAnonymous?'ضيف':'')).trim();
     const owner=!!u.email&&u.emailVerified&&OWNER_HASH.length===64&&(await sha(u.email.trim().toLowerCase()))===OWNER_HASH;
     try{await fs.doc('profiles/'+u.uid).set(pack({name,email:u.email||''}))}catch(e){}
     const db={
@@ -778,8 +792,13 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
     const o=document.getElementById('login');if(o)o.remove();
     resolveReady(true);
   }
+  /* ربط حساب الضيف بإيميل أو Google بدون ما يضيع التقدّم */
+  const lerr=e=>{const c=e&&e.code||'';return c.includes('credential-already-in-use')||c.includes('email-already-in-use')?'في حساب موجود بهالإيميل. سجّل خروج وادخل فيه، وتقدّمك على هالجهاز بيندمج معه.':c.includes('weak-password')?'كلمة السر لازم 6 حروف أو أكتر.':c.includes('invalid-email')?'الإيميل مش صحيح.':c.includes('popup')?'انسكّرت النافذة، جرّب مرة تانية.':'ما زبط، جرّب كمان مرة.'};
+  window.authLink={isAnon:()=>!!(auth.currentUser&&auth.currentUser.isAnonymous),
+    google:async()=>{try{const r=await auth.currentUser.linkWithPopup(new firebase.auth.GoogleAuthProvider());await fs.doc('profiles/'+r.user.uid).set(pack({name:r.user.displayName||'',email:r.user.email||''}));return {ok:1,name:r.user.displayName||''}}catch(e){return {err:lerr(e)}}},
+    email:async(em,pw,nm)=>{try{const r=await auth.currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(em,pw));if(nm)await r.user.updateProfile({displayName:nm});await fs.doc('profiles/'+r.user.uid).set(pack({name:nm||'',email:em}));return {ok:1,name:nm}}catch(e){return {err:lerr(e)}}}};
   auth.onAuthStateChanged(u=>{if(u)afterLogin(u);else if(!ready)overlay()});
-  document.addEventListener('click',async e=>{if(e.target&&e.target.id==='logout'){e.preventDefault();try{localStorage.removeItem('ptsaid.v2')}catch(x){}await auth.signOut();location.hash='';location.reload()}});
+  document.addEventListener('click',async e=>{if(e.target&&e.target.id==='logout'){e.preventDefault();if(auth.currentUser&&auth.currentUser.isAnonymous&&!confirm('إنت داخل كضيف. إذا طلعت رح يضيع تقدّمك. احفظ حسابك من الإعدادات أول. بدك تطلع على كل حال؟'))return;try{localStorage.removeItem('ptsaid.v2')}catch(x){}await auth.signOut();location.hash='';location.reload()}});
 })();
 if('serviceWorker' in navigator&&location.protocol==='https:')addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 
@@ -20835,6 +20854,22 @@ function leagueBots(n){const N=['أحمد','فاطمة','محمد','مريم','�
 
 if(typeof vAdmin==='function'){const _vAb=vAdmin;vAdmin=async function(){await _vAb.apply(this,arguments);try{if(!(IS_OWNER||IS_ADMIN))return;const st=$('.stack',app);const c=S.botCfg||{};
   if(st&&!$('#botcard'))st.insertAdjacentHTML('afterbegin',`<a class="card inb-card" id="botcard" href="#league"><span class="ib-ic">🤖</span><div><b>المنافسين الآليين بالدوري</b><br><span class="muted">${c.on?'شغّالين · '+(c.n||25)+' منافس'+(c.hide?' · بيختفوا عند '+c.hide+' مستخدم':''):'مطفيين'}</span></div></a>`)}catch(e){}}}
+
+/* ===== حساب الضيف: احفظ تقدّمك بإيميل أو Google ===== */
+function saveAcctCard(compact){
+  if(!window.authLink||!authLink.isAnon())return '';
+  return `<div class="card stack acct-card" id="acctc"><div><b style="font-size:17px">💾 احفظ تقدّمك</b><p class="muted" style="margin:4px 0 0">إنت داخل كضيف. اربط حسابك بإيميل عشان ما يضيع تقدّمك لو غيّرت الجوال أو مسحت التطبيق.</p></div>
+   ${compact?`<a class="btn primary" href="#settings">احفظ هلأ</a>`:`<button class="btn" id="ac-g"><b style="color:#4285F4;font-family:Arial">G</b>&nbsp; ربط بحساب Google</button>
+   <details><summary class="muted" style="cursor:pointer">أو بالإيميل وكلمة السر</summary><div class="stack" style="margin-top:8px">
+   <input id="ac-n" class="sel" placeholder="اسمك" autocomplete="name"><input id="ac-e" class="sel" type="email" dir="ltr" placeholder="الإيميل" autocomplete="email"><input id="ac-p" class="sel" type="password" dir="ltr" placeholder="كلمة السر (6 حروف أو أكثر)" autocomplete="new-password">
+   <button class="btn primary" id="ac-go">احفظ حسابي</button></div></details><p class="muted" id="ac-m" style="margin:0;min-height:18px"></p>`}</div>`}
+function bindAcct(){const c=$('#acctc');if(!c||!$('#ac-g'))return;const m=t=>{$('#ac-m').textContent=t};
+  const done=r=>{if(r.err)return m(r.err);toast('✅ انحفظ حسابك! تقدّمك صار بأمان');if(r.name){try{S.name=r.name;save()}catch(e){}}c.remove()};
+  $('#ac-g').onclick=async()=>{m('لحظة…');done(await authLink.google())};
+  $('#ac-go').onclick=async()=>{const e=$('#ac-e').value.trim(),p=$('#ac-p').value,n=$('#ac-n').value.trim();if(!e||p.length<6)return m('اكتب الإيميل وكلمة سر 6 حروف أو أكتر.');m('لحظة…');done(await authLink.email(e,p,n))}}
+(function(){const _vs=vSettings;vSettings=function(){_vs.apply(this,arguments);try{const h=saveAcctCard(false);if(h){const st=$('#app .stack')||$('#app');st.insertAdjacentHTML('afterbegin',h);bindAcct()}}catch(e){}}})();
+/* تذكير لطيف بالرئيسية بعد ما يخلّص 3 دروس */
+(function(){const _vh=typeof vHome==='function'?vHome:null;if(!_vh)return;vHome=function(){_vh.apply(this,arguments);try{const nd=Object.values(S.ch||{}).filter(x=>x&&x.quiz>=70).length;if(nd>=3){const h=saveAcctCard(true);if(h){const g=$('#app .stats')||$('#app .stack');if(g)g.insertAdjacentHTML('beforebegin',h)}}}catch(e){}}})();
 </script>
 </body>
 </html>
