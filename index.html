@@ -649,6 +649,7 @@ html,body{overflow-x:hidden}
 .ksvg svg{width:62%;height:auto;max-height:86%}
 .pic.psvg{display:inline-flex;align-items:center;justify-content:center}.pic.psvg svg{width:1.15em;height:1.15em}
 .favb{display:none!important}
+.inst-act .btn{white-space:nowrap}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -664,6 +665,7 @@ html,body{overflow-x:hidden}
 #lg-google{width:100%}#lg-google b{font-family:Arial,sans-serif;color:#4285F4;margin-inline-end:6px}
 .lg-mail-link{font-size:14px;color:var(--muted);margin-top:6px}
 #lg-mail{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:6px}#lg-mail[hidden]{display:none}
+#lg-gname{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:17px;text-align:center}
 </style>
 </head>
 <body>
@@ -702,8 +704,9 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
       <img src="icon-192.png" alt="" class="lg-ic">
       <h1>برتغالي مع سعيد</h1><p class="lg-sub">Português com Said</p>
       <div id="lg-form">
-        <button class="btn primary lg-big" id="lg-guest">🚀 ابدأ فورًا، بدون حساب</button>
-        <p class="lg-note">تقدّمك بينحفظ تلقائيًا. وبعدين بتقدر تربطه بإيميلك من الإعدادات.</p>
+        <input id="lg-gname" type="text" placeholder="شو اسمك؟" autocomplete="given-name" maxlength="30">
+        <button class="btn primary lg-big" id="lg-guest">🚀 ابدأ فورًا، بدون إيميل</button>
+        <p class="lg-note">بس اسمك وخلص. تقدّمك بينحفظ تلقائيًا، وبتقدر تربطه بإيميلك بعدين من الإعدادات.</p>
         <div class="lg-or"><span>أو</span></div>
         <button class="btn" id="lg-google"><b>G</b> الدخول بحساب Google</button>
         <a href="#" id="lg-showmail" class="lg-mail-link">الدخول بالإيميل وكلمة السر</a>
@@ -724,7 +727,8 @@ const OWNER_HASH='19b6e281253ebb5a30dd829a5f6b0eb262e3350828884c6edae49967d74f3d
     $i('lg-go').onclick=async()=>{const em=$i('lg-email').value.trim(),pw=$i('lg-pass').value;if(!em||!pw)return msg('اكتب الإيميل وكلمة السر.');
       msg('لحظة…');try{if(mode==='up'){const nm=$i('lg-name').value.trim();if(!nm)return msg('اكتب اسمك.');pendingName=nm;const c=await auth.createUserWithEmailAndPassword(em,pw);await c.user.updateProfile({displayName:nm});await afterLogin(c.user)}else await auth.signInWithEmailAndPassword(em,pw)}catch(e){msg(err(e))}};
     $i('lg-google').onclick=async()=>{msg('لحظة…');const pr=new firebase.auth.GoogleAuthProvider();try{await auth.signInWithPopup(pr)}catch(e){const c=e&&e.code||'';if(/popup|operation-not-supported|web-storage/.test(c)){try{await auth.signInWithRedirect(pr);return}catch(x){}}msg(err(e))}};
-    $i('lg-guest').onclick=async()=>{msg('لحظة…');try{await auth.signInAnonymously()}catch(e){msg(/operation-not-allowed|admin-restricted/.test(e&&e.code||'')?'الدخول السريع مش مفعّل حاليًا، استعمل Google أو الإيميل.':err(e))}};
+    $i('lg-guest').onclick=async()=>{const nm=$i('lg-gname').value.trim();if(nm.length<2){msg('اكتب اسمك أول.');$i('lg-gname').focus();return}pendingName=nm;msg('لحظة…');try{const c=await auth.signInAnonymously();try{await c.user.updateProfile({displayName:nm})}catch(x){}}catch(e){msg(/operation-not-allowed|admin-restricted/.test(e&&e.code||'')?'الدخول السريع مش مفعّل حاليًا، استعمل Google أو الإيميل.':err(e))}};
+    $i('lg-gname').onkeydown=e=>{if(e.key==='Enter')$i('lg-guest').click()};
     $i('lg-showmail').onclick=e=>{e.preventDefault();$i('lg-mail').hidden=false;e.target.hidden=true;$i('lg-email').focus()};
     $i('lg-forgot').onclick=async e=>{e.preventDefault();const em=$i('lg-email').value.trim();if(!em)return msg('اكتب إيميلك فوق وبعدين اضغط «نسيت كلمة السر».');try{await auth.sendPasswordResetEmail(em);msg('بعتنالك رابط على الإيميل لتغيير كلمة السر.')}catch(e){msg(err(e))}};
     return o;
@@ -20724,8 +20728,7 @@ function onbShow(){if(document.getElementById('onb'))return;let st=0;const ans={
     if(st===3)h=`<div class="onb-ic">🚀</div><h2>من وين بدك تبدأ؟</h2>
       <div class="onb-opts one"><button class="onb-o" data-go="#path"><span>🌱</span><b>من الصفر</b><small>أول مرة بتتعلّم برتغالي</small></button>
       <button class="onb-o" data-go="#placement"><span>🧭</span><b>حدّد مستواي</b><small>بتعرف شوية؟ اختبار قصير بيفتحلك الدروس على قد مستواك</small></button>
-      <button class="onb-o" data-go="#kids"><span>🧒</span><b>قسم الأطفال</b><small>لولادك: صور وأصوات وألعاب</small></button></div>
-      <a class="onb-by" href="https://instagram.com/said9yahya" target="_blank" rel="noopener">صُنع بـ ❤️ من سعيد · <span dir="ltr">@said9yahya</span></a>`;
+      <button class="onb-o" data-go="#kids"><span>🧒</span><b>قسم الأطفال</b><small>لولادك: صور وأصوات وألعاب</small></button></div>`;
     box.innerHTML=`<div class="onb-card">${st?'<button class="onb-back" data-b>→</button>':''}${dots()}${h}</div>`;
     const n=$('[data-n]',box);if(n)n.onclick=()=>{st++;draw()};const b=$('[data-b]',box);if(b)b.onclick=()=>{st--;draw()};
     $$('[data-w]',box).forEach(x=>x.onclick=()=>{const t=x.dataset.w;ans.why=ans.why.includes(t)?ans.why.filter(y=>y!==t):ans.why.concat(t);draw()});
@@ -20788,10 +20791,10 @@ if(typeof vGoal==='function'){const _vG=vGoal;vGoal=function(){_vG.apply(this,ar
 }}
 
 /* ---------- عن التطبيق ---------- */
-var APP_VER='1.0',IG='said9yahya';
+var APP_VER='1.0';
 function aboutHTML(){return `<section class="card settings set2 about"><h2><span class="set-ic" style="background:#fde8f1">ℹ️</span><span>عن التطبيق</span></h2>
-  <div class="ab-row"><span class="ab-av">س</span><div><b>صمّم التطبيق وطوّره سعيد يحيى</b><br><span class="muted">عشان كل عربي بالبرازيل يتعلّم البرتغالي بسهولة وبلغته.</span></div></div>
-  <a class="ig-btn" href="https://instagram.com/${IG}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg><span>تابعني على إنستغرام <b dir="ltr">@${IG}</b></span></a>
+  <p style="margin:0">تطبيق مجاني عشان كل عربي بالبرازيل يتعلّم البرتغالي البرازيلي بسهولة وبلغته.</p>
+  <p class="muted" style="margin:0;font-size:14px">لقيت غلطة أو عندك فكرة؟ ابعتلنا من زر «تقديم اقتراح» 💬</p>
   <p class="muted" style="margin:0;font-size:13px">برتغالي مع سعيد · Português com Said · النسخة ${APP_VER}</p></section>`}
 if(typeof vSettings==='function'){const _vS5=vSettings;vSettings=function(){_vS5.apply(this,arguments);const st=$('.stack',app);if(st&&!$('.about',app)){st.insertAdjacentHTML('beforeend',aboutHTML());
   const nav=$('.set-nav',app),s=$('.about',app);if(nav&&s){s.id='st-about';nav.insertAdjacentHTML('beforeend','<a href="#" data-to="st-about"><span>ℹ️</span>عن التطبيق</a>');$('[data-to="st-about"]',nav).onclick=e=>{e.preventDefault();s.scrollIntoView({behavior:'smooth',block:'start'})}}}}}
@@ -20802,9 +20805,9 @@ addEventListener('appinstalled',()=>{_bip=null;S.installed=1;save();toast('🎉 
 function isStandalone(){return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}
 function isIOS(){return /iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
 function canInstall(){return typeof IS_PWA!=='undefined'&&IS_PWA&&!isStandalone()&&(isIOS()||!!_bip||/Android/.test(navigator.userAgent))}
-function installBanner(){if(!canInstall()||(S.instHide&&Date.now()<S.instHide))return '';
+function installBanner(){if(typeof IS_PWA==='undefined'||!IS_PWA||isStandalone())return '';
   return `<div class="inst-b"><span class="inst-ic"><img src="icon-192.png" alt=""></span><span><b>ثبّت التطبيق على جوالك</b><br><small>أيقونة على الشاشة الرئيسية، يفتح بسرعة وبدون متصفح، وبتوصلك التذكيرات.</small></span>
-   <span class="inst-act"><button class="btn primary" onclick="installApp()">ثبّت</button><button class="inst-x" onclick="installLater()" aria-label="لاحقًا">✕</button></span></div>`}
+   <span class="inst-act"><button class="btn primary" onclick="installApp()">${_bip?'ثبّت':'كيف أثبّته؟'}</button></span></div>`}
 function installLater(){S.instHide=Date.now()+7*864e5;save();const b=$('.inst-b');if(b)b.remove()}
 async function installApp(){
   if(_bip){_bip.prompt();try{const r=await _bip.userChoice;if(r&&r.outcome==='accepted'){S.installed=1;save()}}catch(e){}_bip=null;const b=$('.inst-b');if(b)b.remove();return}
