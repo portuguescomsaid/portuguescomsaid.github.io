@@ -19369,7 +19369,17 @@ function netPlay(items){
         const p=el.play();if(p&&p.catch)p.catch(er=>{if(er&&er.name==='NotAllowedError'){clearTimeout(to);started=true;devSpeak(items.slice(i-1)).then(res)}else fail()})};
       tryOne()};
     next()})}
-function devSpeak(items){return new Promise(res=>{
+
+/* iOS: خلّي الصوت يشتغل حتى لو الجوال على الصامت، ويوقّف الأغاني الشغّالة بالخلفية وقت الدرس */
+(function(){const SIL='data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQxAADB8AhSmxhIIEVCSiJrDCQBTcu3UrAIwUdkRgQbFAZC1CQEwTJ9mjRvBA4UOLD8nKVOWfh+UlK3z/177OXrfOdKl7pyn3Xf//WreyTRUoAWgBgkOAGbZHBgG1OF6zM82DWbZaUmMBptgQhGjsyYqc9ae9XFz280948NMBWInljyzsNRFLPWdnZGWrddDsjK1unuSrVN9jJsK8KuQtQCtMBjCEtImISdNKJOopIpBFpNSMbIHCSRpRR5iakjTiyzLhchUUBwCgyKiweBv/7UsQbg8isVNoMPMjAAAA0gAAABEVFGmgqK////9bP/6XCykxBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq';
+  let done=false;const unlock=()=>{if(done)return;done=true;
+    try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+    try{if(!NET.el){NET.el=new Audio();NET.el.preload='auto'}const el=NET.el;if(!el.src||el.paused){el.src=SIL;el.volume=1;const p=el.play();if(p&&p.catch)p.catch(()=>{})}}catch(e){}
+    try{if('speechSynthesis' in window){const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}}catch(e){}};
+  ['touchend','click','keydown'].forEach(ev=>addEventListener(ev,unlock,{capture:true,passive:true}));})();
+/* تلميح مرة وحدة: إذا اشتغل صوت الجهاز على الآيفون */
+let _silHint=false;function silentHint(){if(_silHint)return;_silHint=true;try{if(/iPhone|iPad|iPod/.test(navigator.userAgent)&&!localStorage.getItem('silHint')){localStorage.setItem('silHint','1');setTimeout(()=>toast('🔇 ما في صوت؟ طفّي وضع الصامت من زر الجنب وارفع الصوت'),600)}}catch(e){}}
+function devSpeak(items){silentHint();return new Promise(res=>{
   if(!('speechSynthesis' in window)){toast('الصوت مش متاح هون. افتح الصفحة بمتصفح Chrome أو Safari.');return res()}
   try{speechSynthesis.cancel()}catch(e){}const v=deviceVoice(),base=S.rate||0.8;let n=0,last=null;
   items.forEach(it=>speechParts(it.t).forEach(p=>{const vv=(it.vo&&it.vo.dv)||v;const u=new SpeechSynthesisUtterance(p);u.lang=vv?vv.lang:'pt-BR';if(vv)u.voice=vv;
