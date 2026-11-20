@@ -650,6 +650,7 @@ html,body{overflow-x:hidden}
 .pic.psvg{display:inline-flex;align-items:center;justify-content:center}.pic.psvg svg{width:1.15em;height:1.15em}
 .favb{display:none!important}
 .inst-act .btn{white-space:nowrap}
+.card>.bar{display:block;height:8px;border-radius:9px;background:var(--line,#e3e8e2);overflow:hidden;margin:8px 0 12px}.card>.bar i{display:block;height:100%;background:var(--green,#0A6B4B)}
 #login{position:fixed;inset:0;z-index:9999;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
 .lg-box{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .lg-ic{width:84px;height:84px;border-radius:22px;margin-bottom:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -20550,7 +20551,8 @@ function certCanvas(name,L,score,date){
 }
 function vCert(n){
   const L=LEVELS[n-1];const ex=S.ex['f'+n];
-  if(!L||!ex||!exDone('f'+n)){app.innerHTML=`<div class="card"><a class="back" href="#practice">→ التدريب</a><h2>ما في شهادة لسا</h2><p class="muted">الشهادة بتنفتح لما تنجح بالامتحان النهائي لـ${L?esc(L.name):'المستوى'} بـ 70% أو أكثر.</p></div>`;return}
+  if(!L||!ex||!exDone('f'+n)){let pr='';try{const ids=unitsOf(n).flatMap(u=>u.chs),d=ids.filter(chDone).length;pr=`<p style="margin:0">تقدّمك: <b>${d} من ${ids.length}</b> درس${ex?` · آخر محاولة بالامتحان النهائي: <b>${ex.total}%</b>`:''}</p><div class="bar"><i style="width:${Math.round(d/Math.max(1,ids.length)*100)}%"></i></div>`}catch(e){}
+    app.innerHTML=`<div class="stack"><div class="card"><a class="back" href="#practice">→ التدريب</a><h2>ما في شهادة لسا</h2><p class="muted">شهادة ${L?esc(L.name):'المستوى'} بتنفتح لما تنجح بـ<b>الامتحان النهائي للمستوى</b> (آخر المستوى، بعد كل الدروس واختبارات الوحدات) بـ ${EXPASS}% أو أكثر. اختبارات الوحدات ما بتعطي شهادة.</p>${pr}<a class="btn primary" href="#path">كمّل المسار</a></div></div>`;return}
   const draw=()=>{const c=certCanvas(S.name||'',L,ex.total,ex.date||today());const url=c.toDataURL('image/png');
     app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><h1 style="font-size:22px">شهادة ${esc(L.name)}</h1>
      <label for="nm">الاسم على الشهادة</label><input class="search" id="nm" value="${esc(S.name||'')}" placeholder="اكتب اسمك بالحروف اللاتينية" dir="ltr">
