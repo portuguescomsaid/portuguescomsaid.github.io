@@ -20553,13 +20553,18 @@ function vCert(n){
   const L=LEVELS[n-1];const ex=S.ex['f'+n];
   if(!L||!ex||!exDone('f'+n)){let pr='';try{const ids=unitsOf(n).flatMap(u=>u.chs),d=ids.filter(chDone).length;pr=`<p style="margin:0">تقدّمك: <b>${d} من ${ids.length}</b> درس${ex?` · آخر محاولة بالامتحان النهائي: <b>${ex.total}%</b>`:''}</p><div class="bar"><i style="width:${Math.round(d/Math.max(1,ids.length)*100)}%"></i></div>`}catch(e){}
     app.innerHTML=`<div class="stack"><div class="card"><a class="back" href="#practice">→ التدريب</a><h2>ما في شهادة لسا</h2><p class="muted">شهادة ${L?esc(L.name):'المستوى'} بتنفتح لما تنجح بـ<b>الامتحان النهائي للمستوى</b> (آخر المستوى، بعد كل الدروس واختبارات الوحدات) بـ ${EXPASS}% أو أكثر. اختبارات الوحدات ما بتعطي شهادة.</p>${pr}<a class="btn primary" href="#path">كمّل المسار</a></div></div>`;return}
-  const draw=()=>{const c=certCanvas(S.name||'',L,ex.total,ex.date||today());const url=c.toDataURL('image/png');
+  const draw=()=>{const nm=S.certName||S.name||'';const c=certCanvas(nm,L,ex.total,ex.date||today());const url=c.toDataURL('image/png');
     app.innerHTML=`<div class="stack"><a class="back" href="#practice">→ التدريب</a><h1 style="font-size:22px">شهادة ${esc(L.name)}</h1>
-     <label for="nm">الاسم على الشهادة</label><input class="search" id="nm" value="${esc(S.name||'')}" placeholder="اكتب اسمك بالحروف اللاتينية" dir="ltr">
      <img src="${url}" alt="شهادة ${esc(L.name)}" style="width:100%;border-radius:12px;border:1px solid var(--line)">
-     <div class="row"><button class="btn primary" id="dl">حمّل الشهادة</button></div><p class="muted" style="margin:0;font-size:13px">إذا ما اشتغل التحميل، اضغط مطوّل على الصورة واحفظها.</p></div>`;
-    $('#nm').onchange=e=>{S.name=e.target.value.trim();save();draw()};
-    $('#dl').onclick=async()=>{try{const d=await claude.use('downloads');if(!d)throw 0;const blob=await new Promise(r=>c.toBlob(r,'image/png'));await d.save({filename:`certificado-${L.tag}.png`,data:blob})}catch(e){toast('اضغط مطوّل على الصورة واحفظها.')}}};
+     <div class="row"><button class="btn primary" id="dl">⬇️ حمّل الشهادة</button>${S.certNmUsed?'':'<button class="btn" id="ed">✏️ عدّل الاسم</button>'}</div>
+     <div id="edb" class="card stack" style="display:none"><label for="nm">اسمك الكامل على الشهادة</label><input class="search" id="nm" value="${esc(nm)}" placeholder="مثال: Said Yahya" dir="auto">
+      <p class="tip" style="margin:0">⚠️ بتقدر تعدّل الاسم <b>مرة وحدة بس</b>. تأكد إنه مكتوب صح.</p><div class="row"><button class="btn primary" id="sv">احفظ الاسم</button><button class="btn" id="cn">إلغاء</button></div></div>
+     <p class="muted" style="margin:0;font-size:13px">إذا ما اشتغل التحميل، اضغط مطوّل على الصورة واحفظها.</p></div>`;
+    const ed=$('#ed');if(ed)ed.onclick=()=>{$('#edb').style.display='';ed.style.display='none';$('#nm').focus()};
+    if($('#cn'))$('#cn').onclick=()=>{$('#edb').style.display='none';ed&&(ed.style.display='')};
+    if($('#sv'))$('#sv').onclick=()=>{const v=$('#nm').value.replace(/\s+/g,' ').trim();if(v.length<2){toast('اكتب اسمك');return}
+      if(v===nm){$('#edb').style.display='none';ed&&(ed.style.display='');return}S.certName=v;S.certNmUsed=1;save();try{pushStats&&pushStats(true)}catch(e){}toast('✅ تم حفظ الاسم على الشهادة');draw()};
+    $('#dl').onclick=async()=>{const fn=`certificado-${L.tag}.png`;try{const d=window.claude&&await claude.use('downloads');if(!d)throw 0;const blob=await new Promise(r=>c.toBlob(r,'image/png'));await d.save({filename:fn,data:blob})}catch(e){try{const a=document.createElement('a');a.href=url;a.download=fn;document.body.appendChild(a);a.click();a.remove()}catch(x){toast('اضغط مطوّل على الصورة واحفظها.')}}}};
   draw();
 }
 
