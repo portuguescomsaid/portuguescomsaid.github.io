@@ -4452,14 +4452,15 @@ function vGoal(){
 
 /* ---------- 4) الدوري الأسبوعي 🏆 (الاسم الأول بس) ---------- */
 function weekKey(){const d=new Date();const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-(function(){const _add=addXP;addXP=function(n){const wk=weekKey();if(!S.wk||S.wk.k!==wk)S.wk={k:wk,x:0};S.wk.x+=Math.max(0,Math.round(n));_add(n);leaguePush()}})();
+function wkRoll(){const wk=weekKey();if(S.wk&&S.wk.k!==wk){if(S.wk.x>0)S.wkPrev={k:S.wk.k,x:S.wk.x};S.wk={k:wk,x:0}}}
+(function(){const _add=addXP;addXP=function(n){const wk=weekKey();wkRoll();if(!S.wk||S.wk.k!==wk)S.wk={k:wk,x:0};S.wk.x+=Math.max(0,Math.round(n));_add(n);leaguePush()}})();
 var _lgT=0;
 (function(){let k=0;const t=setInterval(()=>{k++;if(typeof cloudOK!=='undefined'&&cloudOK&&MY_ID){clearInterval(t);leaguePush(true)}else if(k>90)clearInterval(t)},1000)})();
 async function leaguePush(force){if(!DB||!MY_ID)return;if(IS_OWNER&&!S.botCfg){S.botCfg={on:true,n:25,hide:30};save();force=true}if(!force&&Date.now()-_lgT<60000)return;_lgT=Date.now();
   try{const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;let nm=(MY_NAME||'').trim().split(/\s+/)[0]||'';if(!nm){try{const me=await USER.me();nm=((me&&me.name)||'').trim().split(/\s+/)[0]}catch(e){}}
     await DB.doc('league/'+MY_ID).set(Object.assign({n:(nm||'طالب').slice(0,18),w:wk,x,t:Date.now()},IS_OWNER&&S.botCfg?{cfg:S.botCfg}:{}))}catch(e){}}
-async function vLeague(){
-  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري الأسبوعي</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها هالأسبوع بتطلّعك بالترتيب. الدوري بيبلّش من جديد كل يوم اتنين. بيبيّن الاسم الأول بس.</p></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
+async function vLeague(){try{wkRoll()}catch(e){}
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري الأسبوعي</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها هالأسبوع بتطلّعك بالترتيب. بيبيّن الاسم الأول بس.</p></div><div class="card" style="background:var(--sun-soft,#fff6d6);border-color:#f1d47a"><b>🔄 نقاط الدوري بتبلّش من الصفر كل يوم اتنين.</b><br><span class="muted">مجموع نقاطك الكلي <b>${S.xp} XP</b> محفوظ وما بيروح، وكل دروسك وتقدّمك محفوظين.${S.wkPrev?` الأسبوع الماضي جمعت <b>${S.wkPrev.x} XP</b>.`:''}</span></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
   await leaguePush(true);
   let rows=[];try{const res=await DB.collection('league').get();const arr=Array.isArray(res)?res:(res&&(res.docs||res.items||res.results))||[];
     rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w===weekKey()).sort((a,b)=>b.x-a.x)}
@@ -4495,7 +4496,7 @@ if(typeof vSettings==='function'){const _vS2=vSettings;vSettings=function(){_vS2
 }}
 
 function leagueMini(){const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;
-  return `<a class="goal-card" href="#league"><span class="ring sm" style="--p:100;--c:var(--sun)"><b>🏆</b></span><span><b>الدوري الأسبوعي</b><br><span class="muted">نقاطك هالأسبوع: ${x} XP · شوف ترتيبك</span></span><span class="gc-ed">←</span></a>`}
+  return `<a class="goal-card" href="#league"><span class="ring sm" style="--p:100;--c:var(--sun)"><b>🏆</b></span><span><b>الدوري الأسبوعي</b><br><span class="muted">هالأسبوع: ${x} XP · مجموعك الكلي: ${S.xp} XP<br><small>نقاط الدوري بتبلّش من جديد كل اتنين</small></span></span><span class="gc-ed">←</span></a>`}
 
 /* ---------- إعدادات أوضح: بطاقة حساب فوق + أزرار تنقّل + أيقونات كبيرة لكل قسم ---------- */
 if(typeof vSettings==='function'){const _vS3=vSettings;vSettings=function(){_vS3.apply(this,arguments);
