@@ -4463,8 +4463,14 @@ async function vLeague(){try{wkRoll()}catch(e){}
   app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها بتنضاف لمجموعك وما بتروح، وبتطلّعك بالترتيب. بيبيّن الاسم الأول بس.</p></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
   await leaguePush(true);
   let rows=[];try{const res=await DB.collection('league').get();const arr=Array.isArray(res)?res:(res&&(res.docs||res.items||res.results))||[];
-    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w==='all').sort((a,b)=>b.x-a.x)}
+    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.id&&!String(r.id).startsWith('bot')).sort((a,b)=>b.x-a.x)}
   catch(e){$('#lg').innerHTML='<p style="margin:0">ما قدرت أجيب الترتيب. '+(IS_OWNER?'تأكد إنك ضفت قاعدة <b>league</b> بقواعد Firestore.':'جرّب بعدين.')+'</p>';return}
+    /* المالك/الأدمن: عبّي الدوري بالمجموع الكلي لكل المستخدمين من الإحصائيات (حتى اللي لسا ما حدّثوا التطبيق) */
+  if(IS_OWNER||IS_ADMIN){try{const st=ADM_CACHE||await loadAllStats();const by={};rows.forEach(r=>by[r.id]=r);
+    await Promise.all((st||[]).map(async s=>{const xp=(s.d&&s.d.xp)||0;if(!xp)return;const cur=by[s.id];if(cur&&cur.w==='all'&&cur.x>=xp)return;
+      const nm=((cur&&cur.n)||(s.name||'').trim().split(/\s+/)[0]||'طالب').slice(0,18);const doc={n:nm,w:'all',x:Math.max(xp,(cur&&cur.w==='all'&&cur.x)||0),t:Date.now()};
+      if(cur&&cur.cfg)doc.cfg=cur.cfg;try{await DB.doc('league/'+s.id).set(doc)}catch(e){}if(cur)Object.assign(cur,doc);else{rows.push(Object.assign({id:s.id},doc));by[s.id]=rows[rows.length-1]}}));
+    rows.sort((a,b)=>b.x-a.x)}catch(e){}}
   const cfgDoc=rows.find(r=>r.cfg)||null;
   const cfg=(IS_OWNER&&S.botCfg)||(cfgDoc&&cfgDoc.cfg)||{on:false,n:25,hide:30};
   const realN=rows.length;const botsOn=cfg.on&&!(cfg.hide&&realN>=cfg.hide);
