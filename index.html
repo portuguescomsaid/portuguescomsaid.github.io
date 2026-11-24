@@ -4457,25 +4457,25 @@ function wkRoll(){const wk=weekKey();if(S.wk&&S.wk.k!==wk){if(S.wk.x>0)S.wkPrev=
 var _lgT=0;
 (function(){let k=0;const t=setInterval(()=>{k++;if(typeof cloudOK!=='undefined'&&cloudOK&&MY_ID){clearInterval(t);leaguePush(true)}else if(k>90)clearInterval(t)},1000)})();
 async function leaguePush(force){if(!DB||!MY_ID)return;if(IS_OWNER&&!S.botCfg){S.botCfg={on:true,n:25,hide:30};save();force=true}if(!force&&Date.now()-_lgT<60000)return;_lgT=Date.now();
-  try{const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;let nm=(MY_NAME||'').trim().split(/\s+/)[0]||'';if(!nm){try{const me=await USER.me();nm=((me&&me.name)||'').trim().split(/\s+/)[0]}catch(e){}}
+  try{const wk='all';const x=S.xp||0;let nm=(MY_NAME||'').trim().split(/\s+/)[0]||'';if(!nm){try{const me=await USER.me();nm=((me&&me.name)||'').trim().split(/\s+/)[0]}catch(e){}}
     await DB.doc('league/'+MY_ID).set(Object.assign({n:(nm||'طالب').slice(0,18),w:wk,x,t:Date.now()},IS_OWNER&&S.botCfg?{cfg:S.botCfg}:{}))}catch(e){}}
 async function vLeague(){try{wkRoll()}catch(e){}
-  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري الأسبوعي</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها هالأسبوع بتطلّعك بالترتيب. بيبيّن الاسم الأول بس.</p></div><div class="card" style="background:var(--sun-soft,#fff6d6);border-color:#f1d47a"><b>🔄 نقاط الدوري بتبلّش من الصفر كل يوم اتنين.</b><br><span class="muted">مجموع نقاطك الكلي <b>${S.xp} XP</b> محفوظ وما بيروح، وكل دروسك وتقدّمك محفوظين.${S.wkPrev?` الأسبوع الماضي جمعت <b>${S.wkPrev.x} XP</b>.`:''}</span></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
+  app.innerHTML=`<div class="stack"><div><h1 style="font-size:24px;margin:0">🏆 الدوري</h1><p class="muted" style="margin:4px 0 0">كل XP بتجمعها بتنضاف لمجموعك وما بتروح، وبتطلّعك بالترتيب. بيبيّن الاسم الأول بس.</p></div><div id="lg" class="card"><p class="muted" style="margin:0">جاري التحميل…</p></div></div>`;
   await leaguePush(true);
   let rows=[];try{const res=await DB.collection('league').get();const arr=Array.isArray(res)?res:(res&&(res.docs||res.items||res.results))||[];
-    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w===weekKey()).sort((a,b)=>b.x-a.x)}
+    rows=arr.map(x=>{const id=x.id||(x.ref&&x.ref.id);let d=x;if(typeof x.data==='function')d=x.data();else if(x.data&&typeof x.data==='object')d=x.data;return {id,...(d||{})}}).filter(r=>r.w==='all').sort((a,b)=>b.x-a.x)}
   catch(e){$('#lg').innerHTML='<p style="margin:0">ما قدرت أجيب الترتيب. '+(IS_OWNER?'تأكد إنك ضفت قاعدة <b>league</b> بقواعد Firestore.':'جرّب بعدين.')+'</p>';return}
   const cfgDoc=rows.find(r=>r.cfg)||null;
   const cfg=(IS_OWNER&&S.botCfg)||(cfgDoc&&cfgDoc.cfg)||{on:false,n:25,hide:30};
   const realN=rows.length;const botsOn=cfg.on&&!(cfg.hide&&realN>=cfg.hide);
   if(botsOn){rows=rows.concat(leagueBots(cfg.n||25)).sort((a,b)=>b.x-a.x)}
   const me=rows.findIndex(r=>r.id===MY_ID);const medal=i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-  $('#lg').outerHTML=`<div class="card lg-list">${rows.length?rows.slice(0,50).map((r,i)=>`<div class="lg-row${r.id===MY_ID?' me':''}${r.bot?' bot':''}"><span class="lg-n">${medal(i)}</span><span class="lg-nm">${r.bot?'<span title="منافس تدريبي آلي">🤖</span> ':''}${esc(r.n||'طالب')}${r.id===MY_ID?' (إنت)':''}${r.bot?` <small class="lg-lv">${r.lv}</small>`:''}</span><b class="lg-x">${r.x} XP</b></div>`).join(''):'<p class="muted" style="margin:0">لسا ما حدا جمع نقاط هالأسبوع. كن الأول!</p>'}
+  $('#lg').outerHTML=`<div class="card lg-list">${rows.length?rows.slice(0,50).map((r,i)=>`<div class="lg-row${r.id===MY_ID?' me':''}${r.bot?' bot':''}"><span class="lg-n">${medal(i)}</span><span class="lg-nm">${r.bot?'<span title="منافس تدريبي آلي">🤖</span> ':''}${esc(r.n||'طالب')}${r.id===MY_ID?' (إنت)':''}${r.bot?` <small class="lg-lv">${r.lv}</small>`:''}</span><b class="lg-x">${r.x} XP</b></div>`).join(''):'<p class="muted" style="margin:0">لسا ما حدا جمع نقاط. كن الأول!</p>'}
    ${me>=50?`<div class="lg-row me"><span class="lg-n">${me+1}</span><span class="lg-nm">إنت</span><b class="lg-x">${rows[me].x} XP</b></div>`:''}</div>
    `;
   if(botsOn){const l=$('.lg-list');if(l)l.insertAdjacentHTML('beforebegin','<p class="lg-botnote">🤖 منافسين تدريبيين معك بالدوري لحد ما يكبر. تحدّاهم!</p>')}
   if(IS_OWNER||IS_ADMIN){const st=$('.stack',app);st.insertAdjacentHTML('beforeend',`<section class="card stack"><h2 class="adm-h">⚙️ المنافسين الآليين (للإدارة)</h2>
-    <p class="muted" style="margin:0">مستخدمين حقيقيين هالأسبوع: <b>${realN}</b>. المنافسين الآليين بيبيّنوا مع 🤖 وعليهم ملاحظة واضحة.</p>
+    <p class="muted" style="margin:0">مستخدمين حقيقيين: <b>${realN}</b>. المنافسين الآليين بيبيّنوا مع 🤖 وعليهم ملاحظة واضحة.</p>
     <label class="row" style="align-items:center;gap:8px"><input type="checkbox" id="bon" ${cfg.on?'checked':''}> <b>شغّل المنافسين الآليين</b></label>
     <label>العدد</label><select id="bn" class="sel" style="max-width:160px">${[10,20,25,30,50,100,300].map(v=>`<option value="${v}"${(cfg.n||25)==v?' selected':''}>${v}</option>`).join('')}</select>
     <label>يختفوا لحالهم لما يوصل عدد المستخدمين الحقيقيين لـ</label><select id="bh" class="sel" style="max-width:160px">${[0,10,20,30,50,100].map(v=>`<option value="${v}"${(cfg.hide??30)==v?' selected':''}>${v?v+' مستخدم':'ما يختفوا'}</option>`).join('')}</select>
@@ -4496,7 +4496,7 @@ if(typeof vSettings==='function'){const _vS2=vSettings;vSettings=function(){_vS2
 }}
 
 function leagueMini(){const wk=weekKey();const x=S.wk&&S.wk.k===wk?S.wk.x:0;
-  return `<a class="goal-card" href="#league"><span class="ring sm" style="--p:100;--c:var(--sun)"><b>🏆</b></span><span><b>الدوري الأسبوعي</b><br><span class="muted">هالأسبوع: ${x} XP · مجموعك الكلي: ${S.xp} XP<br><small>نقاط الدوري بتبلّش من جديد كل اتنين</small></span></span><span class="gc-ed">←</span></a>`}
+  return `<a class="goal-card" href="#league"><span class="ring sm" style="--p:100;--c:var(--sun)"><b>🏆</b></span><span><b>الدوري</b><br><span class="muted">نقاطك: ${S.xp} XP · شوف ترتيبك</span></span><span class="gc-ed">←</span></a>`}
 
 /* ---------- إعدادات أوضح: بطاقة حساب فوق + أزرار تنقّل + أيقونات كبيرة لكل قسم ---------- */
 if(typeof vSettings==='function'){const _vS3=vSettings;vSettings=function(){_vS3.apply(this,arguments);
@@ -4647,10 +4647,10 @@ if(typeof vSettings==='function'){const _vS8=vSettings;vSettings=function(){_vS8
 
 /* منافسين آليين: أسماء وأرقام ثابتة طول الأسبوع، ونقاطهم بتزيد مع أيام الأسبوع */
 function leagueBots(n){const N=['أحمد','فاطمة','محمد','مريم','عمر','ليلى','يوسف','نور','كريم','رانيا','حسن','منى','سامر','هبة','علي','سارة','خالد','دينا','طارق','ياسمين','هادي','ريم','إبراهيم','آية','مصطفى','جنى','عبدالله','رهف','زياد','لانا','Michael','Emily','James','Sarah','David','Emma','Daniel','Olivia','Ryan','Sophia','Adam','Jessica','Noah','Hannah','Jack','Grace','Ethan','Chloe','Liam','Amelia','Ahmad','Omar','Layla','Youssef','Nour','Karim','Hassan','Mona','Ali','Lina'];
-  const wk=weekKey();let s=0;for(const c of wk)s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>{s=(s*1103515245+12345)>>>0;return s/4294967296};
-  const start=new Date(wk.replace(/-(\d)(?!\d)/g,'-0$1')+'T00:00:00').getTime();const f=Math.min(1,Math.max(0,(Date.now()-start)/(7*864e5)));const LV=['A1','A1','A1','A2','A2','B1','B1','B2','C1'];
-  const out=[];for(let i=0;i<n;i++){const nm=N[Math.floor(rnd()*N.length)]+(i>=N.length?' '+String.fromCharCode(65+Math.floor(rnd()*26))+'.':'');const target=40+Math.floor(Math.pow(rnd(),1.6)*900);const pace=0.7+rnd()*0.8;const lv=LV[Math.floor(rnd()*LV.length)];
-    const x=Math.round(target*Math.pow(f,pace));out.push({id:'bot'+i,bot:1,n:nm,lv,x,w:wk})}
+  const wk='all';let s=0;for(const c of 'ptsaid-all')s=(s*31+c.charCodeAt(0))>>>0;const rnd=()=>{s=(s*1103515245+12345)>>>0;return s/4294967296};
+  const days=Math.max(0,(Date.now()-new Date('2026-11-01T00:00:00').getTime())/864e5);const LV=['A1','A1','A1','A2','A2','B1','B1','B2','C1'];
+  const out=[];for(let i=0;i<n;i++){const nm=N[Math.floor(rnd()*N.length)]+(i>=N.length?' '+String.fromCharCode(65+Math.floor(rnd()*26))+'.':'');const base=80+Math.floor(Math.pow(rnd(),1.7)*2400);const pace=4+rnd()*45;const lv=LV[Math.floor(rnd()*LV.length)];
+    const x=Math.round(base+pace*days);out.push({id:'bot'+i,bot:1,n:nm,lv,x,w:wk})}
   return out}
 
 if(typeof vAdmin==='function'){const _vAb=vAdmin;vAdmin=async function(){await _vAb.apply(this,arguments);try{if(!(IS_OWNER||IS_ADMIN))return;const st=$('.stack',app);const c=S.botCfg||{};
